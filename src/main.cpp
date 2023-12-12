@@ -3,7 +3,8 @@
 #include "Reader.h"
 
 void buildAndRun(const std::string &path) {
-
+    std::string code = Reader::readFile(path);
+    std::cout << code << std::endl;
 }
 
 void printUsage() {
