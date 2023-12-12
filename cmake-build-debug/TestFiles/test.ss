@@ -1,17 +1,33 @@
-# this is a single-line comment
-this is not in a comment
-##
+a <- 3
+b <- 4
+c <- 5
 
-this is a multi-line comment
+a[2] <- b+c
 
-and it spans... multiple lines
+if (a[2] = 4) {
 
-this text is in a comment
-## this is not in a comment
-hello this is not in a comment
-# back to a single line
+} else {
 
-we can even ## put them in one ## line
+}
 
-here is a string literal with a comment inside: "hello # comment?" (it is not a comment.)
-and what about multi-line? "is this going to ## be commented? ##" (no) but ##this is##
+for (i from 1 to 2) {
+    continue
+}
+
+for (i in 1..2) {
+    continue
+}
+
+i <- 0
+while (i != 0) {
+    i <- i + 1
+    j <- i + 2
+    break
+}
+
+function foo(a, b) {
+    return a + b
+}
+
+array arr
+arr = [2, 3, 4, 5]

@@ -7,4 +7,7 @@ include_directories(include)
 add_executable(SynthScript src/main.cpp
         src/Reader.cpp
         include/Reader.h
+        src/Lexer.cpp
+        include/Lexer.h
+        include/Tokens.h
 )
