@@ -21,12 +21,19 @@ std::string Reader::cleanFile(const std::string &file) {
             commented = !multiline;
             multiline = !multiline;
             i++;
+            cleanedFile += "##";
             continue;
         } else if (!stringLiteral && file[i] == '#') {
             commented = true;
+            cleanedFile.push_back('#');
         }
         if (file[i] == '\n' && !multiline) commented = false;
-        if (!commented) cleanedFile.push_back(file[i]);
+        if (!commented) {
+            cleanedFile.push_back(file[i]);
+        } else {
+            if (file[i] == '\n') cleanedFile.push_back('\n');
+            else cleanedFile.push_back(' ');
+        }
     }
 
     return cleanedFile;
