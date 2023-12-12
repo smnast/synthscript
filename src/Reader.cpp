@@ -14,17 +14,19 @@ std::string Reader::getFileText(const std::string &filePath) {
 
 std::string Reader::cleanFile(const std::string &file) {
     std::string cleanedFile;
-    bool commented = false;
+    bool commented = false, multiline = false, stringLiteral = false;
     for (int i = 0; i < (int)file.size(); i++) {
-        if (i < (int)file.size()-1 && file[i] == '/' && file[i+1] == '/') {
+        if (file[i] == '"' && (i == 0 || file[i-1] != '\\')) stringLiteral = !stringLiteral;
+        if (!stringLiteral && file[i] == '#' && i < (int)file.size()-1 && file[i+1] == '#') {
+            commented = !multiline;
+            multiline = !multiline;
+            i++;
+            continue;
+        } else if (!stringLiteral && file[i] == '#') {
             commented = true;
         }
-        if (file[i] == '\n') {
-            commented = false;
-        }
-        if (!commented) {
-            cleanedFile.push_back(file[i]);
-        }
+        if (file[i] == '\n' && !multiline) commented = false;
+        if (!commented) cleanedFile.push_back(file[i]);
     }
 
     return cleanedFile;
