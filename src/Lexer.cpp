@@ -48,7 +48,7 @@ std::string Lexer::combineRegex() {
 }
 
 void Lexer::lexerError(const std::string &token, int line, int col) {
-    printf("%s; error\n", token.c_str()); // TODO: error handling
+    Error::posError("Undefined token: '" + token + "'", line, col);
 }
 
 void Lexer::prepareLinePrefix(std::string &file) {

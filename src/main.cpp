@@ -4,11 +4,22 @@
 #include "Lexer.h"
 #include "Tokens.h"
 
+void run() {
+    printf("program would run\n");
+}
+
 void buildAndRun(const std::string &path) {
     std::string code = Reader::readFile(path);
     std::vector<Token> tokens = Lexer::parseTokens(code);
-    for (auto t : tokens) {
-        printf("%s\trow:%d\tcol:%d\n", tokenNames[t.tokenType].c_str(), t.lineNumber, t.columnNumber);
+//    for (auto t : tokens) {
+//        printf("%s\trow:%d\tcol:%d\n", tokenNames[t.tokenType].c_str(), t.lineNumber, t.columnNumber);
+//    }
+
+    Error::printBuildStatus();
+    if (Error::shouldQuit()) {
+        exit(1);
+    } else {
+        run();
     }
 }
 

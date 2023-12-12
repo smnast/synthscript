@@ -10,4 +10,6 @@ add_executable(SynthScript src/main.cpp
         src/Lexer.cpp
         include/Lexer.h
         include/Tokens.h
+        src/Error.cpp
+        include/Error.h
 )

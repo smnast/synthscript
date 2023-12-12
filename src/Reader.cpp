@@ -1,5 +1,7 @@
 #include "Reader.h"
 
+std::vector<std::string> Reader::fileLines;
+
 bool Reader::fileExists(const std::string &path) {
     std::ifstream file(path);
     return file.good();
@@ -42,5 +44,26 @@ std::string Reader::cleanFile(const std::string &file) {
 std::string Reader::readFile(const std::string &filePath) {
     std::string fileContents = getFileText(filePath);
     std::string cleanedFile = cleanFile(fileContents);
+    prepareFileLines(cleanedFile);
     return cleanedFile;
 }
+
+void Reader::showPosition(int line, int col) {
+    std::string position = std::string(col-1, ' ') + "^\n";
+    std::printf("%s%s", fileLines[line - 1].c_str(), position.c_str());
+}
+
+void Reader::prepareFileLines(const std::string &file) {
+    std::string curRow;
+    for (char i : file) {
+        curRow.push_back(i);
+        if (i == '\n') {
+            fileLines.push_back(curRow);
+            curRow.clear();
+        }
+    }
+    if (!curRow.empty()) {
+        fileLines.push_back(curRow);
+    }
+}
+

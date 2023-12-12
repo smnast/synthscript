@@ -2,6 +2,8 @@
 #define SYNTHSCRIPT_LEXER_H
 
 #include <regex>
+
+#include "Error.h"
 #include "Tokens.h"
 
 class Lexer {

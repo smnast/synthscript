@@ -1,13 +1,6 @@
-##
 
-akjsdlkajs dasdkj
-asdlkjasd
-lkja sd
-# laksdj a
+funky @@@@ <---- error
 
-##
-
-## alskdjalskd jasdkj ## a ## hello??## <- 3
 b <- 4
 c <- 5
 
