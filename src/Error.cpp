@@ -8,8 +8,8 @@ void Error::error(const std::string &message) {
 }
 
 void Error::posError(const std::string &message, int line, int col) {
-    Reader::showPosition(line, col);
     error(message);
+    Reader::showPosition(line, col);
 }
 
 void Error::printBuildStatus() {
