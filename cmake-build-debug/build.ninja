@@ -52,6 +52,14 @@ build cmake_object_order_depends_target_SynthScript: phony || CMakeFiles/SynthSc
 build CMakeFiles/SynthScript.dir/src/main.cpp.o: CXX_COMPILER__SynthScript_unscanned_Debug /home/simon/Git/SynthScript/src/main.cpp || cmake_object_order_depends_target_SynthScript
   DEP_FILE = CMakeFiles/SynthScript.dir/src/main.cpp.o.d
   FLAGS = -g -fdiagnostics-color=always
+  INCLUDES = -I/home/simon/Git/SynthScript/include
+  OBJECT_DIR = CMakeFiles/SynthScript.dir
+  OBJECT_FILE_DIR = CMakeFiles/SynthScript.dir/src
+
+build CMakeFiles/SynthScript.dir/src/Reader.cpp.o: CXX_COMPILER__SynthScript_unscanned_Debug /home/simon/Git/SynthScript/src/Reader.cpp || cmake_object_order_depends_target_SynthScript
+  DEP_FILE = CMakeFiles/SynthScript.dir/src/Reader.cpp.o.d
+  FLAGS = -g -fdiagnostics-color=always
+  INCLUDES = -I/home/simon/Git/SynthScript/include
   OBJECT_DIR = CMakeFiles/SynthScript.dir
   OBJECT_FILE_DIR = CMakeFiles/SynthScript.dir/src
 
@@ -63,7 +71,7 @@ build CMakeFiles/SynthScript.dir/src/main.cpp.o: CXX_COMPILER__SynthScript_unsca
 #############################################
 # Link the executable SynthScript
 
-build SynthScript: CXX_EXECUTABLE_LINKER__SynthScript_Debug CMakeFiles/SynthScript.dir/src/main.cpp.o
+build SynthScript: CXX_EXECUTABLE_LINKER__SynthScript_Debug CMakeFiles/SynthScript.dir/src/main.cpp.o CMakeFiles/SynthScript.dir/src/Reader.cpp.o
   FLAGS = -g
   OBJECT_DIR = CMakeFiles/SynthScript.dir
   POST_BUILD = :
