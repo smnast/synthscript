@@ -3,6 +3,8 @@
 #include "AST/Operators/SubscriptOpNode.h"
 #include "AST/Operators/UnaryOpNode.h"
 
+#include "AST/Statement/Array/ArrayLiteralNode.h"
+
 #include "AST/Statement/Assignment/AssignmentNode.h"
 
 #include "AST/Statement/Control/BreakStatementNode.h"
