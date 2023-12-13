@@ -1,21 +1,25 @@
 #ifndef CLIKE_FORSTATEMENTNODE_H
 #define CLIKE_FORSTATEMENTNODE_H
 
+#include <utility>
+
 #include "AST/ASTNode.h"
 
 class ForStatementNode : public ASTNode {
 public:
-    ForStatementNode(ASTNode *initStatement, ASTNode *start, ASTNode *end, int line, int col) : ASTNode(line, col), initStatement(initStatement), start(start), end(end) {}
+    ForStatementNode(std::string identifier, ASTNode *start, ASTNode *end, ASTNode *body, int line, int col) : ASTNode(line, col), identifier(std::move(identifier)), start(start), end(end), body(body) {}
     ~ForStatementNode() override {
-        delete initStatement;
         delete start;
         delete end;
+        delete body;
     }
-    ASTNode *getInitStatement() { return initStatement; }
+    std::string getIdentifier() { return identifier; }
     ASTNode *getStart() { return start; }
     ASTNode *getEnd() { return end; }
+    ASTNode *getBody() { return body; }
 private:
-    ASTNode *initStatement, *start, *end;
+    std::string identifier;
+    ASTNode *start, *end, *body;
 };
 
 #endif //CLIKE_FORSTATEMENTNODE_H
