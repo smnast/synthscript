@@ -8,14 +8,12 @@
 
 class FunctionStatementNode : public ASTNode {
 public:
-    FunctionStatementNode(ASTNode *identifier, std::vector<ASTNode*> arguments, int line, int col) : ASTNode(line, col), arguments(std::move(arguments)), identifier(identifier) {}
-    ~FunctionStatementNode() override {
-        delete identifier;
-    }
-    ASTNode *getIdentifier() const { return identifier; }
+    FunctionStatementNode(std::string identifier, std::vector<ASTNode*> arguments, int line, int col) : ASTNode(line, col), arguments(std::move(arguments)), identifier(std::move(identifier)) {}
+    ~FunctionStatementNode() override = default;
+    std::string getIdentifier() const { return identifier; }
     std::vector<ASTNode*> *getArguments() { return &arguments; }
 private:
-    ASTNode *identifier;
+    std::string identifier;
     std::vector<ASTNode*> arguments;
 };
 

@@ -8,16 +8,15 @@
 
 class FunctionDeclarationNode : public ASTNode {
 public:
-    FunctionDeclarationNode(ASTNode *identifier, std::vector<ASTNode*> parameters, ASTNode *body, int line, int col) : ASTNode(line, col), returnType(returnType), identifier(identifier), parameters(std::move(parameters)), body(body) {}
+    FunctionDeclarationNode(std::string identifier, std::vector<ASTNode*> parameters, ASTNode *body, int line, int col) : ASTNode(line, col), identifier(std::move(identifier)), parameters(std::move(parameters)), body(body) {}
     ~FunctionDeclarationNode() override {
-        delete identifier;
         delete body;
     }
-    ASTNode *getIdentifier() { return identifier; }
+    std::string getIdentifier() const { return identifier; }
     std::vector<ASTNode*> *getParameters() { return &parameters; }
     ASTNode *getBody() { return body; }
 private:
-    ASTNode *identifier;
+    std::string identifier;
     std::vector<ASTNode*> parameters;
     ASTNode *body;
 };
