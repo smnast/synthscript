@@ -7,7 +7,7 @@
 typedef enum {
     ASSIGNMENT_OPERATOR,
     ADDITION_OPERATOR, SUBTRACTION_OPERATOR,
-    MULTIPLICATIVE_OPERATOR, DIVISION_OPERATOR,
+    MULTIPLICATIVE_OPERATOR, DIVISION_OPERATOR, MOD_OPERATOR,
     LOGICAL_AND_OPERATOR, LOGICAL_OR_OPERATOR, LOGICAL_NOT_OPERATOR,
     BITWISE_AND_OPERATOR, BITWISE_OR_OPERATOR, BITWISE_XOR_OPERATOR, BITWISE_NOT_OPERATOR,
     LESS_THAN_OPERATOR, LESS_THAN_EQUAL_OPERATOR, GREATER_THAN_OPERATOR, GREATER_THAN_EQUAL_OPERATOR,
@@ -27,7 +27,7 @@ typedef enum {
 const std::vector<std::string> tokenNames = {
         "'<-'",
         "'+'", "'-'",
-        "'*'", "'/'",
+        "'*'", "'/'", "'%'",
         "'and'", "'or'", "'not'",
         "'&'", "'|'", "'^'", "'~'",
         "'<'", "'<='", "'>'", "'>='",
@@ -50,6 +50,7 @@ const std::vector<std::pair<TokenType, std::string>> tokenRegexExprs = {
         {SUBTRACTION_OPERATOR,        R"(\-)"},
         {MULTIPLICATIVE_OPERATOR,     R"(\*)"},
         {DIVISION_OPERATOR,           R"(\/)"},
+        {MOD_OPERATOR,                R"(\%)"},
         {LOGICAL_AND_OPERATOR,        R"(\band\b)"},
         {LOGICAL_OR_OPERATOR,         R"(\bor\b)"},
         {LOGICAL_NOT_OPERATOR,        R"(\bnot\b)"},
