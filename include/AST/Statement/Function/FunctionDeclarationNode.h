@@ -10,9 +10,6 @@ class FunctionDeclarationNode : public ASTNode {
 public:
     FunctionDeclarationNode(Type returnType, ASTNode *identifier, std::vector<std::pair<Type, ASTNode*>> parameters, ASTNode *body, int lineNumber) : ASTNode(lineNumber), returnType(returnType), identifier(identifier), parameters(std::move(parameters)), body(body) {}
     ~FunctionDeclarationNode() override {
-        for (auto &parameter : parameters) {
-            delete parameter.second;
-        }
         delete identifier;
         delete body;
     }

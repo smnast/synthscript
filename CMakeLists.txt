@@ -16,11 +16,7 @@ add_executable(SynthScript src/main.cpp
         include/AST/Operators/CastOpNode.h
         include/AST/Operators/SubscriptOpNode.h
         include/AST/Operators/UnaryOpNode.h
-        include/AST/Statement/Array/ArrayDeclarationStatementNode.h
         include/AST/Statement/Assignment/AssignmentNode.h
-        include/AST/Statement/Assignment/CompoundAssignmentNode.h
-        include/AST/Statement/Assignment/DeclarationNode.h
-        include/AST/Statement/Assignment/InitializationNode.h
         include/AST/Statement/Control/BreakStatementNode.h
         include/AST/Statement/Control/ContinueStatementNode.h
         include/AST/Statement/Control/ForStatementNode.h

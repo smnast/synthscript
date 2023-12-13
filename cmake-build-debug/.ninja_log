@@ -3,7 +3,6 @@
 2	1156	1702414297051422522	CMakeFiles/SynthScript.dir/src/Error.cpp.o	1de5620f370c16d2
 2	1350	1702413995367921196	CMakeFiles/SynthScript.dir/src/Reader.cpp.o	e73a7b86ae28f406
 0	411	1702354193751276453	CMakeFiles/SynthScript.dir/main.cpp.o	88c93ae168e60ef9
-1072	1262	1702435550383098230	SynthScript	eeb4ec45a40a1a9b
-1	1072	1702435550195098772	CMakeFiles/SynthScript.dir/src/main.cpp.o	77314478978d23d
-2	872	1702436532871320850	CMakeFiles/SynthScript.dir/src/Parser.cpp.o	b137f92ee20fec8
 872	1089	1702436533086320253	SynthScript	e9a97ce5cef08aee
+2	872	1702436532871320850	CMakeFiles/SynthScript.dir/src/Parser.cpp.o	b137f92ee20fec8
+1	1072	1702435550195098772	CMakeFiles/SynthScript.dir/src/main.cpp.o	77314478978d23d

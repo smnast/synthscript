@@ -5,19 +5,17 @@
 
 class ForStatementNode : public ASTNode {
 public:
-    ForStatementNode(ASTNode *initStatement, ASTNode *condition, ASTNode *updateStatement, ASTNode *body, int lineNumber) : ASTNode(lineNumber), initStatement(initStatement), condition(condition), updateStatement(updateStatement), body(body) {}
+    ForStatementNode(ASTNode *initStatement, ASTNode *start, ASTNode *end, int lineNumber) : ASTNode(lineNumber), initStatement(initStatement), start(start), end(end) {}
     ~ForStatementNode() override {
         delete initStatement;
-        delete condition;
-        delete updateStatement;
-        delete body;
+        delete start;
+        delete end;
     }
     ASTNode *getInitStatement() { return initStatement; }
-    ASTNode *getCondition() { return condition; }
-    ASTNode *getUpdateStatement() { return updateStatement; }
-    ASTNode *getBody() { return body; }
+    ASTNode *getStart() { return start; }
+    ASTNode *getEnd() { return end; }
 private:
-    ASTNode *initStatement, *condition, *updateStatement, *body;
+    ASTNode *initStatement, *start, *end;
 };
 
 #endif //CLIKE_FORSTATEMENTNODE_H

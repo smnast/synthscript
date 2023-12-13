@@ -10,9 +10,6 @@ class FunctionStatementNode : public ASTNode {
 public:
     FunctionStatementNode(ASTNode *identifier, std::vector<ASTNode*> arguments, int lineNumber) : ASTNode(lineNumber), arguments(std::move(arguments)), identifier(identifier) {}
     ~FunctionStatementNode() override {
-        for (auto &argument : arguments) {
-            delete argument;
-        }
         delete identifier;
     }
     ASTNode *getIdentifier() const { return identifier; }

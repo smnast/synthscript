@@ -55,3 +55,4 @@ void Parser::sync() {
 void Parser::parserError(const std::string &expected, const Token &actual) {
     Error::posError("Expected " + expected + " but got " + tokenNames[actual.tokenType], actual.lineNumber, actual.columnNumber);
 }
+
