@@ -8,15 +8,15 @@
 
 class SubscriptOpNode : public ASTNode {
 public:
-    SubscriptOpNode(ASTNode *identifier, std::vector<ASTNode*> indices, int line, int col) : ASTNode(line, col), identifier(identifier), indices(std::move(indices)) {}
+    SubscriptOpNode(ASTNode *identifier, ASTNode *index, int line, int col) : ASTNode(line, col), identifier(identifier), index(index) {}
     ~SubscriptOpNode() override {
         delete identifier;
     }
     ASTNode *getIdentifier() { return identifier; }
-    std::vector<ASTNode*> *getIndices() { return &indices; }
+    ASTNode *getIndex() { return index; }
 private:
     ASTNode *identifier;
-    std::vector<ASTNode*> indices;
+    ASTNode *index;
 };
 
 #endif //CLIKE_SUBSCRIPTOPNODE_H
