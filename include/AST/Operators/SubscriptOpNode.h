@@ -8,7 +8,7 @@
 
 class SubscriptOpNode : public ASTNode {
 public:
-    SubscriptOpNode(ASTNode *identifier, std::vector<ASTNode*> indices, int lineNumber) : ASTNode(lineNumber), identifier(identifier), indices(std::move(indices)) {}
+    SubscriptOpNode(ASTNode *identifier, std::vector<ASTNode*> indices, int line, int col) : ASTNode(line, col), identifier(identifier), indices(std::move(indices)) {}
     ~SubscriptOpNode() override {
         delete identifier;
     }

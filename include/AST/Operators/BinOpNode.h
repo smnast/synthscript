@@ -5,7 +5,7 @@
 
 class BinOpNode : public ASTNode {
 public:
-    BinOpNode(std::string op, ASTNode *left, ASTNode *right, int lineNumber) : ASTNode(lineNumber), op(std::move(op)), left(left), right(right) {}
+    BinOpNode(std::string op, ASTNode *left, ASTNode *right, int line, int col) : ASTNode(line, col), op(std::move(op)), left(left), right(right) {}
     ~BinOpNode() override {
         delete left;
         delete right;

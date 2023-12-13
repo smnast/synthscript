@@ -8,7 +8,7 @@
 
 class CompoundStatementNode : public ASTNode {
 public:
-    explicit CompoundStatementNode(std::vector<ASTNode*> statements, int lineNumber) : ASTNode(lineNumber), statements(std::move(statements)) {}
+    explicit CompoundStatementNode(std::vector<ASTNode*> statements, int line, int col) : ASTNode(line, col), statements(std::move(statements)) {}
     ~CompoundStatementNode() override = default;
     std::vector<ASTNode*> *getStatements() { return &statements; }
 private:

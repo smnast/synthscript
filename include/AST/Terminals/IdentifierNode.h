@@ -7,7 +7,7 @@
 
 class IdentifierNode : public ASTNode {
 public:
-    explicit IdentifierNode(std::string name, int lineNumber) : ASTNode(lineNumber), name(std::move(name)) {}
+    explicit IdentifierNode(std::string name, int line, int col) : ASTNode(line, col), name(std::move(name)) {}
     ~IdentifierNode() override = default;
     std::string getName() { return name; }
 private:

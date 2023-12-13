@@ -9,11 +9,12 @@
 
 class ASTNode {
 public:
-    explicit ASTNode(int lineNumber) : lineNumber(lineNumber) {};
+    explicit ASTNode(int line, int col) : line(line), col(col) {};
     virtual ~ASTNode() = default;
-    int getLineNumber() const { return lineNumber; }
+    int getLineNumber() const { return line; }
+    int getColumnNumber() const { return col; }
 private:
-    int lineNumber;
+    int line, col;
 };
 
 

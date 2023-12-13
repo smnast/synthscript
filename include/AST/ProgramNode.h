@@ -8,7 +8,7 @@
 
 class ProgramNode : public ASTNode {
 public:
-    explicit ProgramNode(std::vector<ASTNode*> statements, int lineNumber) : ASTNode(lineNumber), statements(std::move(statements)) {}
+    explicit ProgramNode(std::vector<ASTNode*> statements, int line, int col) : ASTNode(line, col), statements(std::move(statements)) {}
     ~ProgramNode() override = default;
     std::vector<ASTNode*> *getStatements() { return &statements; }
 private:

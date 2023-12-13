@@ -7,7 +7,7 @@
 
 class CastOpNode : public ASTNode {
 public:
-    CastOpNode(Type type, ASTNode *operand, int lineNumber) : ASTNode(lineNumber), type(type), operand(operand) {}
+    CastOpNode(Type type, ASTNode *operand, int line, int col) : ASTNode(line, col), type(type), operand(operand) {}
     ~CastOpNode() override {
         delete operand;
     }

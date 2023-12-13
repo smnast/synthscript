@@ -6,7 +6,7 @@
 
 class UnaryOpNode : public ASTNode {
 public:
-    UnaryOpNode(std::string op, ASTNode *operand, int lineNumber) : ASTNode(lineNumber), op(std::move(op)), operand(operand) {}
+    UnaryOpNode(std::string op, ASTNode *operand, int line, int col) : ASTNode(line, col), op(std::move(op)), operand(operand) {}
     ~UnaryOpNode() override {
         delete operand;
     }

@@ -5,7 +5,7 @@
 
 class ContinueStatementNode : public ASTNode {
 public:
-    explicit ContinueStatementNode(int lineNumber) : ASTNode(lineNumber) {}
+    explicit ContinueStatementNode(int line, int col) : ASTNode(line, col) {}
     ~ContinueStatementNode() override = default;
 };
 

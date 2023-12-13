@@ -8,7 +8,7 @@
 
 class FunctionStatementNode : public ASTNode {
 public:
-    FunctionStatementNode(ASTNode *identifier, std::vector<ASTNode*> arguments, int lineNumber) : ASTNode(lineNumber), arguments(std::move(arguments)), identifier(identifier) {}
+    FunctionStatementNode(ASTNode *identifier, std::vector<ASTNode*> arguments, int line, int col) : ASTNode(line, col), arguments(std::move(arguments)), identifier(identifier) {}
     ~FunctionStatementNode() override {
         delete identifier;
     }

@@ -5,7 +5,7 @@
 
 class ForStatementNode : public ASTNode {
 public:
-    ForStatementNode(ASTNode *initStatement, ASTNode *start, ASTNode *end, int lineNumber) : ASTNode(lineNumber), initStatement(initStatement), start(start), end(end) {}
+    ForStatementNode(ASTNode *initStatement, ASTNode *start, ASTNode *end, int line, int col) : ASTNode(line, col), initStatement(initStatement), start(start), end(end) {}
     ~ForStatementNode() override {
         delete initStatement;
         delete start;
