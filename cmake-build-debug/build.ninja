@@ -77,6 +77,13 @@ build CMakeFiles/SynthScript.dir/src/Error.cpp.o: CXX_COMPILER__SynthScript_unsc
   OBJECT_DIR = CMakeFiles/SynthScript.dir
   OBJECT_FILE_DIR = CMakeFiles/SynthScript.dir/src
 
+build CMakeFiles/SynthScript.dir/src/Parser.cpp.o: CXX_COMPILER__SynthScript_unscanned_Debug /home/simon/Git/SynthScript/src/Parser.cpp || cmake_object_order_depends_target_SynthScript
+  DEP_FILE = CMakeFiles/SynthScript.dir/src/Parser.cpp.o.d
+  FLAGS = -g -fdiagnostics-color=always
+  INCLUDES = -I/home/simon/Git/SynthScript/include
+  OBJECT_DIR = CMakeFiles/SynthScript.dir
+  OBJECT_FILE_DIR = CMakeFiles/SynthScript.dir/src
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target SynthScript
@@ -85,7 +92,7 @@ build CMakeFiles/SynthScript.dir/src/Error.cpp.o: CXX_COMPILER__SynthScript_unsc
 #############################################
 # Link the executable SynthScript
 
-build SynthScript: CXX_EXECUTABLE_LINKER__SynthScript_Debug CMakeFiles/SynthScript.dir/src/main.cpp.o CMakeFiles/SynthScript.dir/src/Reader.cpp.o CMakeFiles/SynthScript.dir/src/Lexer.cpp.o CMakeFiles/SynthScript.dir/src/Error.cpp.o
+build SynthScript: CXX_EXECUTABLE_LINKER__SynthScript_Debug CMakeFiles/SynthScript.dir/src/main.cpp.o CMakeFiles/SynthScript.dir/src/Reader.cpp.o CMakeFiles/SynthScript.dir/src/Lexer.cpp.o CMakeFiles/SynthScript.dir/src/Error.cpp.o CMakeFiles/SynthScript.dir/src/Parser.cpp.o
   FLAGS = -g
   OBJECT_DIR = CMakeFiles/SynthScript.dir
   POST_BUILD = :

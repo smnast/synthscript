@@ -38,4 +38,6 @@ add_executable(SynthScript src/main.cpp
         include/AST/ProgramNode.h
         include/AST/VisitFunctionsMacro.h
         include/Types/Types.h
+        src/Parser.cpp
+        include/Parser.h
 )
