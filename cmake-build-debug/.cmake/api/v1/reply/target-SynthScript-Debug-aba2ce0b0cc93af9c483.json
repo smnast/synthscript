@@ -137,7 +137,8 @@
 				27,
 				28,
 				29,
-				31
+				31,
+				32
 			]
 		}
 	],
@@ -306,6 +307,11 @@
 		{
 			"backtrace" : 1,
 			"path" : "include/Parser.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "include/AST/Statement/Array/ArrayLiteralNode.h",
 			"sourceGroupIndex" : 1
 		}
 	],

@@ -36,4 +36,5 @@ add_executable(SynthScript src/main.cpp
         include/Types/Types.h
         src/Parser.cpp
         include/Parser.h
+        include/AST/Statement/Array/ArrayLiteralNode.h
 )
