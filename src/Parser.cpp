@@ -45,6 +45,7 @@ void Parser::sync() {
             case END_OF_FILE:
             case RBRACE:
             case RPAREN:
+                break;
             default:
                 nextToken();
                 continue;
