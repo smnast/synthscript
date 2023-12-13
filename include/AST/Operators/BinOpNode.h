@@ -5,16 +5,16 @@
 
 class BinOpNode : public ASTNode {
 public:
-    BinOpNode(std::string op, ASTNode *left, ASTNode *right, int line, int col) : ASTNode(line, col), op(std::move(op)), left(left), right(right) {}
+    BinOpNode(TokenType op, ASTNode *left, ASTNode *right, int line, int col) : ASTNode(line, col), op(op), left(left), right(right) {}
     ~BinOpNode() override {
         delete left;
         delete right;
     }
-    std::string getOp() { return op; }
+    TokenType getOp() { return op; }
     ASTNode *getLeftNode() { return left; }
     ASTNode *getRightNode() { return right; }
 private:
-    std::string op;
+    TokenType op;
     ASTNode *left;
     ASTNode *right;
 };

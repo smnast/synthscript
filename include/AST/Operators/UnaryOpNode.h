@@ -6,14 +6,14 @@
 
 class UnaryOpNode : public ASTNode {
 public:
-    UnaryOpNode(std::string op, ASTNode *operand, int line, int col) : ASTNode(line, col), op(std::move(op)), operand(operand) {}
+    UnaryOpNode(TokenType op, ASTNode *operand, int line, int col) : ASTNode(line, col), op(op), operand(operand) {}
     ~UnaryOpNode() override {
         delete operand;
     }
-    std::string getOp() { return op; }
+    TokenType getOp() { return op; }
     ASTNode *getOperand() { return operand; }
 private:
-    std::string op;
+    TokenType op;
     ASTNode *operand;
 };
 

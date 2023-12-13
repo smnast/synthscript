@@ -1,8 +1,9 @@
 #include <iostream>
 
+#include "Tokens.h"
 #include "Reader.h"
 #include "Lexer.h"
-#include "Tokens.h"
+#include "Parser.h"
 
 void run() {
     printf("program would run\n");
@@ -14,6 +15,8 @@ void buildAndRun(const std::string &path) {
 //    for (auto t : tokens) {
 //        printf("%s\trow:%d\tcol:%d\n", tokenNames[t.tokenType].c_str(), t.lineNumber, t.columnNumber);
 //    }
+
+    Parser::parseProgram(tokens);
 
     Error::printBuildStatus();
     if (Error::shouldQuit()) {
