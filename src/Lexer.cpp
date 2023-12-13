@@ -22,7 +22,7 @@ std::vector<Token> Lexer::parseTokens(std::string &file) {
                 if (tokenRegexExprs[i-1].first == UNDEFINED) {
                     Lexer::lexerError(match[i].str(), lineNumber, columnNumber);
                 }
-                else {
+                else if (tokenRegexExprs[i-1].first != ESCAPED_NEW_LINE) {
                     tokens.push_back(curToken);
                 }
 

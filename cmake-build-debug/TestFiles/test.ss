@@ -1,6 +1,3 @@
-
-funky @@@@ <---- error
-
 b <- 4
 c <- 5
 
@@ -32,4 +29,7 @@ function foo(a, b) {
 }
 
 array arr
-arr = [2, 3, 4, 5]
+arr <- \
+[2, 3, 4, 5]
+input(arr[1])
+output(arr[2])

@@ -20,7 +20,7 @@ typedef enum {
     IN_KEYWORD, RANGE_SYMBOL,
     INT_LITERAL, FLOAT_LITERAL, STRING_LITERAL, BOOL_LITERAL,
     INT_TYPE, FLOAT_TYPE, STRING_TYPE, BOOL_TYPE, VOID_TYPE, ARRAY_TYPE,
-    IDENTIFIER, UNDEFINED, NEW_LINE, END_OF_FILE,
+    IDENTIFIER, UNDEFINED, ESCAPED_NEW_LINE, NEW_LINE, END_OF_FILE,
 } TokenType;
 
 const std::vector<std::string> tokenNames = {
@@ -39,7 +39,7 @@ const std::vector<std::string> tokenNames = {
         "'in'", "'..'",
         "int literal", "float literal", "string literal", "bool literal",
         "'int'", "'float'", "'string'", "'bool'", "'void'", "'array'",
-        "identifier", "undefined token", "new line", "end of file",
+        "identifier", "undefined token", "escaped new line", "new line", "end of file",
 };
 
 const std::vector<std::pair<TokenType, std::string>> tokenRegexExprs = {
@@ -87,6 +87,7 @@ const std::vector<std::pair<TokenType, std::string>> tokenRegexExprs = {
         {VOID_TYPE,                   R"(\bvoid\b)"},
         {ARRAY_TYPE,                  R"(\barray\b)"},
         {IDENTIFIER,                  R"([a-zA-Z_]\w*)"},
+        {ESCAPED_NEW_LINE,            R"(\\ *\n)"},
         {NEW_LINE,                    R"(\n)"},
         {UNDEFINED,                   R"([^\ \n]+)"},
 };
