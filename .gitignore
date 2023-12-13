@@ -32,4 +32,4 @@
 *.app
 
 # Debug files
-/cmake-build-debug/Testing/Temporary/
+/cmake-build-debug/
