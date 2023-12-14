@@ -23,11 +23,11 @@ std::string Reader::cleanFile(const std::string &file) {
             commented = !multiline;
             multiline = !multiline;
             i++;
-            cleanedFile += "##";
+            cleanedFile += "  ";
             continue;
         } else if (!stringLiteral && file[i] == '#') {
             commented = true;
-            cleanedFile.push_back('#');
+            cleanedFile.push_back(' ');
         }
         if (file[i] == '\n' && !multiline) commented = false;
         if (!commented) {
