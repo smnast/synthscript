@@ -9,10 +9,11 @@
 class Symbol {
 public:
     Symbol() = default;
+    explicit Symbol(std::string name) : name(std::move(name)), value(nullptr) {}
     Symbol(std::string name, std::shared_ptr<Object> value) : name(std::move(name)), value(std::move(value)) {}
     std::string getName() { return name; }
     std::shared_ptr<Object> getValue() { return value; }
-    Type getType() { return value->getType(); }
+    Type getType() { return value == nullptr ? TYPE_UNDEF : value->getType(); }
 private:
     std::string name;
     std::shared_ptr<Object> value;

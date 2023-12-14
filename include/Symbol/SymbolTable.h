@@ -14,8 +14,6 @@ public:
     bool isLoop() const;
     bool isFunction() const;
     bool isGlobalScope() const;
-    void setReturnType(Type type);
-    Type getReturnType() const;
     SymbolTable *getGlobalScope() const;
 protected:
     void addChild(SymbolTable *symbolTable);
@@ -24,7 +22,6 @@ private:
     SymbolTable *enclosingScope, *globalScope;
     std::vector<SymbolTable*> childScope;
     bool loop = false, function = false;
-    Type functionReturnType = TYPE_UNDEF;
 };
 
 #endif //SYNTHSCRIPT_SYMBOLTABLE_H

@@ -8,6 +8,7 @@
 #include "Types/Types.h"
 #include "Visitor/Visitor.h"
 #include "Visitor/PrintVisitor.h"
+#include "Visitor/SemanticAnalysisVisitor.h"
 
 class ASTNode {
 public:
@@ -15,7 +16,8 @@ public:
     virtual ~ASTNode() = default;
     int getLineNumber() const { return line; }
     int getColumnNumber() const { return col; }
-    virtual void accept(class PrintVisitor *visitor, int arg) = 0;
+    virtual void accept(PrintVisitor *visitor, int arg) = 0;
+    virtual void analyze(SemanticAnalysisVisitor *visitor, class SymbolTable *table) = 0;
 private:
     int line, col;
 };

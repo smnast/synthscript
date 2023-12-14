@@ -18,8 +18,8 @@ void buildAndRun(const std::string &path) {
 //    }
 
     ProgramNode *program = Parser::parseProgram(tokens);
-    auto *visitor = new PrintVisitor();
-    program->accept(visitor, 0);
+    auto *visitor = new SemanticAnalysisVisitor();
+    program->analyze(visitor, nullptr);
 
     Error::printBuildStatus();
     if (Error::shouldQuit()) {

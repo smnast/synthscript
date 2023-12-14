@@ -44,4 +44,7 @@ add_executable(SynthScript src/main.cpp
         include/Symbol/Symbol.h
         include/Symbol/SymbolTable.h
         src/Symbol/SymbolTable.cpp
+        include/Visitor/SemanticAnalysisVisitor.h
+        src/Visitor/SemanticAnalysisVisitor.cpp
+        include/Object/FunctionObject.h
 )

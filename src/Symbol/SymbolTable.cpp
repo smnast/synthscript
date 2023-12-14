@@ -6,7 +6,6 @@ SymbolTable::SymbolTable(SymbolTable *enclosingScope, bool loop, bool function) 
     this->function = function;
     globalScope = enclosingScope == nullptr ? this : enclosingScope->getGlobalScope();
     if (enclosingScope != nullptr) {
-        this->functionReturnType = enclosingScope->getReturnType();
         enclosingScope->addChild(this);
     }
 }
@@ -39,15 +38,7 @@ bool SymbolTable::isFunction() const {
 }
 
 bool SymbolTable::isGlobalScope() const {
-    return enclosingScope == globalScope;
-}
-
-void SymbolTable::setReturnType(Type type) {
-    functionReturnType = type;
-}
-
-Type SymbolTable::getReturnType() const {
-    return functionReturnType;
+    return this == globalScope;
 }
 
 SymbolTable *SymbolTable::getGlobalScope() const {
