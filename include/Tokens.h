@@ -105,4 +105,12 @@ struct Token {
     Token(TokenType type, std::string val, int lineNumber, int columnNumber) : tokenType(type), value(std::move(val)), lineNumber(lineNumber), columnNumber(columnNumber) {}
 };
 
+static bool tokenIsType(TokenType type) {
+    return type == INT_TYPE || type == FLOAT_TYPE || type == BOOL_TYPE || type == STRING_TYPE || type == VOID_TYPE || type == ARRAY_TYPE;
+}
+
+static bool tokenIsLiteral(TokenType type) {
+    return type == INT_LITERAL || type == FLOAT_LITERAL || type == BOOL_LITERAL || type == STRING_LITERAL;
+}
+
 #endif //SYNTHSCRIPT_TOKENS_H
