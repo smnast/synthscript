@@ -40,4 +40,8 @@ add_executable(SynthScript src/main.cpp
         include/Visitor/Visitor.h
         include/Visitor/PrintVisitor.h
         src/Visitor/PrintVisitor.cpp
+        include/Object/Object.h
+        include/Symbol/Symbol.h
+        include/Symbol/SymbolTable.h
+        src/Symbol/SymbolTable.cpp
 )

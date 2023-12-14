@@ -31,3 +31,4 @@ static Type tokenToType(TokenType type) {
     }
 }
 
+#endif //SYNTHSCRIPT_TYPES_H
