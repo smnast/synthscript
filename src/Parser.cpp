@@ -60,7 +60,7 @@ void Parser::parserError(const std::string &expected, const Token &actual) {
     Error::posError("Expected " + expected + " but got " + tokenNames[actual.tokenType], actual.lineNumber, actual.columnNumber, false);
 }
 
-ASTNode *Parser::parseProgram(std::vector<Token> programTokens) {
+ProgramNode *Parser::parseProgram(std::vector<Token> programTokens) {
     tokens = std::move(programTokens);
     curIdx = 0;
 
@@ -83,7 +83,7 @@ ASTNode *Parser::parseProgram(std::vector<Token> programTokens) {
 
 ASTNode *Parser::parseStatement() {
     acceptNewlines();
-    ASTNode *node;
+    ASTNode *node = nullptr;
 
     if (check(FUNCTION_KEYWORD)) {
         node = parseFunctionDeclaration();
@@ -181,19 +181,13 @@ ASTNode *Parser::parseArrayLiteral() {
 
 ASTNode *Parser::parseArraySubscript() {
     ASTNode *identifier = parseIdentifier();
-    expect(LBRACKET);
-    while (!check(RBRACKET) && !check(END_OF_FILE)) {
-        if (Error::checkError()) return nullptr;
-
-        auto *index = parsePrimaryExpression();
-        if (index == nullptr) continue;
-        if (accept(COMMA)) continue;
-
+    while (accept(LBRACKET)) {
         int line = curToken().lineNumber, col = curToken().columnNumber;
+        auto *index = parsePrimaryExpression();
         identifier = new SubscriptOpNode(identifier, index, line, col);
+        expect(RBRACKET);
     }
 
-    expect(RBRACKET);
     return identifier;
 }
 

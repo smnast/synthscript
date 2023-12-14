@@ -12,6 +12,7 @@ public:
     }
     ASTNode *getIdentifier() { return identifier; }
     ASTNode *getValue() { return value; }
+    DECLARE_VISITOR_FUNCTIONS
 private:
     ASTNode *identifier;
     ASTNode *value;

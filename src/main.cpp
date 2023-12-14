@@ -4,6 +4,7 @@
 #include "Reader.h"
 #include "Lexer.h"
 #include "Parser.h"
+#include "Visitor/PrintVisitor.h"
 
 void run() {
     printf("program would run\n");
@@ -16,7 +17,9 @@ void buildAndRun(const std::string &path) {
 //        printf("%s\trow:%d\tcol:%d\n", tokenNames[t.tokenType].c_str(), t.lineNumber, t.columnNumber);
 //    }
 
-    Parser::parseProgram(tokens);
+    ProgramNode *program = Parser::parseProgram(tokens);
+    auto *visitor = new PrintVisitor();
+    program->accept(visitor, 0);
 
     Error::printBuildStatus();
     if (Error::shouldQuit()) {

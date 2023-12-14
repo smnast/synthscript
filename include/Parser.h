@@ -9,7 +9,7 @@
 
 class Parser {
 public:
-    static ASTNode *parseProgram(std::vector<Token> programTokens);
+    static ProgramNode *parseProgram(std::vector<Token> programTokens);
 private:
     static int curIdx;
     static std::vector<Token> tokens;

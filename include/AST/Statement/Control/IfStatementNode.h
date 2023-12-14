@@ -14,6 +14,7 @@ public:
     ASTNode *getCondition() { return condition; }
     ASTNode *getIfBody() { return ifBody; }
     ASTNode *getElseBody() { return elseBody; }
+    DECLARE_VISITOR_FUNCTIONS
 private:
     ASTNode *condition, *ifBody, *elseBody;
 };

@@ -12,6 +12,7 @@ public:
     }
     ASTNode *getCondition() { return condition; }
     ASTNode *getBody() { return body; }
+    DECLARE_VISITOR_FUNCTIONS
 private:
     ASTNode *condition, *body;
 };

@@ -13,6 +13,7 @@ public:
     }
     Type getType() { return type; }
     ASTNode *getOperand() { return operand; }
+    DECLARE_VISITOR_FUNCTIONS
 private:
     Type type;
     ASTNode *operand;

@@ -10,6 +10,7 @@ public:
     explicit IdentifierNode(std::string name, int line, int col) : ASTNode(line, col), name(std::move(name)) {}
     ~IdentifierNode() override = default;
     std::string getName() { return name; }
+    DECLARE_VISITOR_FUNCTIONS
 private:
     std::string name;
 };

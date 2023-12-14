@@ -37,4 +37,7 @@ add_executable(SynthScript src/main.cpp
         src/Parser.cpp
         include/Parser.h
         include/AST/Statement/Array/ArrayLiteralNode.h
+        include/Visitor/Visitor.h
+        include/Visitor/PrintVisitor.h
+        src/Visitor/PrintVisitor.cpp
 )

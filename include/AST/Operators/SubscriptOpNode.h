@@ -14,6 +14,7 @@ public:
     }
     ASTNode *getIdentifier() { return identifier; }
     ASTNode *getIndex() { return index; }
+    DECLARE_VISITOR_FUNCTIONS
 private:
     ASTNode *identifier;
     ASTNode *index;

@@ -15,6 +15,7 @@ public:
     std::string getIdentifier() const { return identifier; }
     std::vector<std::string> *getParameters() { return &parameters; }
     ASTNode *getBody() { return body; }
+    DECLARE_VISITOR_FUNCTIONS
 private:
     std::string identifier;
     std::vector<std::string> parameters;

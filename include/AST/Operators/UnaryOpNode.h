@@ -12,6 +12,7 @@ public:
     }
     TokenType getOp() { return op; }
     ASTNode *getOperand() { return operand; }
+    DECLARE_VISITOR_FUNCTIONS
 private:
     TokenType op;
     ASTNode *operand;

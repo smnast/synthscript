@@ -13,6 +13,7 @@ public:
     TokenType getOp() { return op; }
     ASTNode *getLeftNode() { return left; }
     ASTNode *getRightNode() { return right; }
+    DECLARE_VISITOR_FUNCTIONS
 private:
     TokenType op;
     ASTNode *left;

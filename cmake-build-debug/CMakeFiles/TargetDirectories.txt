@@ -1,3 +1,0 @@
-/home/simon/Git/SynthScript/cmake-build-debug/CMakeFiles/SynthScript.dir
-/home/simon/Git/SynthScript/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/simon/Git/SynthScript/cmake-build-debug/CMakeFiles/rebuild_cache.dir

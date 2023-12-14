@@ -9,6 +9,7 @@ public:
     ~LiteralNode() override = default;
     Type getType() { return type; }
     std::string getValue() { return value; }
+    DECLARE_VISITOR_FUNCTIONS
 private:
     Type type;
     std::string value;

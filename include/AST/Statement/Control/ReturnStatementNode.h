@@ -10,6 +10,7 @@ public:
         delete value;
     }
     ASTNode *getValue() { return value; }
+    DECLARE_VISITOR_FUNCTIONS
 private:
     ASTNode *value;
 };

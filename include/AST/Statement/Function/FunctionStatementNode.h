@@ -12,6 +12,7 @@ public:
     ~FunctionStatementNode() override = default;
     std::string getIdentifier() const { return identifier; }
     std::vector<ASTNode*> *getArguments() { return &arguments; }
+    DECLARE_VISITOR_FUNCTIONS
 private:
     std::string identifier;
     std::vector<ASTNode*> arguments;

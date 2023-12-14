@@ -17,6 +17,7 @@ public:
     ASTNode *getStart() { return start; }
     ASTNode *getEnd() { return end; }
     ASTNode *getBody() { return body; }
+    DECLARE_VISITOR_FUNCTIONS
 private:
     std::string identifier;
     ASTNode *start, *end, *body;
