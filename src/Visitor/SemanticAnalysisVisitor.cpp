@@ -77,7 +77,7 @@ void SemanticAnalysisVisitor::visit(ForStatementNode *node, SymbolTable* arg) {
     node->getStart()->analyze(this, arg);
     node->getEnd()->analyze(this, arg);
 
-    SymbolTable *forLoopScope = new SymbolTable(arg, true, arg->isFunction());
+    auto *forLoopScope = new SymbolTable(arg, true, arg->isFunction());
     forLoopScope->insert(Symbol(identifier));
     node->getBody()->analyze(this, forLoopScope);
 }
@@ -92,7 +92,7 @@ void SemanticAnalysisVisitor::visit(IfStatementNode *node, SymbolTable* arg) {
 }
 
 void SemanticAnalysisVisitor::visit(WhileStatementNode *node, SymbolTable* arg) {
-    SymbolTable *whileLoopScope = new SymbolTable(arg, true, arg->isFunction());
+    auto *whileLoopScope = new SymbolTable(arg, true, arg->isFunction());
     node->getCondition()->analyze(this, whileLoopScope);
     node->getBody()->analyze(this, whileLoopScope);
 }
@@ -106,7 +106,7 @@ void SemanticAnalysisVisitor::visit(FunctionDeclarationNode *node, SymbolTable* 
     Symbol functionSymbol(node->getIdentifier(), functionObject);
     arg->insert(functionSymbol);
 
-    SymbolTable *functionScope = new SymbolTable(arg, arg->isLoop(), true);
+    auto *functionScope = new SymbolTable(arg, arg->isLoop(), true);
     for (auto &param : *node->getParameters()) {
         functionScope->insert(Symbol(param));
     }
@@ -135,7 +135,7 @@ void SemanticAnalysisVisitor::visit(FunctionStatementNode *node, SymbolTable* ar
 }
 
 void SemanticAnalysisVisitor::visit(CompoundStatementNode *node, SymbolTable* arg) {
-    SymbolTable *scope = new SymbolTable(arg, arg->isLoop(), arg->isFunction());
+    auto *scope = new SymbolTable(arg, arg->isLoop(), arg->isFunction());
     for (auto &statement : *node->getStatements()) {
         statement->analyze(this, scope);
     }
