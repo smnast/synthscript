@@ -213,7 +213,7 @@ ASTNode *Parser::parseIfStatement() {
     expect(RPAREN);
     auto *body = parseCompoundStatement();
     if (body == nullptr) return nullptr;
-    ASTNode *elseBody;
+    ASTNode *elseBody = nullptr;
     if (accept(ELSE_KEYWORD)) {
         elseBody = parseCompoundStatement();
         if (elseBody == nullptr) return nullptr;
