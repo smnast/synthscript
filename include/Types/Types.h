@@ -5,11 +5,11 @@
 #include "Tokens.h"
 
 enum Type {
-    TYPE_INT, TYPE_FLOAT, TYPE_BOOL, TYPE_STRING, TYPE_VOID, TYPE_ARRAY, TYPE_UNDEF
+    TYPE_INT, TYPE_FLOAT, TYPE_BOOL, TYPE_STRING, TYPE_VOID, TYPE_ARRAY, TYPE_FUNCTION, TYPE_UNDEF
 };
 
 static std::string typeStrings[] = {
-        "int", "float", "bool", "string", "void", "array", "<error>"
+        "int", "float", "bool", "string", "void", "array", "function", "<error>"
 };
 
 static Type tokenToType(TokenType type) {
