@@ -99,7 +99,7 @@ ASTNode *Parser::parseStatement() {
         node = parseContinueStatement();
     } else if (check(RETURN_KEYWORD)) {
         node = parseReturnStatement();
-    } else if (!check(RBRACE)) {
+    } else if (!check(END_OF_FILE) && !check(RBRACE)) {
         node = parsePrimaryExpression();
     }
 
