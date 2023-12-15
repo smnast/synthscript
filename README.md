@@ -5,7 +5,7 @@ It interfaces with the user's computer through many built-in functions like `out
 ## Installation
 Download the latest release from [releases](https://github.com/MrPersonDev/SynthScript/releases/)\
 Make the file executable via `chmod +x sscript`\
-Move the executable file to your favourite bin directory `mv sscript ~/bin/sscript`\
+Move the executable file to your favourite bin directory `mv sscript ~/bin/sscript`
 
 ## Usage
 Run from terminal `sscript <file_path>`
