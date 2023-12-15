@@ -113,6 +113,10 @@ void SemanticAnalysisVisitor::visit(FunctionDeclarationNode *node, SymbolTable* 
         semanticError("Function declaration outside of global scope", node->getLineNumber(), node->getColumnNumber());
     }
 
+    if (arg->contains(node->getIdentifier(), false)) {
+        semanticError("Identifier '" + node->getIdentifier() + "' already declared", node->getLineNumber(), node->getColumnNumber());
+    }
+
     std::shared_ptr<Object> functionObject = std::make_shared<FunctionObject>(node->getBody(), *node->getParameters());
     Symbol functionSymbol(node->getIdentifier(), functionObject);
     arg->insert(functionSymbol);
