@@ -63,4 +63,6 @@ add_executable(SynthScript src/main.cpp
         src/Object/BoolObject.cpp
         include/Object/VoidObject.h
         src/Object/VoidObject.cpp
+        include/BuiltinFunctions.h
+        src/BuiltinFunctions.cpp
 )

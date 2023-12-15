@@ -4,6 +4,8 @@
 
 void SemanticAnalysisVisitor::visit(ProgramNode *node, SymbolTable* arg) {
     auto *globalTable = new SymbolTable(nullptr, false, false);
+    BuiltinFunctions::registerBuiltinFunctions(globalTable);
+
     for (auto &statement : *node->getStatements()) {
         statement->analyze(this, globalTable);
     }
@@ -131,7 +133,6 @@ void SemanticAnalysisVisitor::visit(FunctionDeclarationNode *node, SymbolTable* 
 
 void SemanticAnalysisVisitor::visit(FunctionStatementNode *node, SymbolTable* arg) {
     std::string name = node->getIdentifier();
-    if (name == "output") return;
 
     if (!arg->contains(name, false)) {
         semanticError("Undeclared identifier '" + name + "'", node->getLineNumber(), node->getColumnNumber());

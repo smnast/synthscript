@@ -2,6 +2,7 @@
 #define SYNTHSCRIPT_VISITOR_H
 
 #include "AST/NodeForwardClasses.h"
+#include "BuiltinFunctions.h"
 
 template <typename T, typename A>
 class Visitor {

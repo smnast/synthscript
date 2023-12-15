@@ -6,7 +6,7 @@
 
 class FunctionObject : public Object {
 public:
-    FunctionObject(ASTNode *body, std::vector<std::string> parameters) : body(body), parameters(std::move(parameters)) {}
+    FunctionObject(ASTNode *body, std::vector<std::string> parameters, bool builtin=false) : body(body), parameters(std::move(parameters)), builtin(builtin) {}
     Type getType() override { return TYPE_FUNCTION; }
     std::shared_ptr<Object> add(std::shared_ptr<Object> other) override;
     std::shared_ptr<Object> sub(std::shared_ptr<Object> other) override;
@@ -33,9 +33,11 @@ public:
     std::shared_ptr<Object> duplicate() override;
     ASTNode *getBody() { return body; }
     std::vector<std::string> *getParameters() { return &parameters; }
+    bool isBuiltin() const { return builtin; }
 private:
     ASTNode *body;
     std::vector<std::string> parameters;
+    bool builtin;
 };
 
 #endif //SYNTHSCRIPT_FUNCTIONOBJECT_H

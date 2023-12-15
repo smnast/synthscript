@@ -11,6 +11,7 @@
 
 std::shared_ptr<Object> InterpreterVisitor::visit(ProgramNode *node, SymbolTable* arg) {
     auto *globalTable = new SymbolTable(nullptr, false, false);
+    BuiltinFunctions::registerBuiltinFunctions(globalTable);
     for (auto &statement : *node->getStatements()) {
         statement->evaluate(this, globalTable);
     }
@@ -222,33 +223,19 @@ std::shared_ptr<Object> InterpreterVisitor::visit(FunctionDeclarationNode *node,
     return nullptr;
 }
 
-void InterpreterVisitor::handleOutput(FunctionStatementNode *node, SymbolTable *arg) {
-    if (node->getArguments()->size() != 1) {
-        Error::runtimeError("Invalid number of arguments to output (expected 1, got " + std::to_string(node->getArguments()->size()) + ")",
-                            node->getLineNumber(), node->getColumnNumber());
-    }
-
-    std::shared_ptr<Object> result = node->getArguments()->at(0)->evaluate(this, arg);
-    if (result->getType() == TYPE_INT) {
-        std::cout << std::static_pointer_cast<IntObject>(result)->getValue() << std::endl;
-    } else if (result->getType() == TYPE_FLOAT) {
-        std::cout << std::static_pointer_cast<FloatObject>(result)->getValue() << std::endl;
-    } else if (result->getType() == TYPE_BOOL) {
-        std::cout << std::static_pointer_cast<BoolObject>(result)->getValue() << std::endl;
-    } else if (result->getType() == TYPE_STRING) {
-        std::cout << std::static_pointer_cast<StringObject>(result)->getValue() << std::endl;
-    }
-}
-
 std::shared_ptr<Object> InterpreterVisitor::visit(FunctionStatementNode *node, SymbolTable* arg) {
     std::string name = node->getIdentifier();
-    if (name == "output") {
-        handleOutput(node, arg);
-        return nullptr;
-    }
-
     Symbol *functionSymbol = arg->lookup(name, false);
     std::shared_ptr<FunctionObject> functionObject = std::static_pointer_cast<FunctionObject>(functionSymbol->getValue());
+
+    if (functionObject->isBuiltin()) {
+        std::vector<std::shared_ptr<Object>> arguments;
+        for (auto &argument : *node->getArguments()) {
+            arguments.push_back(argument->evaluate(this, arg));
+        }
+        return BuiltinFunctions::handleBuiltinFunction(name, &arguments, node->getLineNumber(), node->getColumnNumber());
+    }
+
     auto *functionScope = new SymbolTable(arg->getGlobalScope(), false, true);
     for (int i = 0; i < (int)node->getArguments()->size(); i++) {
         std::string argName = functionObject->getParameters()->at(i);
