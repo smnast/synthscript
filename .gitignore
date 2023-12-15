@@ -33,3 +33,7 @@
 
 # Debug files
 /cmake-build-debug/
+
+# CLion folders
+/.idea/
+
