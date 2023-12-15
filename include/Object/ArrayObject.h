@@ -33,6 +33,7 @@ public:
     std::shared_ptr<Object> subscript(std::shared_ptr<Object> other) override;
     std::shared_ptr<Object> subscriptUpdate(const std::shared_ptr<Object> &index, const std::shared_ptr<Object> &val);
     std::shared_ptr<Object> duplicate() override;
+    int getLen() const { return (int)value.size(); };
     std::vector<std::shared_ptr<Object>> *getValue() { return &value; }
 private:
     std::vector<std::shared_ptr<Object>> value;

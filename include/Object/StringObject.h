@@ -30,6 +30,7 @@ public:
     std::shared_ptr<Object> cast(Type type) override;
     std::shared_ptr<Object> subscript(std::shared_ptr<Object> other) override;
     std::shared_ptr<Object> duplicate() override;
+    int getLen() const { return (int)value.size(); };
     std::string getValue() { return value; }
 private:
     std::string value;
