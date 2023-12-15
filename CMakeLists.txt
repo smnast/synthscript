@@ -47,4 +47,20 @@ add_executable(SynthScript src/main.cpp
         include/Visitor/SemanticAnalysisVisitor.h
         src/Visitor/SemanticAnalysisVisitor.cpp
         include/Object/FunctionObject.h
+        include/Visitor/InterpreterVisitor.h
+        src/Visitor/InterpreterVisitor.cpp
+        src/Object/FunctionObject.cpp
+        include/Operators.h
+        include/Object/IntObject.h
+        src/Object/IntObject.cpp
+        include/Object/FloatObject.h
+        include/Object/BoolObject.h
+        include/Object/StringObject.h
+        src/Object/FloatObject.cpp
+        src/Object/StringObject.cpp
+        include/Object/ArrayObject.h
+        src/Object/ArrayObject.cpp
+        src/Object/BoolObject.cpp
+        include/Object/VoidObject.h
+        src/Object/VoidObject.cpp
 )

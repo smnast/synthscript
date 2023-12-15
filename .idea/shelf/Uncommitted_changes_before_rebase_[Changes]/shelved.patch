@@ -1,0 +1,370 @@
+Index: src/Parser.cpp
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>#include \"Parser.h\"\n\nint Parser::curIdx = 0;\nstd::vector<Token> Parser::tokens = std::vector<Token>();\n\nvoid Parser::nextToken() {\n    curIdx++;\n}\n\nToken Parser::curToken() {\n    return tokens[curIdx];\n}\n\nbool Parser::peekToken(TokenType type, int cnt) {\n    if (curIdx + cnt < tokens.size()) {\n        return tokens[curIdx + cnt].tokenType == type;\n    }\n    return tokens.back().tokenType == type;\n}\n\nbool Parser::check(TokenType type) {\n    return type == curToken().tokenType;\n}\n\nbool Parser::accept(TokenType type) {\n    if (check(type)) {\n        nextToken();\n        return true;\n    }\n\n    return false;\n}\n\nvoid Parser::expect(TokenType type) {\n    if (!accept(type)) {\n        parserError(\"token \" + tokenNames[type], curToken());\n    }\n}\n\nvoid Parser::sync() {\n    while (true) {\n        switch (curToken().tokenType) {\n            case IF_KEYWORD:\n            case FOR_KEYWORD:\n            case END_OF_FILE:\n            case RBRACE:\n            case RPAREN:\n                return;\n            default:\n                nextToken();\n                continue;\n        }\n    }\n}\n\nvoid Parser::parserError(const std::string &expected, const Token &actual) {\n    Error::posError(\"Expected \" + expected + \" but got \" + tokenNames[actual.tokenType], actual.lineNumber, actual.columnNumber);\n}\n\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Parser.cpp b/src/Parser.cpp
+--- a/src/Parser.cpp	(revision dc59b287af5686c1759da47100fd5c06d2426c56)
++++ b/src/Parser.cpp	(date 1702444255311)
+@@ -37,6 +37,10 @@
+     }
+ }
+ 
++void Parser::acceptNewlines() {
++    while (accept(NEW_LINE));
++}
++
+ void Parser::sync() {
+     while (true) {
+         switch (curToken().tokenType) {
+@@ -57,3 +61,223 @@
+     Error::posError("Expected " + expected + " but got " + tokenNames[actual.tokenType], actual.lineNumber, actual.columnNumber);
+ }
+ 
++ASTNode *Parser::parseProgram(std::vector<Token> programTokens) {
++    tokens = std::move(programTokens);
++    curIdx = 0;
++
++    std::vector<ASTNode*> statements;
++    while (!check(END_OF_FILE)) {
++        if (Error::checkError()) {
++            Error::handleError();
++            sync();
++            continue;
++        }
++        auto *statementNode = parseStatement();
++        if (statementNode == nullptr) continue;
++        statements.push_back(statementNode);
++    }
++
++    return new ProgramNode(statements, 0, 0);
++}
++
++ASTNode *Parser::parseStatement() {
++    acceptNewlines();
++    ASTNode *node;
++
++    if (check(FUNCTION_KEYWORD)) {
++        node = parseFunctionDeclaration();
++    } else if (check(IF_KEYWORD)) {
++        node = parseIfStatement();
++    } else if (check(WHILE_KEYWORD)) {
++        node = parseWhileStatement();
++    } else if (check(FOR_KEYWORD)) {
++        node = parseForStatement();
++    } else if (check(BREAK_KEYWORD)) {
++        node = parseBreakStatement();
++    } else if (check(CONTINUE_KEYWORD)) {
++        node = parseContinueStatement();
++    } else if (check(RETURN_KEYWORD)) {
++        node = parseReturnStatement();
++    } else {
++        node = parsePrimaryExpression();
++    }
++
++    expect(NEW_LINE);
++    return node;
++}
++
++ASTNode *Parser::parseCompoundStatement() {
++    int line = curToken().lineNumber, col = curToken().columnNumber;
++    expect(LBRACE);
++    std::vector<ASTNode*> statements;
++    while (!check(RBRACE) && !check(END_OF_FILE)) {
++        if (Error::checkError()) {
++            Error::handleError();
++            sync();
++            continue;
++        }
++        auto *statementNode = parseStatement();
++        if (statementNode == nullptr) continue;
++        statements.push_back(statementNode);
++    }
++    expect(RBRACE);
++    return new CompoundStatementNode(statements, line, col);
++}
++
++ASTNode *Parser::parseFunctionDeclaration() {
++    int line = curToken().lineNumber, col = curToken().columnNumber;
++    expect(FUNCTION_KEYWORD);
++    std::string identifier = curToken().value;
++    expect(IDENTIFIER);
++    expect(LPAREN);
++    std::vector<std::string> parameters;
++    while (!check(RPAREN) && !check(END_OF_FILE)) {
++        if (Error::checkError()) return nullptr;
++        std::string parameter = curToken().value;
++        expect(IDENTIFIER);
++        parameters.push_back(parameter);
++        if (accept(COMMA)) continue;
++    }
++    expect(RPAREN);
++    ASTNode *body = parseCompoundStatement();
++
++    if (body == nullptr) return nullptr;
++    return new FunctionDeclarationNode(identifier, parameters, body, line, col);
++}
++
++ASTNode *Parser::parseFunctionStatement() {
++    int line = curToken().lineNumber, col = curToken().columnNumber;
++    std::string identifier = curToken().value;
++    expect(IDENTIFIER);
++    expect(LPAREN);
++    std::vector<ASTNode*> arguments;
++    while (!check(RPAREN) && !check(END_OF_FILE)) {
++        if (Error::checkError()) return nullptr;
++        auto *argument = parsePrimaryExpression();
++        if (argument == nullptr) continue;
++        arguments.push_back(argument);
++        if (accept(COMMA)) continue;
++    }
++    expect(RPAREN);
++    return new FunctionStatementNode(identifier, arguments, line, col);
++}
++
++ASTNode *Parser::parseArrayLiteral() {
++    int line = curToken().lineNumber, col = curToken().columnNumber;
++    expect(LBRACKET);
++    std::vector<ASTNode*> values;
++    while (!check(RBRACKET) && !check(END_OF_FILE)) {
++        if (Error::checkError()) return nullptr;
++        auto *value = parsePrimaryExpression();
++        if (value == nullptr) continue;
++        values.push_back(value);
++        if (accept(COMMA)) continue;
++    }
++    expect(RBRACKET);
++    return new ArrayLiteralNode(values, line, col);
++}
++
++ASTNode *Parser::parseArraySubscript() {
++    int line = curToken().lineNumber, col = curToken().columnNumber;
++    std::string identifier = curToken().value;
++    expect(IDENTIFIER);
++    expect(LBRACKET);
++    while (!check(RBRACKET) && !check(END_OF_FILE)) {
++        if (Error::checkError()) return nullptr;
++        auto *index = parsePrimaryExpression();
++        if (index == nullptr) continue;
++        indices.push_back(index);
++        if (accept(COMMA)) continue;
++    }
++
++    expect(RBRACKET);
++}
++
++ASTNode *Parser::parseCast() {
++    return nullptr;
++}
++
++ASTNode *Parser::parseIfStatement() {
++    return nullptr;
++}
++
++ASTNode *Parser::parseWhileStatement() {
++    return nullptr;
++}
++
++ASTNode *Parser::parseForStatement() {
++    return nullptr;
++}
++
++ASTNode *Parser::parseBreakStatement() {
++    return nullptr;
++}
++
++ASTNode *Parser::parseContinueStatement() {
++    return nullptr;
++}
++
++ASTNode *Parser::parseReturnStatement() {
++    return nullptr;
++}
++
++ASTNode *Parser::parseIdentifier() {
++    return nullptr;
++}
++
++ASTNode *Parser::parseLiteral() {
++    return nullptr;
++}
++
++ASTNode *Parser::parseAssignment() {
++    return nullptr;
++}
++
++ASTNode *Parser::parsePrimaryExpression() {
++    return nullptr;
++}
++
++ASTNode *Parser::parseLogicalOrExpression() {
++    return nullptr;
++}
++
++ASTNode *Parser::parseLogicalAndExpression() {
++    return nullptr;
++}
++
++ASTNode *Parser::parseBitwiseOrExpression() {
++    return nullptr;
++}
++
++ASTNode *Parser::parseBitwiseXorExpression() {
++    return nullptr;
++}
++
++ASTNode *Parser::parseBitwiseAndExpression() {
++    return nullptr;
++}
++
++ASTNode *Parser::parseEqualityExpression() {
++    return nullptr;
++}
++
++ASTNode *Parser::parseRelationalExpression() {
++    return nullptr;
++}
++
++ASTNode *Parser::parseAdditiveExpression() {
++    return nullptr;
++}
++
++ASTNode *Parser::parseMultiplicativeExpression() {
++    return nullptr;
++}
++
++ASTNode *Parser::parseUnaryExpression() {
++    return nullptr;
++}
++
++ASTNode *Parser::parseFactor() {
++    return nullptr;
++}
++
+Index: include/Parser.h
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>#ifndef SYNTHSCRIPT_PARSER_H\n#define SYNTHSCRIPT_PARSER_H\n\n#include <vector>\n#include \"Error.h\"\n#include \"Tokens.h\"\n\nclass Parser {\n    static int curIdx;\n    static std::vector<Token> tokens;\n\n    static void nextToken();\n    static Token curToken();\n    static bool peekToken(TokenType type, int cnt);\n    static bool check(TokenType type);\n    static bool accept(TokenType type);\n    static void expect(TokenType type);\n    static void sync();\n    static void parserError(const std::string &expected, const Token &actual);\n};\n\n#endif //SYNTHSCRIPT_PARSER_H\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/include/Parser.h b/include/Parser.h
+--- a/include/Parser.h	(revision 32c84ab4fd98a97ffdbc01671e02b29b59b70f06)
++++ b/include/Parser.h	(date 1702442697419)
+@@ -2,21 +2,38 @@
+ #define SYNTHSCRIPT_PARSER_H
+ 
+ #include <vector>
++#include "AST/ASTNode.h"
++#include "AST/ASTNodes.h"
+ #include "Error.h"
+ #include "Tokens.h"
+ 
+ class Parser {
++public:
++    static ASTNode *parseProgram(std::vector<Token> programTokens);
++private:
+     static int curIdx;
+     static std::vector<Token> tokens;
+-
+     static void nextToken();
+     static Token curToken();
+     static bool peekToken(TokenType type, int cnt);
+     static bool check(TokenType type);
+     static bool accept(TokenType type);
+     static void expect(TokenType type);
++    static void acceptNewlines();
+     static void sync();
+     static void parserError(const std::string &expected, const Token &actual);
++    static ASTNode *parseStatement(), *parseCompoundStatement();
++    static ASTNode *parseFunctionDeclaration(), *parseFunctionStatement();
++    static ASTNode *parseArrayLiteral(), *parseArraySubscript();
++    static ASTNode *parseCast();
++    static ASTNode *parseIfStatement(), *parseWhileStatement(), *parseForStatement();
++    static ASTNode *parseBreakStatement(), *parseContinueStatement(), *parseReturnStatement();
++    static ASTNode *parseIdentifier(), *parseLiteral();
++    static ASTNode *parseAssignment();
++    static ASTNode *parsePrimaryExpression(), *parseLogicalOrExpression(), *parseLogicalAndExpression(),
++            *parseBitwiseOrExpression(), *parseBitwiseXorExpression(), *parseBitwiseAndExpression(),
++            *parseEqualityExpression(), *parseRelationalExpression(), *parseAdditiveExpression(),
++            *parseMultiplicativeExpression(), *parseUnaryExpression(), *parseFactor();
+ };
+ 
+ #endif //SYNTHSCRIPT_PARSER_H
+Index: include/Error.h
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>#ifndef SYNTHSCRIPT_ERROR_H\n#define SYNTHSCRIPT_ERROR_H\n\n#include <string>\n#include \"Reader.h\"\n\nclass Error {\npublic:\n    static void error(const std::string& message);\n    static void posError(const std::string& message, int line, int col);\n    static void printBuildStatus();\n    static int getErrorCount();\n    static bool shouldQuit();\nprivate:\n    static int errorCount;\n};\n\n#endif //SYNTHSCRIPT_ERROR_H\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/include/Error.h b/include/Error.h
+--- a/include/Error.h	(revision 32c84ab4fd98a97ffdbc01671e02b29b59b70f06)
++++ b/include/Error.h	(date 1702442371124)
+@@ -6,13 +6,16 @@
+ 
+ class Error {
+ public:
+-    static void error(const std::string& message);
+-    static void posError(const std::string& message, int line, int col);
++    static void error(const std::string& message, bool forcePrint=true);
++    static void posError(const std::string& message, int line, int col, bool forcePrint=true);
++    static bool checkError();
++    static void handleError();
+     static void printBuildStatus();
+     static int getErrorCount();
+     static bool shouldQuit();
+ private:
+     static int errorCount;
++    static bool errored;
+ };
+ 
+ #endif //SYNTHSCRIPT_ERROR_H
+Index: src/Error.cpp
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>#include \"Error.h\"\n\nint Error::errorCount = 0;\n\nvoid Error::error(const std::string &message) {\n    std::printf(\"Error: %s\\n\", message.c_str());\n    errorCount++;\n}\n\nvoid Error::posError(const std::string &message, int line, int col) {\n    error(message);\n    Reader::showPosition(line, col);\n}\n\nvoid Error::printBuildStatus() {\n    std::string status = (errorCount > 0 ? \"failed\" : \"succeeded\");\n    std::printf(\"=== Build %s with %d errors ===\\n\", status.c_str(), getErrorCount());\n}\n\nint Error::getErrorCount() {\n    return errorCount;\n}\n\nbool Error::shouldQuit() {\n    return errorCount > 0;\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Error.cpp b/src/Error.cpp
+--- a/src/Error.cpp	(revision 32c84ab4fd98a97ffdbc01671e02b29b59b70f06)
++++ b/src/Error.cpp	(date 1702442370981)
+@@ -2,16 +2,29 @@
+ 
+ int Error::errorCount = 0;
+ 
+-void Error::error(const std::string &message) {
+-    std::printf("Error: %s\n", message.c_str());
+-    errorCount++;
+-}
++void Error::error(const std::string &message, bool forcePrint) {
++    if (!errored || forcePrint) {
++        std::printf("Error: %s\n", message.c_str());
++        errorCount++;
++    }
+ 
+-void Error::posError(const std::string &message, int line, int col) {
+-    error(message);
++    errored = true;
++}
++
++void Error::posError(const std::string &message, int line, int col, bool forcePrint) {
++    if (errored && !forcePrint) return;
++    error(message, forcePrint);
+     Reader::showPosition(line, col);
+ }
+ 
++bool Error::checkError() {
++    return errored;
++}
++
++void Error::handleError() {
++    errored = false;
++}
++
+ void Error::printBuildStatus() {
+     std::string status = (errorCount > 0 ? "failed" : "succeeded");
+     std::printf("=== Build %s with %d errors ===\n", status.c_str(), getErrorCount());

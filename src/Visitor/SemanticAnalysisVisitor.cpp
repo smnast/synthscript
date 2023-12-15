@@ -34,10 +34,19 @@ void SemanticAnalysisVisitor::visit(ArrayLiteralNode *node, SymbolTable* arg) {
     }
 }
 
+std::string SemanticAnalysisVisitor::getArrayIdentifier(SubscriptOpNode *node, SymbolTable* arg) {
+    auto subscriptOpNode = dynamic_cast<SubscriptOpNode*>(node->getIdentifier());
+    if (subscriptOpNode != nullptr) {
+        return getArrayIdentifier(subscriptOpNode, arg);
+    } else {
+        return dynamic_cast<IdentifierNode*>(node->getIdentifier())->getName();
+    }
+}
+
 void SemanticAnalysisVisitor::visit(AssignmentNode *node, SymbolTable* arg) {
     if (dynamic_cast<SubscriptOpNode*>(node->getIdentifier()) != nullptr) {
-        ASTNode *identifier = dynamic_cast<SubscriptOpNode*>(node->getIdentifier())->getIdentifier();
-        std::string name = dynamic_cast<IdentifierNode*>(identifier)->getName();
+        auto *subscriptOpNode = dynamic_cast<SubscriptOpNode*>(node->getIdentifier());
+        std::string name = getArrayIdentifier(subscriptOpNode, arg);
         if (!arg->contains(name, false)) {
             semanticError("Undeclared identifier '" + name + "'", node->getLineNumber(), node->getColumnNumber());
         }
@@ -69,7 +78,9 @@ void SemanticAnalysisVisitor::visit(ReturnStatementNode *node, SymbolTable* arg)
     if (!arg->isFunction()) {
         semanticError("Return statement outside of function", node->getLineNumber(), node->getColumnNumber());
     }
-    node->getValue()->analyze(this, arg);
+    if (node->getValue() != nullptr) {
+        node->getValue()->analyze(this, arg);
+    }
 }
 
 void SemanticAnalysisVisitor::visit(ForStatementNode *node, SymbolTable* arg) {
@@ -116,6 +127,8 @@ void SemanticAnalysisVisitor::visit(FunctionDeclarationNode *node, SymbolTable* 
 
 void SemanticAnalysisVisitor::visit(FunctionStatementNode *node, SymbolTable* arg) {
     std::string name = node->getIdentifier();
+    if (name == "output") return;
+
     if (!arg->contains(name, false)) {
         semanticError("Undeclared identifier '" + name + "'", node->getLineNumber(), node->getColumnNumber());
     }

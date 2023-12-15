@@ -1,13 +1,13 @@
-#ifndef SYNTHSCRIPT_FUNCTIONOBJECT_H
-#define SYNTHSCRIPT_FUNCTIONOBJECT_H
+#ifndef SYNTHSCRIPT_VOIDOBJECT_H
+#define SYNTHSCRIPT_VOIDOBJECT_H
 
 #include "Object.h"
-#include "AST/ASTNode.h"
 
-class FunctionObject : public Object {
+class VoidObject : public Object {
+
 public:
-    FunctionObject(ASTNode *body, std::vector<std::string> parameters) : body(body), parameters(std::move(parameters)) {}
-    Type getType() override { return TYPE_FUNCTION; }
+    VoidObject() = default;
+    Type getType() override { return TYPE_VOID; }
     std::shared_ptr<Object> add(std::shared_ptr<Object> other) override;
     std::shared_ptr<Object> sub(std::shared_ptr<Object> other) override;
     std::shared_ptr<Object> positive() override;
@@ -31,11 +31,6 @@ public:
     std::shared_ptr<Object> cast(Type type) override;
     std::shared_ptr<Object> subscript(std::shared_ptr<Object> other) override;
     std::shared_ptr<Object> duplicate() override;
-    ASTNode *getBody() { return body; }
-    std::vector<std::string> *getParameters() { return &parameters; }
-private:
-    ASTNode *body;
-    std::vector<std::string> parameters;
 };
 
-#endif //SYNTHSCRIPT_FUNCTIONOBJECT_H
+#endif //SYNTHSCRIPT_VOIDOBJECT_H

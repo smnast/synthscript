@@ -6,8 +6,9 @@
 #include "Parser.h"
 #include "Visitor/PrintVisitor.h"
 
-void run() {
-    printf("program would run\n");
+void run(ProgramNode *program) {
+    auto *interpreterVisitor = new InterpreterVisitor();
+    program->evaluate(interpreterVisitor, nullptr);
 }
 
 void buildAndRun(const std::string &path) {
@@ -18,14 +19,16 @@ void buildAndRun(const std::string &path) {
 //    }
 
     ProgramNode *program = Parser::parseProgram(tokens);
-    auto *visitor = new SemanticAnalysisVisitor();
-    program->analyze(visitor, nullptr);
+//    auto *printVisitor = new PrintVisitor();
+//    program->accept(printVisitor, 0);
+    auto *semanticAnalysisVisitor = new SemanticAnalysisVisitor();
+    program->analyze(semanticAnalysisVisitor, nullptr);
 
     Error::printBuildStatus();
     if (Error::shouldQuit()) {
         exit(1);
     } else {
-        run();
+        run(program);
     }
 }
 

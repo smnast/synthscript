@@ -18,6 +18,12 @@ void Error::posError(const std::string &message, int line, int col, bool forcePr
     Reader::showPosition(line, col);
 }
 
+void Error::runtimeError(const std::string &message, int line, int col) {
+    std::printf("Runtime Error: %s\n", message.c_str());
+    Reader::showPosition(line, col);
+    exit(1);
+}
+
 bool Error::checkError() {
     return errored;
 }

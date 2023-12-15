@@ -24,6 +24,7 @@ public:
     void visit(CompoundStatementNode *node, SymbolTable* arg) override;
     void visit(IdentifierNode *node, SymbolTable* arg) override;
     void visit(LiteralNode *node, SymbolTable* arg) override;
+    static std::string getArrayIdentifier(SubscriptOpNode *node, SymbolTable* arg);
     static void semanticError(const std::string &message, int line, int column);
 };
 

@@ -1,13 +1,12 @@
-#ifndef SYNTHSCRIPT_FUNCTIONOBJECT_H
-#define SYNTHSCRIPT_FUNCTIONOBJECT_H
+#ifndef SYNTHSCRIPT_STRINGOBJECT_H
+#define SYNTHSCRIPT_STRINGOBJECT_H
 
 #include "Object.h"
-#include "AST/ASTNode.h"
 
-class FunctionObject : public Object {
+class StringObject : public Object {
 public:
-    FunctionObject(ASTNode *body, std::vector<std::string> parameters) : body(body), parameters(std::move(parameters)) {}
-    Type getType() override { return TYPE_FUNCTION; }
+    explicit StringObject(std::string value) : value(value) {}
+    Type getType() override { return TYPE_STRING; }
     std::shared_ptr<Object> add(std::shared_ptr<Object> other) override;
     std::shared_ptr<Object> sub(std::shared_ptr<Object> other) override;
     std::shared_ptr<Object> positive() override;
@@ -31,11 +30,9 @@ public:
     std::shared_ptr<Object> cast(Type type) override;
     std::shared_ptr<Object> subscript(std::shared_ptr<Object> other) override;
     std::shared_ptr<Object> duplicate() override;
-    ASTNode *getBody() { return body; }
-    std::vector<std::string> *getParameters() { return &parameters; }
+    std::string getValue() { return value; }
 private:
-    ASTNode *body;
-    std::vector<std::string> parameters;
+    std::string value;
 };
 
-#endif //SYNTHSCRIPT_FUNCTIONOBJECT_H
+#endif //SYNTHSCRIPT_STRINGOBJECT_H

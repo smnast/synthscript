@@ -1,13 +1,14 @@
-#ifndef SYNTHSCRIPT_FUNCTIONOBJECT_H
-#define SYNTHSCRIPT_FUNCTIONOBJECT_H
+#ifndef SYNTHSCRIPT_ARRAYOBJECT_H
+#define SYNTHSCRIPT_ARRAYOBJECT_H
 
 #include "Object.h"
-#include "AST/ASTNode.h"
 
-class FunctionObject : public Object {
+#include <utility>
+
+class ArrayObject : public Object {
 public:
-    FunctionObject(ASTNode *body, std::vector<std::string> parameters) : body(body), parameters(std::move(parameters)) {}
-    Type getType() override { return TYPE_FUNCTION; }
+    explicit ArrayObject(std::vector<std::shared_ptr<Object>> value) : value(std::move(value)) {}
+    Type getType() override { return TYPE_ARRAY; }
     std::shared_ptr<Object> add(std::shared_ptr<Object> other) override;
     std::shared_ptr<Object> sub(std::shared_ptr<Object> other) override;
     std::shared_ptr<Object> positive() override;
@@ -30,12 +31,11 @@ public:
     std::shared_ptr<Object> logicalNot() override;
     std::shared_ptr<Object> cast(Type type) override;
     std::shared_ptr<Object> subscript(std::shared_ptr<Object> other) override;
+    std::shared_ptr<Object> subscriptUpdate(const std::shared_ptr<Object> &index, const std::shared_ptr<Object> &val);
     std::shared_ptr<Object> duplicate() override;
-    ASTNode *getBody() { return body; }
-    std::vector<std::string> *getParameters() { return &parameters; }
+    std::vector<std::shared_ptr<Object>> *getValue() { return &value; }
 private:
-    ASTNode *body;
-    std::vector<std::string> parameters;
+    std::vector<std::shared_ptr<Object>> value;
 };
 
-#endif //SYNTHSCRIPT_FUNCTIONOBJECT_H
+#endif //SYNTHSCRIPT_ARRAYOBJECT_H

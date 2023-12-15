@@ -15,17 +15,21 @@ static std::string typeStrings[] = {
 static Type tokenToType(TokenType type) {
     switch (type) {
         case INT_TYPE:
+        case INT_LITERAL:
             return TYPE_INT;
         case FLOAT_TYPE:
+        case FLOAT_LITERAL:
             return TYPE_FLOAT;
         case BOOL_TYPE:
+        case BOOL_LITERAL:
             return TYPE_BOOL;
         case STRING_TYPE:
+        case STRING_LITERAL:
             return TYPE_STRING;
-        case VOID_TYPE:
-            return TYPE_VOID;
         case ARRAY_TYPE:
             return TYPE_ARRAY;
+        case VOID_TYPE:
+            return TYPE_VOID;
         default:
             return TYPE_UNDEF;
     }

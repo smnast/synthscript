@@ -72,7 +72,7 @@ ProgramNode *Parser::parseProgram(std::vector<Token> programTokens) {
             continue;
         }
         auto *statementNode = parseStatement();
-        if (statementNode == nullptr) continue;
+        if (statementNode == nullptr) break;
         statements.push_back(statementNode);
 
         acceptNewlines();
@@ -182,6 +182,7 @@ ASTNode *Parser::parseArrayLiteral() {
 ASTNode *Parser::parseArraySubscript() {
     ASTNode *identifier = parseIdentifier();
     while (accept(LBRACKET)) {
+        if (Error::checkError()) return nullptr;
         int line = curToken().lineNumber, col = curToken().columnNumber;
         auto *index = parsePrimaryExpression();
         identifier = new SubscriptOpNode(identifier, index, line, col);
@@ -263,7 +264,10 @@ ASTNode *Parser::parseContinueStatement() {
 ASTNode *Parser::parseReturnStatement() {
     int line = curToken().lineNumber, col = curToken().columnNumber;
     expect(RETURN_KEYWORD);
-    auto *value = parsePrimaryExpression();
+    ASTNode *value = nullptr;
+    if (!check(END_OF_FILE) && !check(NEW_LINE) && !check(RBRACE)) {
+        value = parsePrimaryExpression();
+    }
     return new ReturnStatementNode(value, line, col);
 }
 
