@@ -9,7 +9,11 @@
 class FunctionStatementNode : public ASTNode {
 public:
     FunctionStatementNode(std::string identifier, std::vector<ASTNode*> arguments, int line, int col) : ASTNode(line, col), arguments(std::move(arguments)), identifier(std::move(identifier)) {}
-    ~FunctionStatementNode() override = default;
+    ~FunctionStatementNode() override {
+        for (auto &argument : arguments) {
+            delete argument;
+        }
+    }
     std::string getIdentifier() const { return identifier; }
     std::vector<ASTNode*> *getArguments() { return &arguments; }
     DECLARE_VISITOR_FUNCTIONS

@@ -9,27 +9,27 @@
 void run(ProgramNode *program) {
     auto *interpreterVisitor = new InterpreterVisitor();
     program->evaluate(interpreterVisitor, nullptr);
+    delete interpreterVisitor;
 }
 
 void buildAndRun(const std::string &path) {
     std::string code = Reader::readFile(path);
     std::vector<Token> tokens = Lexer::parseTokens(code);
-//    for (auto t : tokens) {
-//        printf("%s\trow:%d\tcol:%d\n", tokenNames[t.tokenType].c_str(), t.lineNumber, t.columnNumber);
-//    }
 
     ProgramNode *program = Parser::parseProgram(tokens);
-//    auto *printVisitor = new PrintVisitor();
-//    program->accept(printVisitor, 0);
     auto *semanticAnalysisVisitor = new SemanticAnalysisVisitor();
     program->analyze(semanticAnalysisVisitor, nullptr);
+    delete semanticAnalysisVisitor;
 
     Error::printBuildStatus();
     if (Error::shouldQuit()) {
+        delete program;
         exit(1);
     } else {
         run(program);
     }
+
+    delete program;
 }
 
 void printUsage() {

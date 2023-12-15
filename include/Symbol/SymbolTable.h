@@ -8,6 +8,11 @@
 class SymbolTable {
 public:
     SymbolTable(SymbolTable *enclosingScope, bool loop, bool function);
+    ~SymbolTable() {
+        for (auto &child : childScope) {
+            delete child;
+        }
+    }
     void insert(Symbol symbol);
     bool contains(const std::string &name, bool currentScope);
     Symbol *lookup(const std::string &name, bool currentScope);
