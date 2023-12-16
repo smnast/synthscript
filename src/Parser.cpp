@@ -452,7 +452,10 @@ ASTNode *Parser::parseFactor() {
     } else if (check(IDENTIFIER)) {
         return parseIdentifier();
     } else if (check(LPAREN)) {
-        return parsePrimaryExpression();
+        expect(LPAREN);
+        auto *exp = parsePrimaryExpression();
+        expect(RPAREN);
+        return exp;
     } else if (check(LBRACKET)) {
         return parseArrayLiteral();
     } else if (check(INT_LITERAL) || check(FLOAT_LITERAL) || check(STRING_LITERAL) || check(BOOL_LITERAL)) {
