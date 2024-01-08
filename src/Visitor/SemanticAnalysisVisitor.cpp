@@ -36,6 +36,11 @@ void SemanticAnalysisVisitor::visit(ArrayLiteralNode *node, SymbolTable* arg) {
     }
 }
 
+void SemanticAnalysisVisitor::visit(RangeLiteralNode *node, SymbolTable* arg) {
+    node->getStart()->analyze(this, arg);
+    node->getEnd()->analyze(this, arg);
+}
+
 std::string SemanticAnalysisVisitor::getArrayIdentifier(SubscriptOpNode *node, SymbolTable* arg) {
     auto subscriptOpNode = dynamic_cast<SubscriptOpNode*>(node->getIdentifier());
     if (subscriptOpNode != nullptr) {
@@ -87,8 +92,7 @@ void SemanticAnalysisVisitor::visit(ReturnStatementNode *node, SymbolTable* arg)
 
 void SemanticAnalysisVisitor::visit(ForStatementNode *node, SymbolTable* arg) {
     std::string identifier = node->getIdentifier();
-    node->getStart()->analyze(this, arg);
-    node->getEnd()->analyze(this, arg);
+    node->getIterable()->analyze(this, arg);
 
     auto *forLoopScope = new SymbolTable(arg, true, arg->isFunction());
     forLoopScope->insert(Symbol(identifier));

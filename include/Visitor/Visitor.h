@@ -13,6 +13,7 @@ public:
     virtual T visit(SubscriptOpNode *node, A arg) = 0;
     virtual T visit(UnaryOpNode *node, A arg) = 0;
     virtual T visit(ArrayLiteralNode *node, A arg) = 0;
+    virtual T visit(RangeLiteralNode *node, A arg) = 0;
     virtual T visit(AssignmentNode *node, A arg) = 0;
     virtual T visit(BreakStatementNode *node, A arg) = 0;
     virtual T visit(ContinueStatementNode *node, A arg) = 0;

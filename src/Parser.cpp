@@ -233,12 +233,10 @@ ASTNode *Parser::parseForStatement() {
     std::string identifier = curToken().value;
     expect(IDENTIFIER);
     expect(IN_KEYWORD);
-    auto *start = parsePrimaryExpression();
-    expect(RANGE_SYMBOL);
-    auto *end = parsePrimaryExpression();
+    auto *iterable = parsePrimaryExpression();
     auto *body = parseCompoundStatement();
-    if (start == nullptr || end == nullptr) return nullptr;
-    return new ForStatementNode(identifier, start, end, body, line, col);
+    if (iterable == nullptr) return nullptr;
+    return new ForStatementNode(identifier, iterable, body, line, col);
 }
 
 ASTNode *Parser::parseBreakStatement() {
@@ -381,15 +379,27 @@ ASTNode *Parser::parseEqualityExpression() {
 
 ASTNode *Parser::parseRelationalExpression() {
     int line = curToken().lineNumber, col = curToken().columnNumber;
-    auto *left = parseAdditiveExpression();
+    auto *left = parseRangeLiteralExpression();
     while (check(LESS_THAN_OPERATOR) || check(LESS_THAN_EQUAL_OPERATOR)
            || check(GREATER_THAN_OPERATOR) || check(GREATER_THAN_EQUAL_OPERATOR)) {
         if (Error::checkError()) return nullptr;
 
         TokenType op = curToken().tokenType;
         accept(curToken().tokenType);
-        auto *right = parseAdditiveExpression();
+        auto *right = parseRangeLiteralExpression();
         left = new BinOpNode(op, left, right, line, col);
+    }
+    return left;
+}
+
+ASTNode *Parser::parseRangeLiteralExpression() {
+    int line = curToken().lineNumber, col = curToken().columnNumber;
+    auto *left = parseAdditiveExpression();
+    if (accept(RANGE_SYMBOL)) {
+        if (Error::checkError()) return nullptr;
+
+        auto *right = parseAdditiveExpression();
+        left = new RangeLiteralNode(left, right, line, col);
     }
     return left;
 }

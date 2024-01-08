@@ -15,6 +15,7 @@ public:
     std::shared_ptr<Object> visit(SubscriptOpNode *node, SymbolTable* arg) override;
     std::shared_ptr<Object> visit(UnaryOpNode *node, SymbolTable* arg) override;
     std::shared_ptr<Object> visit(ArrayLiteralNode *node, SymbolTable* arg) override;
+    std::shared_ptr<Object> visit(RangeLiteralNode *node, SymbolTable* arg) override;
     std::shared_ptr<Object> visit(AssignmentNode *node, SymbolTable* arg) override;
     std::shared_ptr<Object> visit(BreakStatementNode *node, SymbolTable* arg) override;
     std::shared_ptr<Object> visit(ContinueStatementNode *node, SymbolTable* arg) override;

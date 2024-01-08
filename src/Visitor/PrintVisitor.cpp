@@ -37,6 +37,12 @@ void PrintVisitor::visit(ArrayLiteralNode *node, int arg) {
     }
 }
 
+void PrintVisitor::visit(RangeLiteralNode *node, int arg) {
+    std::cout << std::string(arg, '\t') << "RangeLiteralNode" << std::endl;
+    node->getStart()->accept(this, arg+1);
+    node->getEnd()->accept(this, arg+1);
+}
+
 void PrintVisitor::visit(AssignmentNode *node, int arg) {
     std::cout << std::string(arg, '\t') << "AssignmentNode" << std::endl;
     node->getIdentifier()->accept(this, arg+1);
@@ -59,8 +65,7 @@ void PrintVisitor::visit(ReturnStatementNode *node, int arg) {
 void PrintVisitor::visit(ForStatementNode *node, int arg) {
     std::cout << std::string(arg, '\t') << "ForStatementNode" << std::endl;
     std::cout << std::string(arg+1, '\t') << node->getIdentifier() << std::endl;
-    node->getStart()->accept(this, arg+1);
-    node->getEnd()->accept(this, arg+1);
+    node->getIterable()->accept(this, arg+1);
     node->getBody()->accept(this, arg+1);
 }
 

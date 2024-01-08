@@ -11,6 +11,7 @@ public:
     void visit(SubscriptOpNode *node, int arg) override;
     void visit(UnaryOpNode *node, int arg) override;
     void visit(ArrayLiteralNode *node, int arg) override;
+    void visit(RangeLiteralNode *node, int arg) override;
     void visit(AssignmentNode *node, int arg) override;
     void visit(BreakStatementNode *node, int arg) override;
     void visit(ContinueStatementNode *node, int arg) override;

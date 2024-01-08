@@ -29,11 +29,11 @@ private:
     static ASTNode *parseIfStatement(), *parseWhileStatement(), *parseForStatement();
     static ASTNode *parseBreakStatement(), *parseContinueStatement(), *parseReturnStatement();
     static ASTNode *parseIdentifier(), *parseLiteral();
-    static ASTNode *parsePrimaryExpression(), *parseAssignmentExpression(),
-            *parseLogicalOrExpression(), *parseLogicalAndExpression(),
-            *parseBitwiseOrExpression(), *parseBitwiseXorExpression(), *parseBitwiseAndExpression(),
-            *parseEqualityExpression(), *parseRelationalExpression(), *parseAdditiveExpression(),
-            *parseMultiplicativeExpression(), *parseUnaryExpression(), *parseFactor();
+    static ASTNode *parsePrimaryExpression(), *parseAssignmentExpression(), *parseLogicalOrExpression(),
+            *parseLogicalAndExpression(), *parseBitwiseOrExpression(), *parseBitwiseXorExpression(),
+            *parseBitwiseAndExpression(), *parseEqualityExpression(), *parseRelationalExpression(),
+            *parseRangeLiteralExpression(), *parseAdditiveExpression(), *parseMultiplicativeExpression(),
+            *parseUnaryExpression(), *parseFactor();
 };
 
 #endif //SYNTHSCRIPT_PARSER_H

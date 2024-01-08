@@ -6,6 +6,7 @@ class CastOpNode;
 class SubscriptOpNode;
 class UnaryOpNode;
 class ArrayLiteralNode;
+class RangeLiteralNode;
 class AssignmentNode;
 class BreakStatementNode;
 class ContinueStatementNode;

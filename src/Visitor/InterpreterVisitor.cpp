@@ -77,6 +77,33 @@ std::shared_ptr<Object> InterpreterVisitor::visit(ArrayLiteralNode *node, Symbol
     return std::make_shared<ArrayObject>(values);
 }
 
+std::shared_ptr<Object> InterpreterVisitor::visit(RangeLiteralNode *node, SymbolTable* arg) {
+    std::shared_ptr<Object> start = node->getStart()->evaluate(this, arg);
+    std::shared_ptr<Object> end = node->getEnd()->evaluate(this, arg);
+    if (start->getType() != TYPE_INT) {
+        Error::runtimeError("Invalid type for start of range (expected int, got " + typeStrings[start->getType()] + ")",
+                            node->getStart()->getLineNumber(), node->getStart()->getColumnNumber());
+    } else if (end->getType() != TYPE_INT) {
+        Error::runtimeError("Invalid type for end of range (expected int, got " + typeStrings[start->getType()] + ")",
+                            node->getEnd()->getLineNumber(), node->getEnd()->getColumnNumber());
+    }
+
+    int startVal = std::static_pointer_cast<IntObject>(start)->getValue();
+    int endVal = std::static_pointer_cast<IntObject>(end)->getValue();
+    std::vector<std::shared_ptr<Object>> values;
+
+    int dir = (startVal < endVal) ? 1 : -1;
+    bool equal = false;
+    int curVal = startVal;
+    while (!equal) {
+        equal = curVal == endVal;
+        values.push_back(std::make_shared<IntObject>(curVal));
+        curVal += dir;
+    }
+
+    return std::make_shared<ArrayObject>(values);
+}
+
 std::shared_ptr<Object> InterpreterVisitor::visit(AssignmentNode *node, SymbolTable* arg) {
     std::shared_ptr<Object> value = node->getValue()->evaluate(this, arg);
     if (value->getType() == TYPE_VOID) {
@@ -128,25 +155,22 @@ std::shared_ptr<Object> InterpreterVisitor::visit(ReturnStatementNode *node, Sym
 
 std::shared_ptr<Object> InterpreterVisitor::visit(ForStatementNode *node, SymbolTable* arg) {
     std::string identifier = node->getIdentifier();
-    std::shared_ptr<Object> start = node->getStart()->evaluate(this, arg);
-    std::shared_ptr<Object> end = node->getEnd()->evaluate(this, arg);
-    if (start->getType() != TYPE_INT) {
-        Error::runtimeError("Invalid type for start of for loop (expected int, got " + typeStrings[start->getType()] + ")",
-                            node->getStart()->getLineNumber(), node->getStart()->getColumnNumber());
-    } else if (end->getType() != TYPE_INT) {
-        Error::runtimeError("Invalid type for end of for loop (expected int, got " + typeStrings[start->getType()] + ")",
-                            node->getEnd()->getLineNumber(), node->getEnd()->getColumnNumber());
+    std::shared_ptr<Object> iterable = node->getIterable()->evaluate(this, arg);
+
+    int iterableLen = 0;
+    if (iterable->getType() == TYPE_ARRAY) {
+        iterableLen = (int)std::static_pointer_cast<ArrayObject>(iterable)->getValue()->size();
+    } else if (iterable->getType() == TYPE_STRING) {
+        iterableLen = (int)std::static_pointer_cast<StringObject>(iterable)->getValue().size();
+    } else {
+        Error::runtimeError("Invalid type for iterable (expected array or string, got " + typeStrings[iterable->getType()] + ")",
+                            node->getIterable()->getLineNumber(), node->getIterable()->getColumnNumber());
     }
 
-    int startVal = std::static_pointer_cast<IntObject>(start)->getValue();
-    int endVal = std::static_pointer_cast<IntObject>(end)->getValue();
-    std::shared_ptr<IntObject> dir = std::make_shared<IntObject>((startVal < endVal) ? 1 : -1);
-
     auto *forLoopScope = new SymbolTable(arg, true, arg->isFunction());
-    forLoopScope->insert(Symbol(identifier, std::make_shared<IntObject>(startVal)));
+    forLoopScope->insert(Symbol(identifier));
 
-    bool equal = false;
-    while (!equal) {
+    for (int i = 0; i < iterableLen; i++) {
         if (backtracking || returning) {
             backtracking = false;
             if (breaking) {
@@ -155,11 +179,9 @@ std::shared_ptr<Object> InterpreterVisitor::visit(ForStatementNode *node, Symbol
             }
         }
 
-        equal = std::static_pointer_cast<IntObject>(forLoopScope->lookup(identifier, false)->getValue())->getValue() == endVal;
-
-        node->getBody()->evaluate(this, forLoopScope);
         Symbol *iteratorSymbol = forLoopScope->lookup(identifier, false);
-        iteratorSymbol->setValue(iteratorSymbol->getValue()->add(dir));
+        iteratorSymbol->setValue(iterable->subscript(std::make_shared<IntObject>(i)));
+        node->getBody()->evaluate(this, forLoopScope);
     }
 
     return nullptr;

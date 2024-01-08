@@ -7,20 +7,18 @@
 
 class ForStatementNode : public ASTNode {
 public:
-    ForStatementNode(std::string identifier, ASTNode *start, ASTNode *end, ASTNode *body, int line, int col) : ASTNode(line, col), identifier(std::move(identifier)), start(start), end(end), body(body) {}
+    ForStatementNode(std::string identifier, ASTNode *iterable, ASTNode *body, int line, int col) : ASTNode(line, col), identifier(std::move(identifier)), iterable(iterable), body(body) {}
     ~ForStatementNode() override {
-        delete start;
-        delete end;
+        delete iterable;
         delete body;
     }
     std::string getIdentifier() { return identifier; }
-    ASTNode *getStart() { return start; }
-    ASTNode *getEnd() { return end; }
+    ASTNode *getIterable() { return iterable; }
     ASTNode *getBody() { return body; }
     DECLARE_VISITOR_FUNCTIONS
 private:
     std::string identifier;
-    ASTNode *start, *end, *body;
+    ASTNode *iterable, *body;
 };
 
 #endif //CLIKE_FORSTATEMENTNODE_H

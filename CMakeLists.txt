@@ -65,4 +65,5 @@ add_executable(SynthScript src/main.cpp
         src/Object/VoidObject.cpp
         include/BuiltinFunctions.h
         src/BuiltinFunctions.cpp
+        include/AST/Statement/Array/RangeLiteralNode.h
 )

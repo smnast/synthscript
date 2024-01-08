@@ -4,6 +4,7 @@
 #include "AST/Operators/UnaryOpNode.h"
 
 #include "AST/Statement/Array/ArrayLiteralNode.h"
+#include "AST/Statement/Array/RangeLiteralNode.h"
 
 #include "AST/Statement/Assignment/AssignmentNode.h"
 

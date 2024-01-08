@@ -12,6 +12,7 @@ public:
     void visit(SubscriptOpNode *node, SymbolTable* arg) override;
     void visit(UnaryOpNode *node, SymbolTable* arg) override;
     void visit(ArrayLiteralNode *node, SymbolTable* arg) override;
+    void visit(RangeLiteralNode *node, SymbolTable* arg) override;
     void visit(AssignmentNode *node, SymbolTable* arg) override;
     void visit(BreakStatementNode *node, SymbolTable* arg) override;
     void visit(ContinueStatementNode *node, SymbolTable* arg) override;
