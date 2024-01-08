@@ -143,7 +143,6 @@ ASTNode *Parser::parseFunctionDeclaration() {
     expect(RPAREN);
     ASTNode *body = parseCompoundStatement();
 
-    if (body == nullptr) return nullptr;
     return new FunctionDeclarationNode(identifier, parameters, body, line, col);
 }
 
@@ -213,11 +212,9 @@ ASTNode *Parser::parseIfStatement() {
     auto *condition = parsePrimaryExpression();
     expect(RPAREN);
     auto *body = parseCompoundStatement();
-    if (body == nullptr) return nullptr;
     ASTNode *elseBody = nullptr;
     if (accept(ELSE_KEYWORD)) {
         elseBody = parseCompoundStatement();
-        if (elseBody == nullptr) return nullptr;
     }
     return new IfStatementNode(condition, body, elseBody, line, col);
 }
@@ -229,7 +226,6 @@ ASTNode *Parser::parseWhileStatement() {
     auto *condition = parsePrimaryExpression();
     expect(RPAREN);
     auto *body = parseCompoundStatement();
-    if (body == nullptr) return nullptr;
     return new WhileStatementNode(condition, body, line, col);
 }
 
@@ -245,7 +241,6 @@ ASTNode *Parser::parseForStatement() {
     auto *end = parsePrimaryExpression();
     expect(RPAREN);
     auto *body = parseCompoundStatement();
-    if (body == nullptr) return nullptr;
     return new ForStatementNode(identifier, start, end, body, line, col);
 }
 
