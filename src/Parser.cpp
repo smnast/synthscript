@@ -214,7 +214,11 @@ ASTNode *Parser::parseIfStatement() {
     auto *body = parseCompoundStatement();
     ASTNode *elseBody = nullptr;
     if (accept(ELSE_KEYWORD)) {
-        elseBody = parseCompoundStatement();
+        if (check(IF_KEYWORD)) {
+            elseBody = parseIfStatement();
+        } else {
+            elseBody = parseCompoundStatement();
+        }
     }
     if (condition == nullptr) return nullptr;
     return new IfStatementNode(condition, body, elseBody, line, col);
