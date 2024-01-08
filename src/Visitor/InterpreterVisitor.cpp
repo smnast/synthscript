@@ -296,6 +296,7 @@ std::shared_ptr<Object> InterpreterVisitor::visit(FunctionStatementNode *node, S
 std::shared_ptr<Object> InterpreterVisitor::visit(CompoundStatementNode *node, SymbolTable* arg) {
     auto *scope = new SymbolTable(arg, arg->isLoop(), arg->isFunction());
     for (auto &statement : *node->getStatements()) {
+        if (backtracking) return nullptr;
         statement->evaluate(this, scope);
     }
 
