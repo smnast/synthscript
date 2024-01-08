@@ -16,19 +16,21 @@ function count_words_in_file(file_path) {
     file_text <- read(file_path)
     current_word <- ""
     word_count <- 0
-    for (i in 0..len(file_text)-1) {
-        if (file_text[i] = " ") {
-            if (len(current_word) > 0) {
+    for ch in file_text {
+        if ch = " " {
+            if len(current_word) > 0 {
                 word_count <- word_count + 1
                 current_word <- ""
             }
         } else {
-            current_word <- current_word + file_text[i]
+            current_word <- current_word + ch
         }
+    }
+    if len(current_word) > 0 {
+        word_count <- word_count + 1
     }
 
     return word_count
 }
 
 output(count_words_in_file("example_file.txt"))
-```
