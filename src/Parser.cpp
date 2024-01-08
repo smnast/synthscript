@@ -208,9 +208,7 @@ ASTNode *Parser::parseCast() {
 ASTNode *Parser::parseIfStatement() {
     int line = curToken().lineNumber, col = curToken().columnNumber;
     expect(IF_KEYWORD);
-    expect(LPAREN);
     auto *condition = parsePrimaryExpression();
-    expect(RPAREN);
     auto *body = parseCompoundStatement();
     ASTNode *elseBody = nullptr;
     if (accept(ELSE_KEYWORD)) {
@@ -223,9 +221,7 @@ ASTNode *Parser::parseIfStatement() {
 ASTNode *Parser::parseWhileStatement() {
     int line = curToken().lineNumber, col = curToken().columnNumber;
     expect(WHILE_KEYWORD);
-    expect(LPAREN);
     auto *condition = parsePrimaryExpression();
-    expect(RPAREN);
     auto *body = parseCompoundStatement();
     if (condition == nullptr) return nullptr;
     return new WhileStatementNode(condition, body, line, col);
@@ -234,14 +230,12 @@ ASTNode *Parser::parseWhileStatement() {
 ASTNode *Parser::parseForStatement() {
     int line = curToken().lineNumber, col = curToken().columnNumber;
     expect(FOR_KEYWORD);
-    expect(LPAREN);
     std::string identifier = curToken().value;
     expect(IDENTIFIER);
     expect(IN_KEYWORD);
     auto *start = parsePrimaryExpression();
     expect(RANGE_SYMBOL);
     auto *end = parsePrimaryExpression();
-    expect(RPAREN);
     auto *body = parseCompoundStatement();
     if (start == nullptr || end == nullptr) return nullptr;
     return new ForStatementNode(identifier, start, end, body, line, col);
