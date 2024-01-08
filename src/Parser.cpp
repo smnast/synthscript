@@ -216,6 +216,7 @@ ASTNode *Parser::parseIfStatement() {
     if (accept(ELSE_KEYWORD)) {
         elseBody = parseCompoundStatement();
     }
+    if (condition == nullptr) return nullptr;
     return new IfStatementNode(condition, body, elseBody, line, col);
 }
 
@@ -226,6 +227,7 @@ ASTNode *Parser::parseWhileStatement() {
     auto *condition = parsePrimaryExpression();
     expect(RPAREN);
     auto *body = parseCompoundStatement();
+    if (condition == nullptr) return nullptr;
     return new WhileStatementNode(condition, body, line, col);
 }
 
@@ -241,6 +243,7 @@ ASTNode *Parser::parseForStatement() {
     auto *end = parsePrimaryExpression();
     expect(RPAREN);
     auto *body = parseCompoundStatement();
+    if (start == nullptr || end == nullptr) return nullptr;
     return new ForStatementNode(identifier, start, end, body, line, col);
 }
 
@@ -263,6 +266,7 @@ ASTNode *Parser::parseReturnStatement() {
     if (!check(END_OF_FILE) && !check(NEW_LINE) && !check(RBRACE)) {
         value = parsePrimaryExpression();
     }
+    if (value == nullptr) return nullptr;
     return new ReturnStatementNode(value, line, col);
 }
 
