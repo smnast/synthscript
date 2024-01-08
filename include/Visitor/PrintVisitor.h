@@ -18,6 +18,7 @@ public:
     void visit(ReturnStatementNode *node, int arg) override;
     void visit(ForStatementNode *node, int arg) override;
     void visit(IfStatementNode *node, int arg) override;
+    void visit(RepeatStatementNode *node, int arg) override;
     void visit(WhileStatementNode *node, int arg) override;
     void visit(FunctionDeclarationNode *node, int arg) override;
     void visit(FunctionStatementNode *node, int arg) override;

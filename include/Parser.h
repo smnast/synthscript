@@ -26,7 +26,7 @@ private:
     static ASTNode *parseFunctionDeclaration(), *parseFunctionStatement();
     static ASTNode *parseArrayLiteral(), *parseArraySubscript();
     static ASTNode *parseCast();
-    static ASTNode *parseIfStatement(), *parseWhileStatement(), *parseForStatement();
+    static ASTNode *parseIfStatement(), *parseWhileStatement(), *parseForStatement(), *parseRepeatStatement();
     static ASTNode *parseBreakStatement(), *parseContinueStatement(), *parseReturnStatement();
     static ASTNode *parseIdentifier(), *parseLiteral();
     static ASTNode *parsePrimaryExpression(), *parseAssignmentExpression(), *parseLogicalOrExpression(),

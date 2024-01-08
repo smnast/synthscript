@@ -93,6 +93,8 @@ ASTNode *Parser::parseStatement() {
         node = parseWhileStatement();
     } else if (check(FOR_KEYWORD)) {
         node = parseForStatement();
+    } else if (check(REPEAT_KEYWORD)) {
+        node = parseRepeatStatement();
     } else if (check(BREAK_KEYWORD)) {
         node = parseBreakStatement();
     } else if (check(CONTINUE_KEYWORD)) {
@@ -237,6 +239,15 @@ ASTNode *Parser::parseForStatement() {
     auto *body = parseCompoundStatement();
     if (iterable == nullptr) return nullptr;
     return new ForStatementNode(identifier, iterable, body, line, col);
+}
+
+ASTNode *Parser::parseRepeatStatement() {
+    int line = curToken().lineNumber, col = curToken().columnNumber;
+    expect(REPEAT_KEYWORD);
+    auto *count = parsePrimaryExpression();
+    auto *body = parseCompoundStatement();
+    if (count == nullptr) return nullptr;
+    return new RepeatStatementNode(count, body, line, col);
 }
 
 ASTNode *Parser::parseBreakStatement() {

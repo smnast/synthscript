@@ -203,6 +203,29 @@ std::shared_ptr<Object> InterpreterVisitor::visit(IfStatementNode *node, SymbolT
     return nullptr;
 }
 
+std::shared_ptr<Object> InterpreterVisitor::visit(RepeatStatementNode *node, SymbolTable* arg) {
+    auto *repeatLoopScope = new SymbolTable(arg, true, arg->isFunction());
+    std::shared_ptr<Object> count = node->getCount()->evaluate(this, arg);
+    if (count->getType() != TYPE_INT) {
+        Error::runtimeError("Invalid type for repeat count (expected int, got " + typeStrings[count->getType()] + ")",
+                            node->getCount()->getLineNumber(), node->getCount()->getColumnNumber());
+    }
+
+    for (int i = 0; i < std::static_pointer_cast<IntObject>(count)->getValue(); i++) {
+        if (backtracking || returning) {
+            backtracking = false;
+            if (breaking) {
+                breaking = false;
+                break;
+            }
+        }
+
+        node->getBody()->evaluate(this, repeatLoopScope);
+    }
+
+    return nullptr;
+}
+
 std::shared_ptr<Object> InterpreterVisitor::visit(WhileStatementNode *node, SymbolTable* arg) {
     auto *whileLoopScope = new SymbolTable(arg, true, arg->isFunction());
     std::shared_ptr<Object> condition = node->getCondition()->evaluate(this, arg);

@@ -12,6 +12,7 @@
 #include "AST/Statement/Control/ContinueStatementNode.h"
 #include "AST/Statement/Control/ForStatementNode.h"
 #include "AST/Statement/Control/IfStatementNode.h"
+#include "AST/Statement/Control/RepeatStatementNode.h"
 #include "AST/Statement/Control/ReturnStatementNode.h"
 #include "AST/Statement/Control/WhileStatementNode.h"
 

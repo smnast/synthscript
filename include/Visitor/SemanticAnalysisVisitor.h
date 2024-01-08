@@ -19,6 +19,7 @@ public:
     void visit(ReturnStatementNode *node, SymbolTable* arg) override;
     void visit(ForStatementNode *node, SymbolTable* arg) override;
     void visit(IfStatementNode *node, SymbolTable* arg) override;
+    void visit(RepeatStatementNode *node, SymbolTable* arg) override;
     void visit(WhileStatementNode *node, SymbolTable* arg) override;
     void visit(FunctionDeclarationNode *node, SymbolTable* arg) override;
     void visit(FunctionStatementNode *node, SymbolTable* arg) override;

@@ -12,6 +12,7 @@ class BreakStatementNode;
 class ContinueStatementNode;
 class ForStatementNode;
 class IfStatementNode;
+class RepeatStatementNode;
 class ReturnStatementNode;
 class WhileStatementNode;
 class FunctionDeclarationNode;

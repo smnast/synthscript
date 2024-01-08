@@ -66,4 +66,5 @@ add_executable(SynthScript src/main.cpp
         include/BuiltinFunctions.h
         src/BuiltinFunctions.cpp
         include/AST/Statement/Array/RangeLiteralNode.h
+        include/AST/Statement/Control/RepeatStatementNode.h
 )

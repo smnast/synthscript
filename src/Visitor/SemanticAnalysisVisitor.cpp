@@ -108,6 +108,12 @@ void SemanticAnalysisVisitor::visit(IfStatementNode *node, SymbolTable* arg) {
     }
 }
 
+void SemanticAnalysisVisitor::visit(RepeatStatementNode *node, SymbolTable* arg) {
+    auto *repeatLoopScope = new SymbolTable(arg, true, arg->isFunction());
+    node->getCount()->analyze(this, repeatLoopScope);
+    node->getBody()->analyze(this, repeatLoopScope);
+}
+
 void SemanticAnalysisVisitor::visit(WhileStatementNode *node, SymbolTable* arg) {
     auto *whileLoopScope = new SymbolTable(arg, true, arg->isFunction());
     node->getCondition()->analyze(this, whileLoopScope);

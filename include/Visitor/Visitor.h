@@ -20,6 +20,7 @@ public:
     virtual T visit(ReturnStatementNode *node, A arg) = 0;
     virtual T visit(ForStatementNode *node, A arg) = 0;
     virtual T visit(IfStatementNode *node, A arg) = 0;
+    virtual T visit(RepeatStatementNode *node, A arg) = 0;
     virtual T visit(WhileStatementNode *node, A arg) = 0;
     virtual T visit(FunctionDeclarationNode *node, A arg) = 0;
     virtual T visit(FunctionStatementNode *node, A arg) = 0;

@@ -78,6 +78,12 @@ void PrintVisitor::visit(IfStatementNode *node, int arg) {
     }
 }
 
+void PrintVisitor::visit(RepeatStatementNode *node, int arg) {
+    std::cout << std::string(arg, '\t') << "RepeatStatementNode" << std::endl;
+    node->getCount()->accept(this, arg+1);
+    node->getBody()->accept(this, arg+1);
+}
+
 void PrintVisitor::visit(WhileStatementNode *node, int arg) {
     std::cout << std::string(arg, '\t') << "WhileStatementNode" << std::endl;
     node->getCondition()->accept(this, arg+1);
