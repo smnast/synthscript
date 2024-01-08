@@ -68,7 +68,7 @@ std::shared_ptr<Object> ArrayObject::equal(std::shared_ptr<Object> other) {
     if (other->getType() == TYPE_ARRAY) {
         std::vector<std::shared_ptr<Object>> otherValue = *std::static_pointer_cast<ArrayObject>(other)->getValue();
         bool match = true;
-        if (value.size() != otherValue.size()) {
+        if (value.size() == otherValue.size()) {
             for (int i = 0; i < value.size(); i++) {
                 if (!otherValue[i]->equal(value[i])) {
                     match = false;
