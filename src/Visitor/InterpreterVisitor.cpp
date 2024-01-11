@@ -281,6 +281,8 @@ std::shared_ptr<Object> InterpreterVisitor::visit(FunctionStatementNode *node, S
         return BuiltinFunctions::handleBuiltinFunction(name, &arguments, node->getLineNumber(), node->getColumnNumber());
     }
 
+    returnVal = std::make_shared<VoidObject>();
+
     auto *functionScope = new SymbolTable(arg->getGlobalScope(), false, true);
     for (int i = 0; i < (int)node->getArguments()->size(); i++) {
         std::string argName = functionObject->getParameters()->at(i);
