@@ -1,21 +1,21 @@
 set(SOURCES
     main.cpp
-    Reader.cpp
-    Lexer.cpp
-    Error.cpp
-    Parser.cpp
-    Visitor/PrintVisitor.cpp
-    Symbol/SymbolTable.cpp
-    Visitor/SemanticAnalysisVisitor.cpp
-    Visitor/InterpreterVisitor.cpp
-    Object/FunctionObject.cpp
-    Object/IntObject.cpp
-    Object/FloatObject.cpp
-    Object/StringObject.cpp
-    Object/ArrayObject.cpp
-    Object/BoolObject.cpp
-    Object/VoidObject.cpp
-    BuiltinFunctions.cpp
+    reader.cpp
+    lexer.cpp
+    error.cpp
+    parser.cpp
+    visitor/print_visitor.cpp
+    symbol/symbol_table.cpp
+    visitor/semantic_analysis_visitor.cpp
+    visitor/interpreter_visitor.cpp
+    object/function_object.cpp
+    object/int_object.cpp
+    object/float_object.cpp
+    object/string_object.cpp
+    object/array_object.cpp
+    object/bool_object.cpp
+    object/void_object.cpp
+    built_in_functions.cpp
 )
 
 add_executable(SynthScript ${SOURCES})

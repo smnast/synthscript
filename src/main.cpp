@@ -1,10 +1,9 @@
+#include "tokens.h"
+#include "reader.h"
+#include "lexer.h"
+#include "parser.h"
+#include "visitor/print_visitor.h"
 #include <iostream>
-
-#include "Tokens.h"
-#include "Reader.h"
-#include "Lexer.h"
-#include "Parser.h"
-#include "Visitor/PrintVisitor.h"
 
 void run(ProgramNode *program) {
     auto *interpreterVisitor = new InterpreterVisitor();
