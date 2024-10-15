@@ -6,13 +6,18 @@
 
 class CastOpNode : public ASTNode {
 public:
-    CastOpNode(Type type, ASTNode *operand, int line, int col) : ASTNode(line, col), type(type), operand(operand) {}
+    CastOpNode(Type type, ASTNode *operand, int line, int col)
+        : ASTNode(line, col), type(std::move(type)), operand(operand) {}
+
     ~CastOpNode() override {
         delete operand;
     }
-    Type getType() { return type; }
-    ASTNode *getOperand() { return operand; }
+
+    Type get_type() const { return type; }
+    ASTNode *get_operand() const { return operand; }
+
     DECLARE_VISITOR_FUNCTIONS
+
 private:
     Type type;
     ASTNode *operand;

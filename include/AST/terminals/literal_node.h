@@ -5,11 +5,16 @@
 
 class LiteralNode : public ASTNode {
 public:
-    explicit LiteralNode(Type type, std::string value, int line, int col) : ASTNode(line, col), type(type), value(std::move(value)) {}
+    explicit LiteralNode(Type type, std::string value, int line, int col)
+        : ASTNode(line, col), type(type), value(std::move(value)) {}
+
     ~LiteralNode() override = default;
-    Type getType() { return type; }
-    std::string getValue() { return value; }
+
+    Type get_type() { return type; }
+    std::string get_value() { return value; }
+
     DECLARE_VISITOR_FUNCTIONS
+
 private:
     Type type;
     std::string value;

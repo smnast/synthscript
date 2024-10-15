@@ -4,14 +4,14 @@ SymbolTable::SymbolTable(SymbolTable *enclosingScope, bool loop, bool function) 
     this->enclosingScope = enclosingScope;
     this->loop = loop;
     this->function = function;
-    globalScope = enclosingScope == nullptr ? this : enclosingScope->getGlobalScope();
+    globalScope = enclosingScope == nullptr ? this : enclosingScope->get_global_scope();
     if (enclosingScope != nullptr) {
-        enclosingScope->addChild(this);
+        enclosingScope->add_child(this);
     }
 }
 
 void SymbolTable::insert(Symbol symbol) {
-    symbols[symbol.getName()] = symbol;
+    symbols[symbol.get_name()] = symbol;
 }
 
 bool SymbolTable::contains(const std::string &name, bool currentScope) {
@@ -29,22 +29,22 @@ Symbol *SymbolTable::lookup(const std::string &name, bool currentScope) {
     }
 }
 
-bool SymbolTable::isLoop() const {
+bool SymbolTable::is_loop() const {
     return loop;
 }
 
-bool SymbolTable::isFunction() const {
+bool SymbolTable::is_function() const {
     return function;
 }
 
-bool SymbolTable::isGlobalScope() const {
+bool SymbolTable::is_global_scope() const {
     return this == globalScope;
 }
 
-SymbolTable *SymbolTable::getGlobalScope() const {
+SymbolTable *SymbolTable::get_global_scope() const {
     return globalScope;
 }
 
-void SymbolTable::addChild(SymbolTable *symbolTable) {
+void SymbolTable::add_child(SymbolTable *symbolTable) {
     childScope.push_back(symbolTable);
 }

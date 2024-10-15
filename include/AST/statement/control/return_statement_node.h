@@ -5,12 +5,17 @@
 
 class ReturnStatementNode : public ASTNode {
 public:
-    explicit ReturnStatementNode(ASTNode *value, int line, int col) : ASTNode(line, col), value(value) {}
+    explicit ReturnStatementNode(ASTNode *value, int line, int col) 
+        : ASTNode(line, col), value(value) {}
+
     ~ReturnStatementNode() override {
         delete value;
     }
-    ASTNode *getValue() { return value; }
+
+    ASTNode* get_value() { return value; }
+
     DECLARE_VISITOR_FUNCTIONS
+
 private:
     ASTNode *value;
 };

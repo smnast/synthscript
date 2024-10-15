@@ -2,11 +2,11 @@
 
 std::vector<int> Lexer::linePrefix, Lexer::columnPrefix;
 
-std::vector<Token> Lexer::parseTokens(std::string &file) {
-    prepareLinePrefix(file);
-    prepareColumnPrefix(file);
+std::vector<Token> Lexer::parse_tokens(std::string &file) {
+    prepare_line_prefix(file);
+    prepare_column_prefix(file);
 
-    std::string tokenRegex = combineRegex();
+    std::string tokenRegex = combine_regex();
     std::vector<Token> tokens;
 
     std::regex reg(tokenRegex);
@@ -17,10 +17,10 @@ std::vector<Token> Lexer::parseTokens(std::string &file) {
         for (int i = 1; i < (int)match.size(); i++) {
             if (!(int)match[i].str().empty()) {
                 int position = (int)(match[i].second - file.cbegin())-1;
-                int lineNumber = getLineNumber(position), columnNumber = getColumnNumber(position);
+                int lineNumber = get_line(position), columnNumber = get_column(position);
                 Token curToken(tokenRegexExprs[i - 1].first, match[i].str(), lineNumber, columnNumber);
                 if (tokenRegexExprs[i-1].first == UNDEFINED) {
-                    Lexer::lexerError(match[i].str(), lineNumber, columnNumber);
+                    Lexer::lexer_error(match[i].str(), lineNumber, columnNumber);
                 }
                 else if (tokenRegexExprs[i-1].first != ESCAPED_NEW_LINE) {
                     tokens.push_back(curToken);
@@ -32,12 +32,12 @@ std::vector<Token> Lexer::parseTokens(std::string &file) {
         }
     }
 
-    Token endToken(END_OF_FILE, "", getLineNumber((int)file.size()-1), 1);
+    Token endToken(END_OF_FILE, "", get_line((int)file.size()-1), 1);
     tokens.push_back(endToken);
     return tokens;
 }
 
-std::string Lexer::combineRegex() {
+std::string Lexer::combine_regex() {
     std::string tokenRegex;
     for (auto &tokenExpr : tokenRegexExprs) {
         tokenRegex += "(" + tokenExpr.second + ")";
@@ -47,11 +47,11 @@ std::string Lexer::combineRegex() {
     return tokenRegex;
 }
 
-void Lexer::lexerError(const std::string &token, int line, int col) {
-    Error::posError("Undefined token: '" + token + "'", line, col);
+void Lexer::lexer_error(const std::string &token, int line, int col) {
+    Error::error_at_pos("Undefined token: '" + token + "'", line, col);
 }
 
-void Lexer::prepareLinePrefix(std::string &file) {
+void Lexer::prepare_line_prefix(std::string &file) {
     linePrefix.assign(file.size(), 0);
     int currentLine = 1;
     for (int i = 0; i < (int)file.size(); i++) {
@@ -60,7 +60,7 @@ void Lexer::prepareLinePrefix(std::string &file) {
     }
 }
 
-void Lexer::prepareColumnPrefix(std::string &file) {
+void Lexer::prepare_column_prefix(std::string &file) {
     columnPrefix.assign(file.size(), 0);
     int lastLineStart = 0;
     for (int i = 0; i < (int)file.size(); i++) {
@@ -69,10 +69,10 @@ void Lexer::prepareColumnPrefix(std::string &file) {
     }
 }
 
-int Lexer::getLineNumber(int position) {
+int Lexer::get_line(int position) {
     return linePrefix[position];
 }
 
-int Lexer::getColumnNumber(int position) {
+int Lexer::get_column(int position) {
     return position - columnPrefix[position] + 1;
 }

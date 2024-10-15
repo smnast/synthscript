@@ -2,19 +2,19 @@
 
 std::vector<std::string> Reader::fileLines;
 
-bool Reader::fileExists(const std::string &path) {
+bool Reader::file_exists(const std::string &path) {
     std::ifstream file(path);
     return file.good();
 }
 
-std::string Reader::getFileText(const std::string &filePath) {
+std::string Reader::get_file_text(const std::string &filePath) {
     std::ifstream stream(filePath);
     std::stringstream buffer;
     buffer << stream.rdbuf();
     return buffer.str();
 }
 
-std::string Reader::cleanFile(const std::string &file) {
+std::string Reader::clean_file(const std::string &file) {
     std::string cleanedFile;
     bool commented = false, multiline = false, stringLiteral = false;
     for (int i = 0; i < (int)file.size(); i++) {
@@ -41,19 +41,19 @@ std::string Reader::cleanFile(const std::string &file) {
     return cleanedFile;
 }
 
-std::string Reader::readFile(const std::string &filePath) {
-    std::string fileContents = getFileText(filePath);
-    std::string cleanedFile = cleanFile(fileContents);
-    prepareFileLines(cleanedFile);
+std::string Reader::read_file(const std::string &filePath) {
+    std::string fileContents = get_file_text(filePath);
+    std::string cleanedFile = clean_file(fileContents);
+    prepare_file_lines(cleanedFile);
     return cleanedFile;
 }
 
-void Reader::showPosition(int line, int col) {
+void Reader::show_position(int line, int col) {
     std::string position = std::string(col-1, ' ') + "^\n";
     std::printf("%s%s", fileLines[line - 1].c_str(), position.c_str());
 }
 
-void Reader::prepareFileLines(const std::string &file) {
+void Reader::prepare_file_lines(const std::string &file) {
     std::string curRow;
     for (char i : file) {
         curRow.push_back(i);

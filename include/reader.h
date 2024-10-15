@@ -8,14 +8,16 @@
 
 class Reader {
 public:
-    static bool fileExists(const std::string &path);
-    static std::string readFile(const std::string &filePath);
-    static void showPosition(int line, int col);
+    static bool file_exists(const std::string &path);
+    static std::string read_file(const std::string &filePath);
+    static void show_position(int line, int col);
+
 private:
     static std::vector<std::string> fileLines;
-    static std::string getFileText(const std::string &filePath);
-    static std::string cleanFile(const std::string &file);
-    static void prepareFileLines(const std::string &file);
+
+    static std::string get_file_text(const std::string &filePath);
+    static std::string clean_file(const std::string &file);
+    static void prepare_file_lines(const std::string &file);
 };
 
 #endif //SYNTHSCRIPT_READER_H

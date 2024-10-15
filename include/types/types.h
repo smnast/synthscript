@@ -12,7 +12,7 @@ static std::string typeStrings[] = {
         "int", "float", "bool", "string", "void", "array", "function", "<error>"
 };
 
-static Type tokenToType(TokenType type) {
+static Type token_to_type(TokenType type) {
     switch (type) {
         case INT_TYPE:
         case INT_LITERAL:

@@ -3,15 +3,15 @@
 int Parser::curIdx = 0;
 std::vector<Token> Parser::tokens = std::vector<Token>();
 
-void Parser::nextToken() {
+void Parser::next_token() {
     curIdx++;
 }
 
-Token Parser::curToken() {
+Token Parser::cur_token() {
     return tokens[curIdx];
 }
 
-bool Parser::peekToken(TokenType type, int cnt) {
+bool Parser::peek_token(TokenType type, int cnt) {
     if (curIdx + cnt < tokens.size()) {
         return tokens[curIdx + cnt].tokenType == type;
     }
@@ -19,12 +19,12 @@ bool Parser::peekToken(TokenType type, int cnt) {
 }
 
 bool Parser::check(TokenType type) {
-    return type == curToken().tokenType;
+    return type == cur_token().tokenType;
 }
 
 bool Parser::accept(TokenType type) {
     if (check(type)) {
-        nextToken();
+        next_token();
         return true;
     }
 
@@ -33,130 +33,130 @@ bool Parser::accept(TokenType type) {
 
 void Parser::expect(TokenType type) {
     if (!accept(type)) {
-        parserError(tokenNames[type], curToken());
+        parser_error(tokenNames[type], cur_token());
     }
 }
 
-void Parser::acceptNewlines() {
+void Parser::accept_new_lines() {
     while (accept(NEW_LINE));
 }
 
 void Parser::sync() {
     while (true) {
-        switch (curToken().tokenType) {
+        switch (cur_token().tokenType) {
             case IF_KEYWORD:
             case FOR_KEYWORD:
             case END_OF_FILE:
             case NEW_LINE:
                 return;
             default:
-                nextToken();
+                next_token();
                 continue;
         }
     }
 }
 
-void Parser::parserError(const std::string &expected, const Token &actual) {
-    Error::posError("Expected " + expected + " but got " + tokenNames[actual.tokenType], actual.lineNumber, actual.columnNumber, false);
+void Parser::parser_error(const std::string &expected, const Token &actual) {
+    Error::error_at_pos("Expected " + expected + " but got " + tokenNames[actual.tokenType], actual.lineNumber, actual.columnNumber, false);
 }
 
-ProgramNode *Parser::parseProgram(std::vector<Token> programTokens) {
+ProgramNode *Parser::parse_program(std::vector<Token> programTokens) {
     tokens = std::move(programTokens);
     curIdx = 0;
 
     std::vector<ASTNode*> statements;
     while (!check(END_OF_FILE)) {
-        if (Error::checkError()) {
-            Error::handleError();
+        if (Error::check_error()) {
+            Error::handle_error();
             sync();
             continue;
         }
-        auto *statementNode = parseStatement();
+        auto *statementNode = parse_statement();
         if (statementNode == nullptr) break;
         statements.push_back(statementNode);
 
-        acceptNewlines();
+        accept_new_lines();
     }
 
     return new ProgramNode(statements, 0, 0);
 }
 
-ASTNode *Parser::parseStatement() {
-    acceptNewlines();
+ASTNode *Parser::parse_statement() {
+    accept_new_lines();
     ASTNode *node = nullptr;
 
     if (check(FUNCTION_KEYWORD)) {
-        node = parseFunctionDeclaration();
+        node = parse_function_declaration();
     } else if (check(IF_KEYWORD)) {
-        node = parseIfStatement();
+        node = parse_if_statement();
     } else if (check(WHILE_KEYWORD)) {
-        node = parseWhileStatement();
+        node = parse_while_statement();
     } else if (check(FOR_KEYWORD)) {
-        node = parseForStatement();
+        node = parse_for_statement();
     } else if (check(REPEAT_KEYWORD)) {
-        node = parseRepeatStatement();
+        node = parse_repeat_statement();
     } else if (check(BREAK_KEYWORD)) {
-        node = parseBreakStatement();
+        node = parse_break_statement();
     } else if (check(CONTINUE_KEYWORD)) {
-        node = parseContinueStatement();
+        node = parse_continue_statement();
     } else if (check(RETURN_KEYWORD)) {
-        node = parseReturnStatement();
+        node = parse_return_statement();
     } else if (!check(END_OF_FILE) && !check(RBRACE)) {
-        node = parsePrimaryExpression();
+        node = parse_primary_expression();
     }
 
     return node;
 }
 
-ASTNode *Parser::parseCompoundStatement() {
-    int line = curToken().lineNumber, col = curToken().columnNumber;
+ASTNode *Parser::parse_compound_statement() {
+    int line = cur_token().lineNumber, col = cur_token().columnNumber;
     expect(LBRACE);
     std::vector<ASTNode*> statements;
     while (!check(RBRACE) && !check(END_OF_FILE)) {
-        if (Error::checkError()) {
-            Error::handleError();
+        if (Error::check_error()) {
+            Error::handle_error();
             sync();
             continue;
         }
-        auto *statementNode = parseStatement();
+        auto *statementNode = parse_statement();
         if (statementNode == nullptr) continue;
         statements.push_back(statementNode);
 
-        acceptNewlines();
+        accept_new_lines();
     }
     expect(RBRACE);
     return new CompoundStatementNode(statements, line, col);
 }
 
-ASTNode *Parser::parseFunctionDeclaration() {
-    int line = curToken().lineNumber, col = curToken().columnNumber;
+ASTNode *Parser::parse_function_declaration() {
+    int line = cur_token().lineNumber, col = cur_token().columnNumber;
     expect(FUNCTION_KEYWORD);
-    std::string identifier = curToken().value;
+    std::string identifier = cur_token().value;
     expect(IDENTIFIER);
     expect(LPAREN);
     std::vector<std::string> parameters;
     while (!check(RPAREN) && !check(END_OF_FILE)) {
-        if (Error::checkError()) return nullptr;
-        std::string parameter = curToken().value;
+        if (Error::check_error()) return nullptr;
+        std::string parameter = cur_token().value;
         expect(IDENTIFIER);
         parameters.push_back(parameter);
         if (accept(COMMA)) continue;
     }
     expect(RPAREN);
-    ASTNode *body = parseCompoundStatement();
+    ASTNode *body = parse_compound_statement();
 
     return new FunctionDeclarationNode(identifier, parameters, body, line, col);
 }
 
-ASTNode *Parser::parseFunctionStatement() {
-    int line = curToken().lineNumber, col = curToken().columnNumber;
-    std::string identifier = curToken().value;
+ASTNode *Parser::parse_function_statement() {
+    int line = cur_token().lineNumber, col = cur_token().columnNumber;
+    std::string identifier = cur_token().value;
     expect(IDENTIFIER);
     expect(LPAREN);
     std::vector<ASTNode*> arguments;
     while (!check(RPAREN) && !check(END_OF_FILE)) {
-        if (Error::checkError()) return nullptr;
-        auto *argument = parsePrimaryExpression();
+        if (Error::check_error()) return nullptr;
+        auto *argument = parse_primary_expression();
         if (argument == nullptr) continue;
         arguments.push_back(argument);
         if (accept(COMMA)) continue;
@@ -165,13 +165,13 @@ ASTNode *Parser::parseFunctionStatement() {
     return new FunctionStatementNode(identifier, arguments, line, col);
 }
 
-ASTNode *Parser::parseArrayLiteral() {
-    int line = curToken().lineNumber, col = curToken().columnNumber;
+ASTNode *Parser::parse_array_literal() {
+    int line = cur_token().lineNumber, col = cur_token().columnNumber;
     expect(LBRACKET);
     std::vector<ASTNode*> values;
     while (!check(RBRACKET) && !check(END_OF_FILE)) {
-        if (Error::checkError()) return nullptr;
-        auto *value = parsePrimaryExpression();
+        if (Error::check_error()) return nullptr;
+        auto *value = parse_primary_expression();
         if (value == nullptr) continue;
         values.push_back(value);
         if (accept(COMMA)) continue;
@@ -180,12 +180,12 @@ ASTNode *Parser::parseArrayLiteral() {
     return new ArrayLiteralNode(values, line, col);
 }
 
-ASTNode *Parser::parseArraySubscript() {
-    ASTNode *identifier = parseIdentifier();
+ASTNode *Parser::parse_array_subscript() {
+    ASTNode *identifier = parse_identifier();
     while (accept(LBRACKET)) {
-        if (Error::checkError()) return nullptr;
-        int line = curToken().lineNumber, col = curToken().columnNumber;
-        auto *index = parsePrimaryExpression();
+        if (Error::check_error()) return nullptr;
+        int line = cur_token().lineNumber, col = cur_token().columnNumber;
+        auto *index = parse_primary_expression();
         identifier = new SubscriptOpNode(identifier, index, line, col);
         expect(RBRACKET);
     }
@@ -193,293 +193,293 @@ ASTNode *Parser::parseArraySubscript() {
     return identifier;
 }
 
-ASTNode *Parser::parseCast() {
-    int line = curToken().lineNumber, col = curToken().columnNumber;
-    if (tokenIsType(curToken().tokenType)) {
-        TokenType tokenType = curToken().tokenType;
-        nextToken();
+ASTNode *Parser::parse_cast() {
+    int line = cur_token().lineNumber, col = cur_token().columnNumber;
+    if (token_is_type(cur_token().tokenType)) {
+        TokenType tokenType = cur_token().tokenType;
+        next_token();
         expect(LPAREN);
-        auto *value = parsePrimaryExpression();
+        auto *value = parse_primary_expression();
         expect(RPAREN);
-        return new CastOpNode(tokenToType(tokenType), value, line, col);
+        return new CastOpNode(token_to_type(tokenType), value, line, col);
     }
-    parserError("type", curToken());
+    parser_error("type", cur_token());
     return nullptr;
 }
 
-ASTNode *Parser::parseIfStatement() {
-    int line = curToken().lineNumber, col = curToken().columnNumber;
+ASTNode *Parser::parse_if_statement() {
+    int line = cur_token().lineNumber, col = cur_token().columnNumber;
     expect(IF_KEYWORD);
-    auto *condition = parsePrimaryExpression();
-    auto *body = parseCompoundStatement();
+    auto *condition = parse_primary_expression();
+    auto *body = parse_compound_statement();
     ASTNode *elseBody = nullptr;
     if (accept(ELSE_KEYWORD)) {
         if (check(IF_KEYWORD)) {
-            elseBody = parseIfStatement();
+            elseBody = parse_if_statement();
         } else {
-            elseBody = parseCompoundStatement();
+            elseBody = parse_compound_statement();
         }
     }
     if (condition == nullptr) return nullptr;
     return new IfStatementNode(condition, body, elseBody, line, col);
 }
 
-ASTNode *Parser::parseWhileStatement() {
-    int line = curToken().lineNumber, col = curToken().columnNumber;
+ASTNode *Parser::parse_while_statement() {
+    int line = cur_token().lineNumber, col = cur_token().columnNumber;
     expect(WHILE_KEYWORD);
-    auto *condition = parsePrimaryExpression();
-    auto *body = parseCompoundStatement();
+    auto *condition = parse_primary_expression();
+    auto *body = parse_compound_statement();
     if (condition == nullptr) return nullptr;
     return new WhileStatementNode(condition, body, line, col);
 }
 
-ASTNode *Parser::parseForStatement() {
-    int line = curToken().lineNumber, col = curToken().columnNumber;
+ASTNode *Parser::parse_for_statement() {
+    int line = cur_token().lineNumber, col = cur_token().columnNumber;
     expect(FOR_KEYWORD);
-    std::string identifier = curToken().value;
+    std::string identifier = cur_token().value;
     expect(IDENTIFIER);
     expect(IN_KEYWORD);
-    auto *iterable = parsePrimaryExpression();
-    auto *body = parseCompoundStatement();
+    auto *iterable = parse_primary_expression();
+    auto *body = parse_compound_statement();
     if (iterable == nullptr) return nullptr;
     return new ForStatementNode(identifier, iterable, body, line, col);
 }
 
-ASTNode *Parser::parseRepeatStatement() {
-    int line = curToken().lineNumber, col = curToken().columnNumber;
+ASTNode *Parser::parse_repeat_statement() {
+    int line = cur_token().lineNumber, col = cur_token().columnNumber;
     expect(REPEAT_KEYWORD);
-    auto *count = parsePrimaryExpression();
-    auto *body = parseCompoundStatement();
+    auto *count = parse_primary_expression();
+    auto *body = parse_compound_statement();
     if (count == nullptr) return nullptr;
     return new RepeatStatementNode(count, body, line, col);
 }
 
-ASTNode *Parser::parseBreakStatement() {
-    int line = curToken().lineNumber, col = curToken().columnNumber;
+ASTNode *Parser::parse_break_statement() {
+    int line = cur_token().lineNumber, col = cur_token().columnNumber;
     expect(BREAK_KEYWORD);
     return new BreakStatementNode(line, col);
 }
 
-ASTNode *Parser::parseContinueStatement() {
-    int line = curToken().lineNumber, col = curToken().columnNumber;
+ASTNode *Parser::parse_continue_statement() {
+    int line = cur_token().lineNumber, col = cur_token().columnNumber;
     expect(CONTINUE_KEYWORD);
     return new ContinueStatementNode(line, col);
 }
 
-ASTNode *Parser::parseReturnStatement() {
-    int line = curToken().lineNumber, col = curToken().columnNumber;
+ASTNode *Parser::parse_return_statement() {
+    int line = cur_token().lineNumber, col = cur_token().columnNumber;
     expect(RETURN_KEYWORD);
     ASTNode *value = nullptr;
     if (!check(END_OF_FILE) && !check(NEW_LINE) && !check(RBRACE)) {
-        value = parsePrimaryExpression();
+        value = parse_primary_expression();
     }
     if (value == nullptr) return nullptr;
     return new ReturnStatementNode(value, line, col);
 }
 
-ASTNode *Parser::parseIdentifier() {
-    int line = curToken().lineNumber, col = curToken().columnNumber;
-    std::string identifier = curToken().value;
+ASTNode *Parser::parse_identifier() {
+    int line = cur_token().lineNumber, col = cur_token().columnNumber;
+    std::string identifier = cur_token().value;
     expect(IDENTIFIER);
     return new IdentifierNode(identifier, line, col);
 }
 
-ASTNode *Parser::parseLiteral() {
-    int line = curToken().lineNumber, col = curToken().columnNumber;
-    Type type = tokenToType(curToken().tokenType);
-    std::string value = curToken().value;
-    nextToken();
+ASTNode *Parser::parse_literal() {
+    int line = cur_token().lineNumber, col = cur_token().columnNumber;
+    Type type = token_to_type(cur_token().tokenType);
+    std::string value = cur_token().value;
+    next_token();
     return new LiteralNode(type, value, line, col);
 }
 
-ASTNode *Parser::parsePrimaryExpression() {
-    return parseAssignmentExpression();
+ASTNode *Parser::parse_primary_expression() {
+    return parse_assignment_expression();
 }
 
-ASTNode *Parser::parseAssignmentExpression() {
-    int line = curToken().lineNumber, col = curToken().columnNumber;
-    ASTNode *left = parseLogicalOrExpression();
+ASTNode *Parser::parse_assignment_expression() {
+    int line = cur_token().lineNumber, col = cur_token().columnNumber;
+    ASTNode *left = parse_logical_or_expression();
     if (accept(ASSIGNMENT_OPERATOR)) {
-        if (Error::checkError()) return nullptr;
+        if (Error::check_error()) return nullptr;
 
-        auto *right = parseAssignmentExpression();
+        auto *right = parse_assignment_expression();
         left = new AssignmentNode(left, right, line, col);
     }
     return left;
 }
 
-ASTNode *Parser::parseLogicalOrExpression() {
-    int line = curToken().lineNumber, col = curToken().columnNumber;
-    auto *left = parseLogicalAndExpression();
+ASTNode *Parser::parse_logical_or_expression() {
+    int line = cur_token().lineNumber, col = cur_token().columnNumber;
+    auto *left = parse_logical_and_expression();
     while (check(LOGICAL_OR_OPERATOR)) {
-        if (Error::checkError()) return nullptr;
+        if (Error::check_error()) return nullptr;
 
-        TokenType op = curToken().tokenType;
+        TokenType op = cur_token().tokenType;
         accept(LOGICAL_OR_OPERATOR);
-        auto *right = parseLogicalAndExpression();
+        auto *right = parse_logical_and_expression();
         left = new BinOpNode(op, left, right, line, col);
     }
     return left;
 }
 
-ASTNode *Parser::parseLogicalAndExpression() {
-    int line = curToken().lineNumber, col = curToken().columnNumber;
-    auto *left = parseBitwiseOrExpression();
+ASTNode *Parser::parse_logical_and_expression() {
+    int line = cur_token().lineNumber, col = cur_token().columnNumber;
+    auto *left = parse_bitwise_or_expression();
     while (check(LOGICAL_AND_OPERATOR)) {
-        if (Error::checkError()) return nullptr;
+        if (Error::check_error()) return nullptr;
 
-        TokenType op = curToken().tokenType;
+        TokenType op = cur_token().tokenType;
         accept(LOGICAL_AND_OPERATOR);
-        auto *right = parseBitwiseOrExpression();
+        auto *right = parse_bitwise_or_expression();
         left = new BinOpNode(op, left, right, line, col);
     }
     return left;
 }
 
-ASTNode *Parser::parseBitwiseOrExpression() {
-    int line = curToken().lineNumber, col = curToken().columnNumber;
-    auto *left = parseBitwiseXorExpression();
+ASTNode *Parser::parse_bitwise_or_expression() {
+    int line = cur_token().lineNumber, col = cur_token().columnNumber;
+    auto *left = parse_bitwise_xor_expression();
     while (check(BITWISE_OR_OPERATOR)) {
-        if (Error::checkError()) return nullptr;
+        if (Error::check_error()) return nullptr;
 
-        TokenType op = curToken().tokenType;
+        TokenType op = cur_token().tokenType;
         accept(BITWISE_OR_OPERATOR);
-        auto *right = parseBitwiseXorExpression();
+        auto *right = parse_bitwise_xor_expression();
         left = new BinOpNode(op, left, right, line, col);
     }
     return left;
 }
 
-ASTNode *Parser::parseBitwiseXorExpression() {
-    int line = curToken().lineNumber, col = curToken().columnNumber;
-    auto *left = parseBitwiseAndExpression();
+ASTNode *Parser::parse_bitwise_xor_expression() {
+    int line = cur_token().lineNumber, col = cur_token().columnNumber;
+    auto *left = parse_bitwise_and_expression();
     while (check(BITWISE_XOR_OPERATOR)) {
-        if (Error::checkError()) return nullptr;
+        if (Error::check_error()) return nullptr;
 
-        TokenType op = curToken().tokenType;
+        TokenType op = cur_token().tokenType;
         accept(BITWISE_XOR_OPERATOR);
-        auto *right = parseBitwiseAndExpression();
+        auto *right = parse_bitwise_and_expression();
         left = new BinOpNode(op, left, right, line, col);
     }
     return left;
 }
 
-ASTNode *Parser::parseBitwiseAndExpression() {
-    int line = curToken().lineNumber, col = curToken().columnNumber;
-    auto *left = parseEqualityExpression();
+ASTNode *Parser::parse_bitwise_and_expression() {
+    int line = cur_token().lineNumber, col = cur_token().columnNumber;
+    auto *left = parse_equality_expression();
     while (check(BITWISE_AND_OPERATOR)) {
-        if (Error::checkError()) return nullptr;
+        if (Error::check_error()) return nullptr;
 
-        TokenType op = curToken().tokenType;
+        TokenType op = cur_token().tokenType;
         accept(BITWISE_AND_OPERATOR);
-        auto *right = parseEqualityExpression();
+        auto *right = parse_equality_expression();
         left = new BinOpNode(op, left, right, line, col);
     }
     return left;
 }
 
-ASTNode *Parser::parseEqualityExpression() {
-    int line = curToken().lineNumber, col = curToken().columnNumber;
-    auto *left = parseRelationalExpression();
+ASTNode *Parser::parse_equality_expression() {
+    int line = cur_token().lineNumber, col = cur_token().columnNumber;
+    auto *left = parse_relational_expression();
     while (check(EQUAL_OPERATOR) || check(NOT_EQUAL_OPERATOR)) {
-        if (Error::checkError()) return nullptr;
+        if (Error::check_error()) return nullptr;
 
-        TokenType op = curToken().tokenType;
-        accept(curToken().tokenType);
-        auto *right = parseRelationalExpression();
+        TokenType op = cur_token().tokenType;
+        accept(cur_token().tokenType);
+        auto *right = parse_relational_expression();
         left = new BinOpNode(op, left, right, line, col);
     }
     return left;
 }
 
-ASTNode *Parser::parseRelationalExpression() {
-    int line = curToken().lineNumber, col = curToken().columnNumber;
-    auto *left = parseRangeLiteralExpression();
+ASTNode *Parser::parse_relational_expression() {
+    int line = cur_token().lineNumber, col = cur_token().columnNumber;
+    auto *left = parse_range_literal_expression();
     while (check(LESS_THAN_OPERATOR) || check(LESS_THAN_EQUAL_OPERATOR)
            || check(GREATER_THAN_OPERATOR) || check(GREATER_THAN_EQUAL_OPERATOR)) {
-        if (Error::checkError()) return nullptr;
+        if (Error::check_error()) return nullptr;
 
-        TokenType op = curToken().tokenType;
-        accept(curToken().tokenType);
-        auto *right = parseRangeLiteralExpression();
+        TokenType op = cur_token().tokenType;
+        accept(cur_token().tokenType);
+        auto *right = parse_range_literal_expression();
         left = new BinOpNode(op, left, right, line, col);
     }
     return left;
 }
 
-ASTNode *Parser::parseRangeLiteralExpression() {
-    int line = curToken().lineNumber, col = curToken().columnNumber;
-    auto *left = parseAdditiveExpression();
+ASTNode *Parser::parse_range_literal_expression() {
+    int line = cur_token().lineNumber, col = cur_token().columnNumber;
+    auto *left = parse_additive_expression();
     if (accept(RANGE_SYMBOL)) {
-        if (Error::checkError()) return nullptr;
+        if (Error::check_error()) return nullptr;
 
-        auto *right = parseAdditiveExpression();
+        auto *right = parse_additive_expression();
         left = new RangeLiteralNode(left, right, line, col);
     }
     return left;
 }
 
-ASTNode *Parser::parseAdditiveExpression() {
-    int line = curToken().lineNumber, col = curToken().columnNumber;
-    auto *left = parseMultiplicativeExpression();
+ASTNode *Parser::parse_additive_expression() {
+    int line = cur_token().lineNumber, col = cur_token().columnNumber;
+    auto *left = parse_multiplicative_expression();
     while (check(ADDITION_OPERATOR) || check(SUBTRACTION_OPERATOR)) {
-        if (Error::checkError()) return nullptr;
+        if (Error::check_error()) return nullptr;
 
-        TokenType op = curToken().tokenType;
-        accept(curToken().tokenType);
-        auto *right = parseMultiplicativeExpression();
+        TokenType op = cur_token().tokenType;
+        accept(cur_token().tokenType);
+        auto *right = parse_multiplicative_expression();
         left = new BinOpNode(op, left, right, line, col);
     }
     return left;
 }
 
-ASTNode *Parser::parseMultiplicativeExpression() {
-    int line = curToken().lineNumber, col = curToken().columnNumber;
-    auto *left = parseUnaryExpression();
+ASTNode *Parser::parse_multiplicative_expression() {
+    int line = cur_token().lineNumber, col = cur_token().columnNumber;
+    auto *left = parse_unary_expression();
     while (check(MULTIPLICATIVE_OPERATOR) || check(DIVISION_OPERATOR) || check(MOD_OPERATOR)) {
-        if (Error::checkError()) return nullptr;
+        if (Error::check_error()) return nullptr;
 
-        TokenType op = curToken().tokenType;
-        accept(curToken().tokenType);
-        auto *right = parseUnaryExpression();
+        TokenType op = cur_token().tokenType;
+        accept(cur_token().tokenType);
+        auto *right = parse_unary_expression();
         left = new BinOpNode(op, left, right, line, col);
     }
     return left;
 }
 
-ASTNode *Parser::parseUnaryExpression() {
-    int line = curToken().lineNumber, col = curToken().columnNumber;
+ASTNode *Parser::parse_unary_expression() {
+    int line = cur_token().lineNumber, col = cur_token().columnNumber;
     if (check(LOGICAL_NOT_OPERATOR) || check(BITWISE_NOT_OPERATOR)
         || check(SUBTRACTION_OPERATOR) || check(ADDITION_OPERATOR)) {
-        TokenType op = curToken().tokenType;
-        accept(curToken().tokenType);
-        auto *right = parseFactor();
+        TokenType op = cur_token().tokenType;
+        accept(cur_token().tokenType);
+        auto *right = parse_factor_expression();
         return new UnaryOpNode(op, right, line, col);
     } else {
-        return parseFactor();
+        return parse_factor_expression();
     }
 }
 
-ASTNode *Parser::parseFactor() {
-    if (tokenIsType(curToken().tokenType)) {
-        return parseCast();
-    } else if (check(IDENTIFIER) && peekToken(LBRACKET, 1)) {
-        return parseArraySubscript();
-    } else if (check(IDENTIFIER) && peekToken(LPAREN, 1)) {
-        return parseFunctionStatement();
+ASTNode *Parser::parse_factor_expression() {
+    if (token_is_type(cur_token().tokenType)) {
+        return parse_cast();
+    } else if (check(IDENTIFIER) && peek_token(LBRACKET, 1)) {
+        return parse_array_subscript();
+    } else if (check(IDENTIFIER) && peek_token(LPAREN, 1)) {
+        return parse_function_statement();
     } else if (check(IDENTIFIER)) {
-        return parseIdentifier();
+        return parse_identifier();
     } else if (check(LPAREN)) {
         expect(LPAREN);
-        auto *exp = parsePrimaryExpression();
+        auto *exp = parse_primary_expression();
         expect(RPAREN);
         return exp;
     } else if (check(LBRACKET)) {
-        return parseArrayLiteral();
+        return parse_array_literal();
     } else if (check(INT_LITERAL) || check(FLOAT_LITERAL) || check(STRING_LITERAL) || check(BOOL_LITERAL)) {
-        return parseLiteral();
+        return parse_literal();
     } else {
-        parserError("factor", curToken());
+        parser_error("factor", cur_token());
     }
     return nullptr;
 }

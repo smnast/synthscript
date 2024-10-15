@@ -4,7 +4,7 @@ std::shared_ptr<Object> FunctionObject::add(std::shared_ptr<Object> other) {
     return nullptr;
 }
 
-std::shared_ptr<Object> FunctionObject::sub(std::shared_ptr<Object> other) {
+std::shared_ptr<Object> FunctionObject::subtract(std::shared_ptr<Object> other) {
     return nullptr;
 }
 
@@ -16,15 +16,15 @@ std::shared_ptr<Object> FunctionObject::negative() {
     return nullptr;
 }
 
-std::shared_ptr<Object> FunctionObject::mul(std::shared_ptr<Object> other) {
+std::shared_ptr<Object> FunctionObject::multiply(std::shared_ptr<Object> other) {
     return nullptr;
 }
 
-std::shared_ptr<Object> FunctionObject::div(std::shared_ptr<Object> other) {
+std::shared_ptr<Object> FunctionObject::divide(std::shared_ptr<Object> other) {
     return nullptr;
 }
 
-std::shared_ptr<Object> FunctionObject::mod(std::shared_ptr<Object> other) {
+std::shared_ptr<Object> FunctionObject::modulo(std::shared_ptr<Object> other) {
     return nullptr;
 }
 
@@ -48,35 +48,35 @@ std::shared_ptr<Object> FunctionObject::equal(std::shared_ptr<Object> other) {
     return nullptr;
 }
 
-std::shared_ptr<Object> FunctionObject::notEqual(std::shared_ptr<Object> other) {
+std::shared_ptr<Object> FunctionObject::not_equal(std::shared_ptr<Object> other) {
     return nullptr;
 }
 
-std::shared_ptr<Object> FunctionObject::lessThan(std::shared_ptr<Object> other) {
+std::shared_ptr<Object> FunctionObject::less_than(std::shared_ptr<Object> other) {
     return nullptr;
 }
 
-std::shared_ptr<Object> FunctionObject::greaterThan(std::shared_ptr<Object> other) {
+std::shared_ptr<Object> FunctionObject::greater_than(std::shared_ptr<Object> other) {
     return nullptr;
 }
 
-std::shared_ptr<Object> FunctionObject::lessThanEqual(std::shared_ptr<Object> other) {
+std::shared_ptr<Object> FunctionObject::less_than_equal(std::shared_ptr<Object> other) {
     return nullptr;
 }
 
-std::shared_ptr<Object> FunctionObject::greaterThanEqual(std::shared_ptr<Object> other) {
+std::shared_ptr<Object> FunctionObject::greater_than_equal(std::shared_ptr<Object> other) {
     return nullptr;
 }
 
-std::shared_ptr<Object> FunctionObject::logicalAnd(std::shared_ptr<Object> other) {
+std::shared_ptr<Object> FunctionObject::logical_and(std::shared_ptr<Object> other) {
     return nullptr;
 }
 
-std::shared_ptr<Object> FunctionObject::logicalOr(std::shared_ptr<Object> other) {
+std::shared_ptr<Object> FunctionObject::logical_or(std::shared_ptr<Object> other) {
     return nullptr;
 }
 
-std::shared_ptr<Object> FunctionObject::logicalNot() {
+std::shared_ptr<Object> FunctionObject::logical_not() {
     return nullptr;
 }
 

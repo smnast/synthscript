@@ -5,16 +5,22 @@
 
 class RangeLiteralNode : public ASTNode {
 public:
-    explicit RangeLiteralNode(ASTNode *start, ASTNode *end, int line, int col) : ASTNode(line, col), start(start), end(end) {}
+    explicit RangeLiteralNode(ASTNode *start, ASTNode *end, int line, int col)
+        : ASTNode(line, col), start(start), end(end) {}
+
     ~RangeLiteralNode() override {
         delete start;
         delete end;
     }
-    ASTNode *getStart() { return start; }
-    ASTNode *getEnd() { return end; }
+
+    ASTNode *get_start() { return start; }
+    ASTNode *get_end() { return end; }
+
     DECLARE_VISITOR_FUNCTIONS
+
 private:
-    ASTNode *start, *end;
+    ASTNode *start;
+    ASTNode *end;
 };
 
 #endif //SYNTHSCRIPT_RANGELITERALNODE_H

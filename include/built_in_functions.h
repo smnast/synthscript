@@ -13,6 +13,7 @@ class BuiltinFunctions {
 public:
     static void registerBuiltinFunctions(SymbolTable *symbolTable);
     static std::shared_ptr<Object> handleBuiltinFunction(const std::string& identifier, std::vector<std::shared_ptr<Object>> *arguments, int line, int col);
+
     static std::shared_ptr<Object> builtin_output(std::vector<std::shared_ptr<Object>> *arguments, int line, int col);
     static std::shared_ptr<Object> builtin_input(std::vector<std::shared_ptr<Object>> *arguments, int line, int col);
     static std::shared_ptr<Object> builtin_read(std::vector<std::shared_ptr<Object>> *arguments, int line, int col);
@@ -22,6 +23,7 @@ public:
     static std::shared_ptr<Object> builtin_len(std::vector<std::shared_ptr<Object>> *arguments, int line, int col);
     static std::shared_ptr<Object> builtin_sum(std::vector<std::shared_ptr<Object>> *arguments, int line, int col);
     static std::shared_ptr<Object> builtin_product(std::vector<std::shared_ptr<Object>> *arguments, int line, int col);
+
 private:
     static std::unordered_map<std::string, BuiltinFunction> builtinFunctions;
 };

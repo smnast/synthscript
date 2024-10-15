@@ -7,12 +7,14 @@
 
 class SubscriptOpNode : public ASTNode {
 public:
-    SubscriptOpNode(ASTNode *identifier, ASTNode *index, int line, int col) : ASTNode(line, col), identifier(identifier), index(index) {}
+    SubscriptOpNode(ASTNode *identifier, ASTNode *index, int line, int col) 
+        : ASTNode(line, col), identifier(identifier), index(index) {}
     ~SubscriptOpNode() override {
         delete identifier;
+        delete index;
     }
-    ASTNode *getIdentifier() { return identifier; }
-    ASTNode *getIndex() { return index; }
+    ASTNode *get_identifier() { return identifier; }
+    ASTNode *get_index() { return index; }
     DECLARE_VISITOR_FUNCTIONS
 private:
     ASTNode *identifier;

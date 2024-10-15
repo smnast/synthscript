@@ -4,7 +4,7 @@ std::shared_ptr<Object> VoidObject::add(std::shared_ptr<Object> other) {
     return nullptr;
 }
 
-std::shared_ptr<Object> VoidObject::sub(std::shared_ptr<Object> other) {
+std::shared_ptr<Object> VoidObject::subtract(std::shared_ptr<Object> other) {
     return nullptr;
 }
 
@@ -16,15 +16,15 @@ std::shared_ptr<Object> VoidObject::negative() {
     return nullptr;
 }
 
-std::shared_ptr<Object> VoidObject::mul(std::shared_ptr<Object> other) {
+std::shared_ptr<Object> VoidObject::multiply(std::shared_ptr<Object> other) {
     return nullptr;
 }
 
-std::shared_ptr<Object> VoidObject::div(std::shared_ptr<Object> other) {
+std::shared_ptr<Object> VoidObject::divide(std::shared_ptr<Object> other) {
     return nullptr;
 }
 
-std::shared_ptr<Object> VoidObject::mod(std::shared_ptr<Object> other) {
+std::shared_ptr<Object> VoidObject::modulo(std::shared_ptr<Object> other) {
     return nullptr;
 }
 
@@ -48,35 +48,35 @@ std::shared_ptr<Object> VoidObject::equal(std::shared_ptr<Object> other) {
     return nullptr;
 }
 
-std::shared_ptr<Object> VoidObject::notEqual(std::shared_ptr<Object> other) {
+std::shared_ptr<Object> VoidObject::not_equal(std::shared_ptr<Object> other) {
     return nullptr;
 }
 
-std::shared_ptr<Object> VoidObject::lessThan(std::shared_ptr<Object> other) {
+std::shared_ptr<Object> VoidObject::less_than(std::shared_ptr<Object> other) {
     return nullptr;
 }
 
-std::shared_ptr<Object> VoidObject::greaterThan(std::shared_ptr<Object> other) {
+std::shared_ptr<Object> VoidObject::greater_than(std::shared_ptr<Object> other) {
     return nullptr;
 }
 
-std::shared_ptr<Object> VoidObject::lessThanEqual(std::shared_ptr<Object> other) {
+std::shared_ptr<Object> VoidObject::less_than_equal(std::shared_ptr<Object> other) {
     return nullptr;
 }
 
-std::shared_ptr<Object> VoidObject::greaterThanEqual(std::shared_ptr<Object> other) {
+std::shared_ptr<Object> VoidObject::greater_than_equal(std::shared_ptr<Object> other) {
     return nullptr;
 }
 
-std::shared_ptr<Object> VoidObject::logicalAnd(std::shared_ptr<Object> other) {
+std::shared_ptr<Object> VoidObject::logical_and(std::shared_ptr<Object> other) {
     return nullptr;
 }
 
-std::shared_ptr<Object> VoidObject::logicalOr(std::shared_ptr<Object> other) {
+std::shared_ptr<Object> VoidObject::logical_or(std::shared_ptr<Object> other) {
     return nullptr;
 }
 
-std::shared_ptr<Object> VoidObject::logicalNot() {
+std::shared_ptr<Object> VoidObject::logical_not() {
     return nullptr;
 }
 

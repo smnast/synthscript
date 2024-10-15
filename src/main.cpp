@@ -12,16 +12,16 @@ void run(ProgramNode *program) {
 }
 
 void buildAndRun(const std::string &path) {
-    std::string code = Reader::readFile(path);
-    std::vector<Token> tokens = Lexer::parseTokens(code);
+    std::string code = Reader::read_file(path);
+    std::vector<Token> tokens = Lexer::parse_tokens(code);
 
-    ProgramNode *program = Parser::parseProgram(tokens);
+    ProgramNode *program = Parser::parse_program(tokens);
     auto *semanticAnalysisVisitor = new SemanticAnalysisVisitor();
     program->analyze(semanticAnalysisVisitor, nullptr);
     delete semanticAnalysisVisitor;
 
-    Error::printBuildStatus();
-    if (Error::shouldQuit()) {
+    Error::print_build_status();
+    if (Error::should_quit()) {
         delete program;
         exit(1);
     } else {
@@ -36,7 +36,7 @@ void printUsage() {
 }
 
 int main(int argc, char *argv[]) {
-    if (argc == 2 && Reader::fileExists(argv[1])) {
+    if (argc == 2 && Reader::file_exists(argv[1])) {
         buildAndRun(argv[1]);
     } else {
         printUsage();

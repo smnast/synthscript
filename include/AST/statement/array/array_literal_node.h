@@ -5,14 +5,19 @@
 
 class ArrayLiteralNode : public ASTNode {
 public:
-    explicit ArrayLiteralNode(std::vector<ASTNode*> values, int line, int col) : ASTNode(line, col), values(std::move(values)) {}
+    explicit ArrayLiteralNode(std::vector<ASTNode*> values, int line, int col) 
+        : ASTNode(line, col), values(std::move(values)) {}
+
     ~ArrayLiteralNode() override {
         for (auto &value : values) {
             delete value;
         }
     }
-    std::vector<ASTNode*> *getValues() { return &values; }
+
+    std::vector<ASTNode*>* get_values() { return &values; }
+
     DECLARE_VISITOR_FUNCTIONS
+
 private:
     std::vector<ASTNode*> values;
 };

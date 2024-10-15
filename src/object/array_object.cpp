@@ -3,18 +3,18 @@
 #include "object/bool_object.h"
 
 std::shared_ptr<Object> ArrayObject::add(std::shared_ptr<Object> other) {
-    if (other->getType() == TYPE_ARRAY) {
+    if (other->get_type() == TYPE_ARRAY) {
         std::vector<std::shared_ptr<Object>> result;
         result.insert(result.end(), value.begin(), value.end());
-        result.insert(result.end(), std::static_pointer_cast<ArrayObject>(other)->getValue()->begin(),
-                      std::static_pointer_cast<ArrayObject>(other)->getValue()->end());
+        result.insert(result.end(), std::static_pointer_cast<ArrayObject>(other)->get_value()->begin(),
+                      std::static_pointer_cast<ArrayObject>(other)->get_value()->end());
         return std::make_shared<ArrayObject>(result);
     } else {
         return nullptr;
     }
 }
 
-std::shared_ptr<Object> ArrayObject::sub(std::shared_ptr<Object> other) {
+std::shared_ptr<Object> ArrayObject::subtract(std::shared_ptr<Object> other) {
     return nullptr;
 }
 
@@ -26,12 +26,12 @@ std::shared_ptr<Object> ArrayObject::negative() {
     return nullptr;
 }
 
-std::shared_ptr<Object> ArrayObject::mul(std::shared_ptr<Object> other) {
-    if (other->getType() == TYPE_INT) {
-        int times = std::static_pointer_cast<IntObject>(other)->getValue();
+std::shared_ptr<Object> ArrayObject::multiply(std::shared_ptr<Object> other) {
+    if (other->get_type() == TYPE_INT) {
+        int times = std::static_pointer_cast<IntObject>(other)->get_value();
         std::vector<std::shared_ptr<Object>> result;
         for (int i = 0; i < times; i++) {
-            auto cur = *std::static_pointer_cast<ArrayObject>(this->duplicate())->getValue();
+            auto cur = *std::static_pointer_cast<ArrayObject>(this->duplicate())->get_value();
             result.insert(result.end(), cur.begin(), cur.end());
         }
         return std::make_shared<ArrayObject>(result);
@@ -40,11 +40,11 @@ std::shared_ptr<Object> ArrayObject::mul(std::shared_ptr<Object> other) {
     }
 }
 
-std::shared_ptr<Object> ArrayObject::div(std::shared_ptr<Object> other) {
+std::shared_ptr<Object> ArrayObject::divide(std::shared_ptr<Object> other) {
     return nullptr;
 }
 
-std::shared_ptr<Object> ArrayObject::mod(std::shared_ptr<Object> other) {
+std::shared_ptr<Object> ArrayObject::modulo(std::shared_ptr<Object> other) {
     return nullptr;
 }
 
@@ -65,8 +65,8 @@ std::shared_ptr<Object> ArrayObject::bitwise_not() {
 }
 
 std::shared_ptr<Object> ArrayObject::equal(std::shared_ptr<Object> other) {
-    if (other->getType() == TYPE_ARRAY) {
-        std::vector<std::shared_ptr<Object>> otherValue = *std::static_pointer_cast<ArrayObject>(other)->getValue();
+    if (other->get_type() == TYPE_ARRAY) {
+        std::vector<std::shared_ptr<Object>> otherValue = *std::static_pointer_cast<ArrayObject>(other)->get_value();
         bool match = true;
         if (value.size() == otherValue.size()) {
             for (int i = 0; i < value.size(); i++) {
@@ -85,9 +85,9 @@ std::shared_ptr<Object> ArrayObject::equal(std::shared_ptr<Object> other) {
     }
 }
 
-std::shared_ptr<Object> ArrayObject::notEqual(std::shared_ptr<Object> other) {
-    if (other->getType() == TYPE_ARRAY) {
-        std::vector<std::shared_ptr<Object>> otherValue = *std::static_pointer_cast<ArrayObject>(other)->getValue();
+std::shared_ptr<Object> ArrayObject::not_equal(std::shared_ptr<Object> other) {
+    if (other->get_type() == TYPE_ARRAY) {
+        std::vector<std::shared_ptr<Object>> otherValue = *std::static_pointer_cast<ArrayObject>(other)->get_value();
         bool match = true;
         if (value.size() != otherValue.size()) {
             for (int i = 0; i < value.size(); i++) {
@@ -106,31 +106,31 @@ std::shared_ptr<Object> ArrayObject::notEqual(std::shared_ptr<Object> other) {
     }
 }
 
-std::shared_ptr<Object> ArrayObject::lessThan(std::shared_ptr<Object> other) {
+std::shared_ptr<Object> ArrayObject::less_than(std::shared_ptr<Object> other) {
     return nullptr;
 }
 
-std::shared_ptr<Object> ArrayObject::greaterThan(std::shared_ptr<Object> other) {
+std::shared_ptr<Object> ArrayObject::greater_than(std::shared_ptr<Object> other) {
     return nullptr;
 }
 
-std::shared_ptr<Object> ArrayObject::lessThanEqual(std::shared_ptr<Object> other) {
+std::shared_ptr<Object> ArrayObject::less_than_equal(std::shared_ptr<Object> other) {
     return nullptr;
 }
 
-std::shared_ptr<Object> ArrayObject::greaterThanEqual(std::shared_ptr<Object> other) {
+std::shared_ptr<Object> ArrayObject::greater_than_equal(std::shared_ptr<Object> other) {
     return nullptr;
 }
 
-std::shared_ptr<Object> ArrayObject::logicalAnd(std::shared_ptr<Object> other) {
+std::shared_ptr<Object> ArrayObject::logical_and(std::shared_ptr<Object> other) {
     return nullptr;
 }
 
-std::shared_ptr<Object> ArrayObject::logicalOr(std::shared_ptr<Object> other) {
+std::shared_ptr<Object> ArrayObject::logical_or(std::shared_ptr<Object> other) {
     return nullptr;
 }
 
-std::shared_ptr<Object> ArrayObject::logicalNot() {
+std::shared_ptr<Object> ArrayObject::logical_not() {
     return nullptr;
 }
 
@@ -143,8 +143,8 @@ std::shared_ptr<Object> ArrayObject::cast(Type type) {
 }
 
 std::shared_ptr<Object> ArrayObject::subscript(std::shared_ptr<Object> other) {
-    if (other->getType() == TYPE_INT) {
-        int index = std::static_pointer_cast<IntObject>(other)->getValue();
+    if (other->get_type() == TYPE_INT) {
+        int index = std::static_pointer_cast<IntObject>(other)->get_value();
         if (index < 0 || index >= value.size()) {
             return nullptr;
         }
@@ -155,8 +155,8 @@ std::shared_ptr<Object> ArrayObject::subscript(std::shared_ptr<Object> other) {
 }
 
 std::shared_ptr<Object> ArrayObject::subscriptUpdate(const std::shared_ptr<Object>& index, const std::shared_ptr<Object> &val) {
-    if (index->getType() == TYPE_INT) {
-        int i = std::static_pointer_cast<IntObject>(index)->getValue();
+    if (index->get_type() == TYPE_INT) {
+        int i = std::static_pointer_cast<IntObject>(index)->get_value();
         if (i < 0 || i >= value.size()) {
             return nullptr;
         }

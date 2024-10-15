@@ -12,35 +12,35 @@ void Error::error(const std::string &message, bool forcePrint) {
     errored = true;
 }
 
-void Error::posError(const std::string &message, int line, int col, bool forcePrint) {
+void Error::error_at_pos(const std::string &message, int line, int col, bool forcePrint) {
     if (errored && !forcePrint) return;
     error(message, forcePrint);
-    Reader::showPosition(line, col);
+    Reader::show_position(line, col);
 }
 
-void Error::runtimeError(const std::string &message, int line, int col) {
+void Error::runtime_error(const std::string &message, int line, int col) {
     std::printf("Runtime Error: %s\n", message.c_str());
-    Reader::showPosition(line, col);
+    Reader::show_position(line, col);
     exit(1);
 }
 
-bool Error::checkError() {
+bool Error::check_error() {
     return errored;
 }
 
-void Error::handleError() {
+void Error::handle_error() {
     errored = false;
 }
 
-void Error::printBuildStatus() {
+void Error::print_build_status() {
     std::string status = (errorCount > 0 ? "failed" : "succeeded");
-    std::printf("=== Build %s with %d errors ===\n", status.c_str(), getErrorCount());
+    std::printf("=== Build %s with %d errors ===\n", status.c_str(), get_error_count());
 }
 
-int Error::getErrorCount() {
+int Error::get_error_count() {
     return errorCount;
 }
 
-bool Error::shouldQuit() {
+bool Error::should_quit() {
     return errorCount > 0;
 }

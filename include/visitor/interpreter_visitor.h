@@ -28,6 +28,7 @@ public:
     std::shared_ptr<Object> visit(CompoundStatementNode *node, SymbolTable* arg) override;
     std::shared_ptr<Object> visit(IdentifierNode *node, SymbolTable* arg) override;
     std::shared_ptr<Object> visit(LiteralNode *node, SymbolTable* arg) override;
+
 private:
     std::shared_ptr<Object> returnVal = nullptr;
     bool backtracking = false, breaking = false, returning = false;

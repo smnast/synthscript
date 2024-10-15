@@ -12,20 +12,25 @@ public:
             delete child;
         }
     }
+
     void insert(Symbol symbol);
     bool contains(const std::string &name, bool currentScope);
     Symbol *lookup(const std::string &name, bool currentScope);
-    bool isLoop() const;
-    bool isFunction() const;
-    bool isGlobalScope() const;
-    SymbolTable *getGlobalScope() const;
+    bool is_loop() const;
+    bool is_function() const;
+    bool is_global_scope() const;
+    SymbolTable *get_global_scope() const;
+
 protected:
-    void addChild(SymbolTable *symbolTable);
+    void add_child(SymbolTable *symbolTable);
+
 private:
     std::unordered_map<std::string, Symbol> symbols;
-    SymbolTable *enclosingScope, *globalScope;
+    SymbolTable *enclosingScope;
+    SymbolTable *globalScope;
     std::vector<SymbolTable*> childScope;
-    bool loop = false, function = false;
+    bool loop = false;
+    bool function = false;
 };
 
 #endif //SYNTHSCRIPT_SYMBOLTABLE_H
