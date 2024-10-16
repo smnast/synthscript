@@ -6,29 +6,32 @@
 
 class SymbolTable {
 public:
-    SymbolTable(SymbolTable *enclosingScope, bool loop, bool function);
+    SymbolTable(SymbolTable *enclosing_scope, bool loop, bool function);
+
     ~SymbolTable() {
-        for (auto &child : childScope) {
+        for (auto &child : child_scope) {
             delete child;
         }
     }
 
     void insert(Symbol symbol);
-    bool contains(const std::string &name, bool currentScope);
-    Symbol *lookup(const std::string &name, bool currentScope);
+    bool contains(const std::string &name, bool current_scope);
+    Symbol *lookup(const std::string &name, bool current_scope);
+
     bool is_loop() const;
     bool is_function() const;
     bool is_global_scope() const;
+
     SymbolTable *get_global_scope() const;
 
 protected:
-    void add_child(SymbolTable *symbolTable);
+    void add_child(SymbolTable *symbol_table);
 
 private:
     std::unordered_map<std::string, Symbol> symbols;
-    SymbolTable *enclosingScope;
-    SymbolTable *globalScope;
-    std::vector<SymbolTable*> childScope;
+    SymbolTable *enclosing_scope;
+    SymbolTable *global_scope;
+    std::vector<SymbolTable*> child_scope;
     bool loop = false;
     bool function = false;
 };

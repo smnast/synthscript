@@ -1,20 +1,20 @@
 #include "error.h"
 
 bool Error::errored = false;
-int Error::errorCount = 0;
+int Error::error_count = 0;
 
-void Error::error(const std::string &message, bool forcePrint) {
-    if (!errored || forcePrint) {
+void Error::error(const std::string &message, bool force_print) {
+    if (!errored || force_print) {
         std::printf("Error: %s\n", message.c_str());
-        errorCount++;
+        error_count++;
     }
 
     errored = true;
 }
 
-void Error::error_at_pos(const std::string &message, int line, int col, bool forcePrint) {
-    if (errored && !forcePrint) return;
-    error(message, forcePrint);
+void Error::error_at_pos(const std::string &message, int line, int col, bool force_print) {
+    if (errored && !force_print) return;
+    error(message, force_print);
     Reader::show_position(line, col);
 }
 
@@ -33,14 +33,14 @@ void Error::handle_error() {
 }
 
 void Error::print_build_status() {
-    std::string status = (errorCount > 0 ? "failed" : "succeeded");
+    std::string status = (error_count > 0 ? "failed" : "succeeded");
     std::printf("=== Build %s with %d errors ===\n", status.c_str(), get_error_count());
 }
 
 int Error::get_error_count() {
-    return errorCount;
+    return error_count;
 }
 
 bool Error::should_quit() {
-    return errorCount > 0;
+    return error_count > 0;
 }

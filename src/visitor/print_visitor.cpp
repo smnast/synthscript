@@ -9,13 +9,13 @@ void PrintVisitor::visit(ProgramNode *node, int arg) {
 }
 
 void PrintVisitor::visit(BinOpNode *node, int arg) {
-    std::cout << std::string(arg, '\t') << "BinOpNode " << tokenNames[node->get_op()] << std::endl;
+    std::cout << std::string(arg, '\t') << "BinOpNode " << token_names[node->get_op()] << std::endl;
     node->get_left_node()->accept(this, arg+1);
     node->get_right_node()->accept(this, arg+1);
 }
 
 void PrintVisitor::visit(CastOpNode *node, int arg) {
-    std::cout << std::string(arg, '\t') << "CastOpNode" << "'" << typeStrings[node->get_type()] << "'" << std::endl;
+    std::cout << std::string(arg, '\t') << "CastOpNode" << "'" << type_strings[node->get_type()] << "'" << std::endl;
     node->get_operand()->accept(this, arg+1);
 }
 
@@ -26,7 +26,7 @@ void PrintVisitor::visit(SubscriptOpNode *node, int arg) {
 }
 
 void PrintVisitor::visit(UnaryOpNode *node, int arg) {
-    std::cout << std::string(arg, '\t') << "UnaryOpNode " << tokenNames[node->get_op()] << std::endl;
+    std::cout << std::string(arg, '\t') << "UnaryOpNode " << token_names[node->get_op()] << std::endl;
     node->get_operand()->accept(this, arg+1);
 }
 

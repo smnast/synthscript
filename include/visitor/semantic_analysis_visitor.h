@@ -27,8 +27,8 @@ public:
     void visit(IdentifierNode *node, SymbolTable* arg) override;
     void visit(LiteralNode *node, SymbolTable* arg) override;
 
-    static std::string getArrayIdentifier(SubscriptOpNode *node, SymbolTable* arg);
-    static void semanticError(const std::string &message, int line, int column);
+    static std::string get_array_identifier(SubscriptOpNode *node, SymbolTable* arg);
+    static void semantic_error(const std::string &message, int line, int column);
 };
 
 #endif //SYNTHSCRIPT_SEMANTICANALYSISVISITOR_H

@@ -5,25 +5,25 @@
 
 class IfStatementNode : public ASTNode {
 public:
-    IfStatementNode(ASTNode *condition, ASTNode *ifBody, ASTNode *elseBody, int line, int col)
-        : ASTNode(line, col), condition(condition), ifBody(ifBody), elseBody(elseBody) {}
+    IfStatementNode(ASTNode *condition, ASTNode *if_body, ASTNode *else_body, int line, int col)
+        : ASTNode(line, col), condition(condition), if_body(if_body), else_body(else_body) {}
 
     ~IfStatementNode() override {
         delete condition;
-        delete ifBody;
-        delete elseBody;
+        delete if_body;
+        delete else_body;
     }
 
     ASTNode *get_condition() { return condition; }
-    ASTNode *get_if_body() { return ifBody; }
-    ASTNode *get_else_body() { return elseBody; }
+    ASTNode *get_if_body() { return if_body; }
+    ASTNode *get_else_body() { return else_body; }
 
     DECLARE_VISITOR_FUNCTIONS
 
 private:
     ASTNode *condition;
-    ASTNode *ifBody;
-    ASTNode *elseBody;
+    ASTNode *if_body;
+    ASTNode *else_body;
 };
 
 #endif //SYNTHSCRIPT_IFSTATEMENTNODE_H

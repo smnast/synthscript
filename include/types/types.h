@@ -8,7 +8,7 @@ enum Type {
     TYPE_INT, TYPE_FLOAT, TYPE_BOOL, TYPE_STRING, TYPE_VOID, TYPE_ARRAY, TYPE_FUNCTION, TYPE_UNDEF
 };
 
-static std::string typeStrings[] = {
+static std::string type_strings[] = {
         "int", "float", "bool", "string", "void", "array", "function", "<error>"
 };
 

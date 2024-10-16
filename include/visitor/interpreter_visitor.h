@@ -30,7 +30,7 @@ public:
     std::shared_ptr<Object> visit(LiteralNode *node, SymbolTable* arg) override;
 
 private:
-    std::shared_ptr<Object> returnVal = nullptr;
+    std::shared_ptr<Object> return_val = nullptr;
     bool backtracking = false, breaking = false, returning = false;
 };
 

@@ -12,7 +12,7 @@ public:
     Symbol(std::string name, std::shared_ptr<Object> value) : name(std::move(name)), value(std::move(value)) {}
 
     std::string get_name() const { return name; }
-    void set_value(std::shared_ptr<Object> _value) { value = std::move(_value); }
+    void set_value(std::shared_ptr<Object> value) { this->value = std::move(value); }
     std::shared_ptr<Object> get_value() const { return value; }
     Type get_type() const { return value == nullptr ? TYPE_UNDEF : value->get_type(); }
 

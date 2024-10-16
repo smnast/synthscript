@@ -24,7 +24,7 @@ typedef enum {
     IDENTIFIER, UNDEFINED, ESCAPED_NEW_LINE, NEW_LINE, END_OF_FILE,
 } TokenType;
 
-const std::vector<std::string> tokenNames = {
+const std::vector<std::string> token_names = {
         "'<-'",
         "'+'", "'-'",
         "'*'", "'/'", "'%'",
@@ -44,7 +44,7 @@ const std::vector<std::string> tokenNames = {
         "identifier", "undefined token", "escaped new line", "new line", "end of file",
 };
 
-const std::vector<std::pair<TokenType, std::string>> tokenRegexExprs = {
+const std::vector<std::pair<TokenType, std::string>> token_regexs = {
         {ASSIGNMENT_OPERATOR,         R"(\<\-)"},
         {ADDITION_OPERATOR,           R"(\+)"},
         {SUBTRACTION_OPERATOR,        R"(\-)"},
@@ -99,11 +99,11 @@ const std::vector<std::pair<TokenType, std::string>> tokenRegexExprs = {
 };
 
 struct Token {
-    const TokenType tokenType{};
+    const TokenType token_type{};
     const std::string value{};
-    const int lineNumber, columnNumber;
+    const int line, column;
 
-    Token(TokenType type, std::string val, int lineNumber, int columnNumber) : tokenType(type), value(std::move(val)), lineNumber(lineNumber), columnNumber(columnNumber) {}
+    Token(TokenType type, std::string val, int line, int column) : token_type(type), value(std::move(val)), line(line), column(column) {}
 };
 
 static bool token_is_type(TokenType type) {

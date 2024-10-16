@@ -10,7 +10,7 @@ public:
     static std::vector<Token> parse_tokens(std::string &file);
 
 private:
-    static std::vector<int> linePrefix, columnPrefix;
+    static std::vector<int> line_prefix, column_prefix;
     static std::string combine_regex();
     static void prepare_line_prefix(std::string &file);
     static void prepare_column_prefix(std::string &file);
