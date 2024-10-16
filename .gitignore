@@ -34,8 +34,9 @@
 # CMake build directory
 build
 
-# Compile commands
+# clangd files
 compile_commands.json
+.cache
 
 # VSCode files
 .vscode
