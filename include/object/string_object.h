@@ -32,8 +32,9 @@ public:
     std::shared_ptr<Object> duplicate() override;
     int get_len() const { return (int)value.size(); };
     std::string get_value() { return value; }
+
 private:
     std::string value;
 };
 
-#endif //SYNTHSCRIPT_STRINGOBJECT_H
+#endif // SYNTHSCRIPT_STRINGOBJECT_H

@@ -23,4 +23,4 @@ private:
     ASTNode *end;
 };
 
-#endif //SYNTHSCRIPT_RANGELITERALNODE_H
+#endif // SYNTHSCRIPT_RANGELITERALNODE_H

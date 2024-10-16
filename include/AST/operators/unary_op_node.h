@@ -6,12 +6,10 @@
 
 class UnaryOpNode : public ASTNode {
 public:
-    UnaryOpNode(TokenType op, ASTNode *operand, int line, int col) 
+    UnaryOpNode(TokenType op, ASTNode *operand, int line, int col)
         : ASTNode(line, col), op(op), operand(operand) {}
 
-    ~UnaryOpNode() override {
-        delete operand;
-    }
+    ~UnaryOpNode() override { delete operand; }
 
     TokenType get_op() { return op; }
     ASTNode *get_operand() { return operand; }
@@ -23,4 +21,4 @@ private:
     ASTNode *operand;
 };
 
-#endif //SYNTHSCRIPT_UNARYOPNODE_H
+#endif // SYNTHSCRIPT_UNARYOPNODE_H

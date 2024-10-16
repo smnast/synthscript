@@ -20,4 +20,4 @@ private:
     std::string value;
 };
 
-#endif //SYNTHSCRIPT_LITERALNODE_H
+#endif // SYNTHSCRIPT_LITERALNODE_H

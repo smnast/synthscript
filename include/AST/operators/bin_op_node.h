@@ -25,4 +25,4 @@ private:
     ASTNode *right;
 };
 
-#endif //SYNTHSCRIPT_BINOPNODE_H
+#endif // SYNTHSCRIPT_BINOPNODE_H

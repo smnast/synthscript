@@ -27,4 +27,4 @@ public:
     void visit(LiteralNode *node, int arg) override;
 };
 
-#endif //SYNTHSCRIPT_PRINTVISITOR_H
+#endif // SYNTHSCRIPT_PRINTVISITOR_H

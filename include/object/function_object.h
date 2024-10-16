@@ -1,12 +1,13 @@
 #ifndef SYNTHSCRIPT_FUNCTIONOBJECT_H
 #define SYNTHSCRIPT_FUNCTIONOBJECT_H
 
-#include "object.h"
 #include "AST/AST_node.h"
+#include "object.h"
 
 class FunctionObject : public Object {
 public:
-    FunctionObject(ASTNode *body, std::vector<std::string> parameters, bool builtin=false) : body(body), parameters(std::move(parameters)), built_in(builtin) {}
+    FunctionObject(ASTNode *body, std::vector<std::string> parameters, bool builtin = false)
+        : body(body), parameters(std::move(parameters)), built_in(builtin) {}
 
     Type get_type() override { return TYPE_FUNCTION; }
 
@@ -44,4 +45,4 @@ private:
     bool built_in;
 };
 
-#endif //SYNTHSCRIPT_FUNCTIONOBJECT_H
+#endif // SYNTHSCRIPT_FUNCTIONOBJECT_H

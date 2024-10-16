@@ -9,7 +9,8 @@ class Symbol {
 public:
     Symbol() = default;
     explicit Symbol(std::string name) : name(std::move(name)), value(nullptr) {}
-    Symbol(std::string name, std::shared_ptr<Object> value) : name(std::move(name)), value(std::move(value)) {}
+    Symbol(std::string name, std::shared_ptr<Object> value)
+        : name(std::move(name)), value(std::move(value)) {}
 
     std::string get_name() const { return name; }
     void set_value(std::shared_ptr<Object> value) { this->value = std::move(value); }
@@ -21,4 +22,4 @@ private:
     std::shared_ptr<Object> value;
 };
 
-#endif //SYNTHSCRIPT_SYMBOL_H
+#endif // SYNTHSCRIPT_SYMBOL_H

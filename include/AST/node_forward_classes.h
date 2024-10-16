@@ -22,4 +22,4 @@ class IdentifierNode;
 class LiteralNode;
 class ProgramNode;
 
-#endif //SYNTHSCRIPT_NODEFORWARDCLASSES_H
+#endif // SYNTHSCRIPT_NODEFORWARDCLASSES_H

@@ -35,4 +35,4 @@ public:
     std::shared_ptr<Object> duplicate() override;
 };
 
-#endif //SYNTHSCRIPT_VOIDOBJECT_H
+#endif // SYNTHSCRIPT_VOIDOBJECT_H

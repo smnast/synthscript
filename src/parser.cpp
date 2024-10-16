@@ -38,33 +38,35 @@ void Parser::expect(TokenType type) {
 }
 
 void Parser::accept_new_lines() {
-    while (accept(NEW_LINE));
+    while (accept(NEW_LINE))
+        ;
 }
 
 void Parser::sync() {
     while (true) {
         switch (cur_token().token_type) {
-            case IF_KEYWORD:
-            case FOR_KEYWORD:
-            case END_OF_FILE:
-            case NEW_LINE:
-                return;
-            default:
-                next_token();
-                continue;
+        case IF_KEYWORD:
+        case FOR_KEYWORD:
+        case END_OF_FILE:
+        case NEW_LINE:
+            return;
+        default:
+            next_token();
+            continue;
         }
     }
 }
 
 void Parser::parser_error(const std::string &expected, const Token &actual) {
-    Error::error_at_pos("Expected " + expected + " but got " + token_names[actual.token_type], actual.line, actual.column, false);
+    Error::error_at_pos("Expected " + expected + " but got " + token_names[actual.token_type],
+                        actual.line, actual.column, false);
 }
 
 ProgramNode *Parser::parse_program(std::vector<Token> program_tokens) {
     tokens = std::move(program_tokens);
     cur_idx = 0;
 
-    std::vector<ASTNode*> statements;
+    std::vector<ASTNode *> statements;
     while (!check(END_OF_FILE)) {
         if (Error::check_error()) {
             Error::handle_error();
@@ -72,7 +74,8 @@ ProgramNode *Parser::parse_program(std::vector<Token> program_tokens) {
             continue;
         }
         auto *statement_node = parse_statement();
-        if (statement_node == nullptr) break;
+        if (statement_node == nullptr)
+            break;
         statements.push_back(statement_node);
 
         accept_new_lines();
@@ -111,7 +114,7 @@ ASTNode *Parser::parse_statement() {
 ASTNode *Parser::parse_compound_statement() {
     int line = cur_token().line, col = cur_token().column;
     expect(LBRACE);
-    std::vector<ASTNode*> statements;
+    std::vector<ASTNode *> statements;
     while (!check(RBRACE) && !check(END_OF_FILE)) {
         if (Error::check_error()) {
             Error::handle_error();
@@ -119,7 +122,8 @@ ASTNode *Parser::parse_compound_statement() {
             continue;
         }
         auto *statement_node = parse_statement();
-        if (statement_node == nullptr) continue;
+        if (statement_node == nullptr)
+            continue;
         statements.push_back(statement_node);
 
         accept_new_lines();
@@ -136,11 +140,13 @@ ASTNode *Parser::parse_function_declaration() {
     expect(LPAREN);
     std::vector<std::string> parameters;
     while (!check(RPAREN) && !check(END_OF_FILE)) {
-        if (Error::check_error()) return nullptr;
+        if (Error::check_error())
+            return nullptr;
         std::string parameter = cur_token().value;
         expect(IDENTIFIER);
         parameters.push_back(parameter);
-        if (accept(COMMA)) continue;
+        if (accept(COMMA))
+            continue;
     }
     expect(RPAREN);
     ASTNode *body = parse_compound_statement();
@@ -153,13 +159,16 @@ ASTNode *Parser::parse_function_statement() {
     std::string identifier = cur_token().value;
     expect(IDENTIFIER);
     expect(LPAREN);
-    std::vector<ASTNode*> arguments;
+    std::vector<ASTNode *> arguments;
     while (!check(RPAREN) && !check(END_OF_FILE)) {
-        if (Error::check_error()) return nullptr;
+        if (Error::check_error())
+            return nullptr;
         auto *argument = parse_primary_expression();
-        if (argument == nullptr) continue;
+        if (argument == nullptr)
+            continue;
         arguments.push_back(argument);
-        if (accept(COMMA)) continue;
+        if (accept(COMMA))
+            continue;
     }
     expect(RPAREN);
     return new FunctionStatementNode(identifier, arguments, line, col);
@@ -168,13 +177,16 @@ ASTNode *Parser::parse_function_statement() {
 ASTNode *Parser::parse_array_literal() {
     int line = cur_token().line, col = cur_token().column;
     expect(LBRACKET);
-    std::vector<ASTNode*> values;
+    std::vector<ASTNode *> values;
     while (!check(RBRACKET) && !check(END_OF_FILE)) {
-        if (Error::check_error()) return nullptr;
+        if (Error::check_error())
+            return nullptr;
         auto *value = parse_primary_expression();
-        if (value == nullptr) continue;
+        if (value == nullptr)
+            continue;
         values.push_back(value);
-        if (accept(COMMA)) continue;
+        if (accept(COMMA))
+            continue;
     }
     expect(RBRACKET);
     return new ArrayLiteralNode(values, line, col);
@@ -183,7 +195,8 @@ ASTNode *Parser::parse_array_literal() {
 ASTNode *Parser::parse_array_subscript() {
     ASTNode *identifier = parse_identifier();
     while (accept(LBRACKET)) {
-        if (Error::check_error()) return nullptr;
+        if (Error::check_error())
+            return nullptr;
         int line = cur_token().line, col = cur_token().column;
         auto *index = parse_primary_expression();
         identifier = new SubscriptOpNode(identifier, index, line, col);
@@ -220,7 +233,8 @@ ASTNode *Parser::parse_if_statement() {
             else_body = parse_compound_statement();
         }
     }
-    if (condition == nullptr) return nullptr;
+    if (condition == nullptr)
+        return nullptr;
     return new IfStatementNode(condition, body, else_body, line, col);
 }
 
@@ -229,7 +243,8 @@ ASTNode *Parser::parse_while_statement() {
     expect(WHILE_KEYWORD);
     auto *condition = parse_primary_expression();
     auto *body = parse_compound_statement();
-    if (condition == nullptr) return nullptr;
+    if (condition == nullptr)
+        return nullptr;
     return new WhileStatementNode(condition, body, line, col);
 }
 
@@ -241,7 +256,8 @@ ASTNode *Parser::parse_for_statement() {
     expect(IN_KEYWORD);
     auto *iterable = parse_primary_expression();
     auto *body = parse_compound_statement();
-    if (iterable == nullptr) return nullptr;
+    if (iterable == nullptr)
+        return nullptr;
     return new ForStatementNode(identifier, iterable, body, line, col);
 }
 
@@ -250,7 +266,8 @@ ASTNode *Parser::parse_repeat_statement() {
     expect(REPEAT_KEYWORD);
     auto *count = parse_primary_expression();
     auto *body = parse_compound_statement();
-    if (count == nullptr) return nullptr;
+    if (count == nullptr)
+        return nullptr;
     return new RepeatStatementNode(count, body, line, col);
 }
 
@@ -273,7 +290,8 @@ ASTNode *Parser::parse_return_statement() {
     if (!check(END_OF_FILE) && !check(NEW_LINE) && !check(RBRACE)) {
         value = parse_primary_expression();
     }
-    if (value == nullptr) return nullptr;
+    if (value == nullptr)
+        return nullptr;
     return new ReturnStatementNode(value, line, col);
 }
 
@@ -300,7 +318,8 @@ ASTNode *Parser::parse_assignment_expression() {
     int line = cur_token().line, col = cur_token().column;
     ASTNode *left = parse_logical_or_expression();
     if (accept(ASSIGNMENT_OPERATOR)) {
-        if (Error::check_error()) return nullptr;
+        if (Error::check_error())
+            return nullptr;
 
         auto *right = parse_assignment_expression();
         left = new AssignmentNode(left, right, line, col);
@@ -312,7 +331,8 @@ ASTNode *Parser::parse_logical_or_expression() {
     int line = cur_token().line, col = cur_token().column;
     auto *left = parse_logical_and_expression();
     while (check(LOGICAL_OR_OPERATOR)) {
-        if (Error::check_error()) return nullptr;
+        if (Error::check_error())
+            return nullptr;
 
         TokenType op = cur_token().token_type;
         accept(LOGICAL_OR_OPERATOR);
@@ -326,7 +346,8 @@ ASTNode *Parser::parse_logical_and_expression() {
     int line = cur_token().line, col = cur_token().column;
     auto *left = parse_bitwise_or_expression();
     while (check(LOGICAL_AND_OPERATOR)) {
-        if (Error::check_error()) return nullptr;
+        if (Error::check_error())
+            return nullptr;
 
         TokenType op = cur_token().token_type;
         accept(LOGICAL_AND_OPERATOR);
@@ -340,7 +361,8 @@ ASTNode *Parser::parse_bitwise_or_expression() {
     int line = cur_token().line, col = cur_token().column;
     auto *left = parse_bitwise_xor_expression();
     while (check(BITWISE_OR_OPERATOR)) {
-        if (Error::check_error()) return nullptr;
+        if (Error::check_error())
+            return nullptr;
 
         TokenType op = cur_token().token_type;
         accept(BITWISE_OR_OPERATOR);
@@ -354,7 +376,8 @@ ASTNode *Parser::parse_bitwise_xor_expression() {
     int line = cur_token().line, col = cur_token().column;
     auto *left = parse_bitwise_and_expression();
     while (check(BITWISE_XOR_OPERATOR)) {
-        if (Error::check_error()) return nullptr;
+        if (Error::check_error())
+            return nullptr;
 
         TokenType op = cur_token().token_type;
         accept(BITWISE_XOR_OPERATOR);
@@ -368,7 +391,8 @@ ASTNode *Parser::parse_bitwise_and_expression() {
     int line = cur_token().line, col = cur_token().column;
     auto *left = parse_equality_expression();
     while (check(BITWISE_AND_OPERATOR)) {
-        if (Error::check_error()) return nullptr;
+        if (Error::check_error())
+            return nullptr;
 
         TokenType op = cur_token().token_type;
         accept(BITWISE_AND_OPERATOR);
@@ -382,7 +406,8 @@ ASTNode *Parser::parse_equality_expression() {
     int line = cur_token().line, col = cur_token().column;
     auto *left = parse_relational_expression();
     while (check(EQUAL_OPERATOR) || check(NOT_EQUAL_OPERATOR)) {
-        if (Error::check_error()) return nullptr;
+        if (Error::check_error())
+            return nullptr;
 
         TokenType op = cur_token().token_type;
         accept(cur_token().token_type);
@@ -395,9 +420,10 @@ ASTNode *Parser::parse_equality_expression() {
 ASTNode *Parser::parse_relational_expression() {
     int line = cur_token().line, col = cur_token().column;
     auto *left = parse_range_literal_expression();
-    while (check(LESS_THAN_OPERATOR) || check(LESS_THAN_EQUAL_OPERATOR)
-           || check(GREATER_THAN_OPERATOR) || check(GREATER_THAN_EQUAL_OPERATOR)) {
-        if (Error::check_error()) return nullptr;
+    while (check(LESS_THAN_OPERATOR) || check(LESS_THAN_EQUAL_OPERATOR) ||
+           check(GREATER_THAN_OPERATOR) || check(GREATER_THAN_EQUAL_OPERATOR)) {
+        if (Error::check_error())
+            return nullptr;
 
         TokenType op = cur_token().token_type;
         accept(cur_token().token_type);
@@ -411,7 +437,8 @@ ASTNode *Parser::parse_range_literal_expression() {
     int line = cur_token().line, col = cur_token().column;
     auto *left = parse_additive_expression();
     if (accept(RANGE_SYMBOL)) {
-        if (Error::check_error()) return nullptr;
+        if (Error::check_error())
+            return nullptr;
 
         auto *right = parse_additive_expression();
         left = new RangeLiteralNode(left, right, line, col);
@@ -423,7 +450,8 @@ ASTNode *Parser::parse_additive_expression() {
     int line = cur_token().line, col = cur_token().column;
     auto *left = parse_multiplicative_expression();
     while (check(ADDITION_OPERATOR) || check(SUBTRACTION_OPERATOR)) {
-        if (Error::check_error()) return nullptr;
+        if (Error::check_error())
+            return nullptr;
 
         TokenType op = cur_token().token_type;
         accept(cur_token().token_type);
@@ -437,7 +465,8 @@ ASTNode *Parser::parse_multiplicative_expression() {
     int line = cur_token().line, col = cur_token().column;
     auto *left = parse_unary_expression();
     while (check(MULTIPLICATIVE_OPERATOR) || check(DIVISION_OPERATOR) || check(MOD_OPERATOR)) {
-        if (Error::check_error()) return nullptr;
+        if (Error::check_error())
+            return nullptr;
 
         TokenType op = cur_token().token_type;
         accept(cur_token().token_type);
@@ -449,8 +478,8 @@ ASTNode *Parser::parse_multiplicative_expression() {
 
 ASTNode *Parser::parse_unary_expression() {
     int line = cur_token().line, col = cur_token().column;
-    if (check(LOGICAL_NOT_OPERATOR) || check(BITWISE_NOT_OPERATOR)
-        || check(SUBTRACTION_OPERATOR) || check(ADDITION_OPERATOR)) {
+    if (check(LOGICAL_NOT_OPERATOR) || check(BITWISE_NOT_OPERATOR) || check(SUBTRACTION_OPERATOR) ||
+        check(ADDITION_OPERATOR)) {
         TokenType op = cur_token().token_type;
         accept(cur_token().token_type);
         auto *right = parse_factor_expression();
@@ -476,11 +505,11 @@ ASTNode *Parser::parse_factor_expression() {
         return exp;
     } else if (check(LBRACKET)) {
         return parse_array_literal();
-    } else if (check(INT_LITERAL) || check(FLOAT_LITERAL) || check(STRING_LITERAL) || check(BOOL_LITERAL)) {
+    } else if (check(INT_LITERAL) || check(FLOAT_LITERAL) || check(STRING_LITERAL) ||
+               check(BOOL_LITERAL)) {
         return parse_literal();
     } else {
         parser_error("factor", cur_token());
     }
     return nullptr;
 }
-

@@ -7,7 +7,7 @@
 
 class CompoundStatementNode : public ASTNode {
 public:
-    explicit CompoundStatementNode(std::vector<ASTNode*> statements, int line, int col)
+    explicit CompoundStatementNode(std::vector<ASTNode *> statements, int line, int col)
         : ASTNode(line, col), statements(std::move(statements)) {}
 
     ~CompoundStatementNode() override {
@@ -16,12 +16,12 @@ public:
         }
     }
 
-    std::vector<ASTNode*> *get_statements() { return &statements; }
+    std::vector<ASTNode *> *get_statements() { return &statements; }
 
     DECLARE_VISITOR_FUNCTIONS
 
 private:
-    std::vector<ASTNode*> statements;
+    std::vector<ASTNode *> statements;
 };
 
-#endif //SYNTHSCRIPT_COMPOUNDSTATEMENTNODE_H
+#endif // SYNTHSCRIPT_COMPOUNDSTATEMENTNODE_H

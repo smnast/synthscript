@@ -1,8 +1,8 @@
 #ifndef SYNTHSCRIPT_INTOBJECT_H
 #define SYNTHSCRIPT_INTOBJECT_H
 
-#include "object.h"
 #include "AST/AST_node.h"
+#include "object.h"
 
 class IntObject : public Object {
 public:
@@ -40,4 +40,4 @@ private:
     int value;
 };
 
-#endif //SYNTHSCRIPT_INTOBJECT_H
+#endif // SYNTHSCRIPT_INTOBJECT_H

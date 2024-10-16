@@ -39,4 +39,4 @@ private:
     float value;
 };
 
-#endif //SYNTHSCRIPT_FLOATOBJECT_H
+#endif // SYNTHSCRIPT_FLOATOBJECT_H

@@ -32,7 +32,8 @@ public:
     std::shared_ptr<Object> logical_not() override;
     std::shared_ptr<Object> cast(Type type) override;
     std::shared_ptr<Object> subscript(std::shared_ptr<Object> other) override;
-    std::shared_ptr<Object> subscript_update(const std::shared_ptr<Object> &index, const std::shared_ptr<Object> &val);
+    std::shared_ptr<Object> subscript_update(const std::shared_ptr<Object> &index,
+                                             const std::shared_ptr<Object> &val);
     std::shared_ptr<Object> duplicate() override;
 
     int get_len() const { return (int)value.size(); };
@@ -42,4 +43,4 @@ private:
     std::vector<std::shared_ptr<Object>> value;
 };
 
-#endif //SYNTHSCRIPT_ARRAYOBJECT_H
+#endif // SYNTHSCRIPT_ARRAYOBJECT_H

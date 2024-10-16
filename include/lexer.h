@@ -19,4 +19,4 @@ private:
     static void lexer_error(const std::string &token, int line, int column);
 };
 
-#endif //SYNTHSCRIPT_LEXER_H
+#endif // SYNTHSCRIPT_LEXER_H

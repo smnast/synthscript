@@ -7,7 +7,7 @@
 
 class ProgramNode : public ASTNode {
 public:
-    explicit ProgramNode(std::vector<ASTNode*> statements, int line, int col)
+    explicit ProgramNode(std::vector<ASTNode *> statements, int line, int col)
         : ASTNode(line, col), statements(std::move(statements)) {}
 
     ~ProgramNode() override {
@@ -16,12 +16,12 @@ public:
         }
     }
 
-    std::vector<ASTNode*> *get_statements() { return &statements; }
+    std::vector<ASTNode *> *get_statements() { return &statements; }
 
     DECLARE_VISITOR_FUNCTIONS
 
 private:
-    std::vector<ASTNode*> statements;
+    std::vector<ASTNode *> statements;
 };
 
-#endif //SYNTHSCRIPT_PROGRAMNODE_H
+#endif // SYNTHSCRIPT_PROGRAMNODE_H

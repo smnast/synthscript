@@ -33,4 +33,4 @@ public:
     virtual std::shared_ptr<Object> duplicate() = 0;
 };
 
-#endif //SYNTHSCRIPT_OBJECT_H
+#endif // SYNTHSCRIPT_OBJECT_H

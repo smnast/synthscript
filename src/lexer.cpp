@@ -16,13 +16,12 @@ std::vector<Token> Lexer::parse_tokens(std::string &file) {
     while (regex_search(start, end, match, reg)) {
         for (int i = 1; i < (int)match.size(); i++) {
             if (!(int)match[i].str().empty()) {
-                int position = (int)(match[i].second - file.cbegin())-1;
+                int position = (int)(match[i].second - file.cbegin()) - 1;
                 int line = get_line(position), column = get_column(position);
                 Token cur_token(token_regexs[i - 1].first, match[i].str(), line, column);
-                if (token_regexs[i-1].first == UNDEFINED) {
+                if (token_regexs[i - 1].first == UNDEFINED) {
                     Lexer::lexer_error(match[i].str(), line, column);
-                }
-                else if (token_regexs[i-1].first != ESCAPED_NEW_LINE) {
+                } else if (token_regexs[i - 1].first != ESCAPED_NEW_LINE) {
                     tokens.push_back(cur_token);
                 }
 
@@ -32,7 +31,7 @@ std::vector<Token> Lexer::parse_tokens(std::string &file) {
         }
     }
 
-    Token end_token(END_OF_FILE, "", get_line((int)file.size()-1), 1);
+    Token end_token(END_OF_FILE, "", get_line((int)file.size() - 1), 1);
     tokens.push_back(end_token);
     return tokens;
 }
@@ -56,7 +55,8 @@ void Lexer::prepare_line_prefix(std::string &file) {
     int current_line = 1;
     for (int i = 0; i < (int)file.size(); i++) {
         line_prefix[i] = current_line;
-        if (file[i] == '\n') current_line++;
+        if (file[i] == '\n')
+            current_line++;
     }
 }
 
@@ -65,7 +65,8 @@ void Lexer::prepare_column_prefix(std::string &file) {
     int last_line_start = 0;
     for (int i = 0; i < (int)file.size(); i++) {
         column_prefix[i] = last_line_start;
-        if (file[i] == '\n') last_line_start = i+1;
+        if (file[i] == '\n')
+            last_line_start = i + 1;
     }
 }
 

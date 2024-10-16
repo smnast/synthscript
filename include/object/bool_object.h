@@ -39,4 +39,4 @@ private:
     bool value;
 };
 
-#endif //SYNTHSCRIPT_BOOLOBJECT_H
+#endif // SYNTHSCRIPT_BOOLOBJECT_H

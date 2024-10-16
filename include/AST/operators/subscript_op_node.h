@@ -7,7 +7,7 @@
 
 class SubscriptOpNode : public ASTNode {
 public:
-    SubscriptOpNode(ASTNode *identifier, ASTNode *index, int line, int col) 
+    SubscriptOpNode(ASTNode *identifier, ASTNode *index, int line, int col)
         : ASTNode(line, col), identifier(identifier), index(index) {}
 
     ~SubscriptOpNode() override {
@@ -24,4 +24,4 @@ private:
     ASTNode *index;
 };
 
-#endif //SYNTHSCRIPT_SUBSCRIPTOPNODE_H
+#endif // SYNTHSCRIPT_SUBSCRIPTOPNODE_H

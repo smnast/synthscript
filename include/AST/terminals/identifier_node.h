@@ -19,4 +19,4 @@ private:
     std::string name;
 };
 
-#endif //SYNTHSCRIPT_IDENTIFIERNODE_H
+#endif // SYNTHSCRIPT_IDENTIFIERNODE_H

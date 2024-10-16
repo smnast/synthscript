@@ -23,4 +23,4 @@ private:
     ASTNode *value;
 };
 
-#endif //SYNTHSCRIPT_ASSIGNMENTNODE_H
+#endif // SYNTHSCRIPT_ASSIGNMENTNODE_H

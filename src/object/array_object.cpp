@@ -1,12 +1,13 @@
 #include "object/array_object.h"
-#include "object/int_object.h"
 #include "object/bool_object.h"
+#include "object/int_object.h"
 
 std::shared_ptr<Object> ArrayObject::add(std::shared_ptr<Object> other) {
     if (other->get_type() == TYPE_ARRAY) {
         std::vector<std::shared_ptr<Object>> result;
         result.insert(result.end(), value.begin(), value.end());
-        result.insert(result.end(), std::static_pointer_cast<ArrayObject>(other)->get_value()->begin(),
+        result.insert(result.end(),
+                      std::static_pointer_cast<ArrayObject>(other)->get_value()->begin(),
                       std::static_pointer_cast<ArrayObject>(other)->get_value()->end());
         return std::make_shared<ArrayObject>(result);
     } else {
@@ -66,7 +67,8 @@ std::shared_ptr<Object> ArrayObject::bitwise_not() {
 
 std::shared_ptr<Object> ArrayObject::equal(std::shared_ptr<Object> other) {
     if (other->get_type() == TYPE_ARRAY) {
-        std::vector<std::shared_ptr<Object>> other_value = *std::static_pointer_cast<ArrayObject>(other)->get_value();
+        std::vector<std::shared_ptr<Object>> other_value =
+            *std::static_pointer_cast<ArrayObject>(other)->get_value();
         bool match = true;
         if (value.size() == other_value.size()) {
             for (int i = 0; i < value.size(); i++) {
@@ -87,7 +89,8 @@ std::shared_ptr<Object> ArrayObject::equal(std::shared_ptr<Object> other) {
 
 std::shared_ptr<Object> ArrayObject::not_equal(std::shared_ptr<Object> other) {
     if (other->get_type() == TYPE_ARRAY) {
-        std::vector<std::shared_ptr<Object>> other_value = *std::static_pointer_cast<ArrayObject>(other)->get_value();
+        std::vector<std::shared_ptr<Object>> other_value =
+            *std::static_pointer_cast<ArrayObject>(other)->get_value();
         bool match = true;
         if (value.size() != other_value.size()) {
             for (int i = 0; i < value.size(); i++) {
@@ -154,7 +157,8 @@ std::shared_ptr<Object> ArrayObject::subscript(std::shared_ptr<Object> other) {
     }
 }
 
-std::shared_ptr<Object> ArrayObject::subscript_update(const std::shared_ptr<Object>& index, const std::shared_ptr<Object> &val) {
+std::shared_ptr<Object> ArrayObject::subscript_update(const std::shared_ptr<Object> &index,
+                                                      const std::shared_ptr<Object> &val) {
     if (index->get_type() == TYPE_INT) {
         int i = std::static_pointer_cast<IntObject>(index)->get_value();
         if (i < 0 || i >= value.size()) {

@@ -7,8 +7,8 @@ class BreakStatementNode : public ASTNode {
 public:
     explicit BreakStatementNode(int line, int col) : ASTNode(line, col) {}
     ~BreakStatementNode() override = default;
-    
+
     DECLARE_VISITOR_FUNCTIONS
 };
 
-#endif //SYNTHSCRIPT_BREAKSTATEMENTNODE_H
+#endif // SYNTHSCRIPT_BREAKSTATEMENTNODE_H

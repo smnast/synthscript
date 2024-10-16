@@ -5,7 +5,7 @@
 
 class ArrayLiteralNode : public ASTNode {
 public:
-    explicit ArrayLiteralNode(std::vector<ASTNode*> values, int line, int col) 
+    explicit ArrayLiteralNode(std::vector<ASTNode *> values, int line, int col)
         : ASTNode(line, col), values(std::move(values)) {}
 
     ~ArrayLiteralNode() override {
@@ -14,12 +14,12 @@ public:
         }
     }
 
-    std::vector<ASTNode*>* get_values() { return &values; }
+    std::vector<ASTNode *> *get_values() { return &values; }
 
     DECLARE_VISITOR_FUNCTIONS
 
 private:
-    std::vector<ASTNode*> values;
+    std::vector<ASTNode *> values;
 };
 
-#endif //SYNTHSCRIPT_ARRAYLITERALNODE_H
+#endif // SYNTHSCRIPT_ARRAYLITERALNODE_H

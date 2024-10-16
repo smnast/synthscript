@@ -31,9 +31,9 @@ private:
     std::unordered_map<std::string, Symbol> symbols;
     SymbolTable *enclosing_scope;
     SymbolTable *global_scope;
-    std::vector<SymbolTable*> child_scope;
+    std::vector<SymbolTable *> child_scope;
     bool loop = false;
     bool function = false;
 };
 
-#endif //SYNTHSCRIPT_SYMBOLTABLE_H
+#endif // SYNTHSCRIPT_SYMBOLTABLE_H

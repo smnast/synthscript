@@ -20,4 +20,4 @@ private:
     static void prepare_file_lines(const std::string &file);
 };
 
-#endif //SYNTHSCRIPT_READER_H
+#endif // SYNTHSCRIPT_READER_H

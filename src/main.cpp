@@ -1,7 +1,7 @@
-#include "tokens.h"
-#include "reader.h"
 #include "lexer.h"
 #include "parser.h"
+#include "reader.h"
+#include "tokens.h"
 #include "visitor/print_visitor.h"
 #include <iostream>
 

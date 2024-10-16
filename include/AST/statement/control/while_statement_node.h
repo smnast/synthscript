@@ -23,4 +23,4 @@ private:
     ASTNode *body;
 };
 
-#endif //SYNTHSCRIPT_WHILESTATEMENTNODE_H
+#endif // SYNTHSCRIPT_WHILESTATEMENTNODE_H

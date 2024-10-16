@@ -4,8 +4,7 @@
 #include "AST/node_forward_classes.h"
 #include "built_in_functions.h"
 
-template <typename T, typename A>
-class Visitor {
+template <typename T, typename A> class Visitor {
 public:
     virtual T visit(ProgramNode *node, A arg) = 0;
     virtual T visit(BinOpNode *node, A arg) = 0;
@@ -29,4 +28,4 @@ public:
     virtual T visit(LiteralNode *node, A arg) = 0;
 };
 
-#endif //SYNTHSCRIPT_VISITOR_H
+#endif // SYNTHSCRIPT_VISITOR_H

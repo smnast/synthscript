@@ -26,4 +26,4 @@ private:
     ASTNode *body;
 };
 
-#endif //SYNTHSCRIPT_FORSTATEMENTNODE_H
+#endif // SYNTHSCRIPT_FORSTATEMENTNODE_H

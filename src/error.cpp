@@ -13,7 +13,8 @@ void Error::error(const std::string &message, bool force_print) {
 }
 
 void Error::error_at_pos(const std::string &message, int line, int col, bool force_print) {
-    if (errored && !force_print) return;
+    if (errored && !force_print)
+        return;
     error(message, force_print);
     Reader::show_position(line, col);
 }
