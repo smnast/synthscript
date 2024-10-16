@@ -6,8 +6,7 @@
 
 class RepeatStatementNode : public ASTNode {
 public:
-    RepeatStatementNode(ASTNode *count, ASTNode *body, int line, int col)
-        : ASTNode(line, col), count(count), body(body) {}
+    RepeatStatementNode(ASTNode *count, ASTNode *body, int line, int col) : ASTNode(line, col), count(count), body(body) {}
 
     ~RepeatStatementNode() override {
         delete count;

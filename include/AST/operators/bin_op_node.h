@@ -5,8 +5,7 @@
 
 class BinOpNode : public ASTNode {
 public:
-    BinOpNode(TokenType op, ASTNode *left, ASTNode *right, int line, int col)
-        : ASTNode(line, col), op(op), left(left), right(right) {}
+    BinOpNode(TokenType op, ASTNode *left, ASTNode *right, int line, int col) : ASTNode(line, col), op(op), left(left), right(right) {}
 
     ~BinOpNode() override {
         delete left;

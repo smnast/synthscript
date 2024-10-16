@@ -5,8 +5,7 @@
 
 class ReturnStatementNode : public ASTNode {
 public:
-    explicit ReturnStatementNode(ASTNode *value, int line, int col)
-        : ASTNode(line, col), value(value) {}
+    explicit ReturnStatementNode(ASTNode *value, int line, int col) : ASTNode(line, col), value(value) {}
 
     ~ReturnStatementNode() override { delete value; }
 

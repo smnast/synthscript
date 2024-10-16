@@ -55,8 +55,9 @@ void Lexer::prepare_line_prefix(std::string &file) {
     int current_line = 1;
     for (int i = 0; i < (int)file.size(); i++) {
         line_prefix[i] = current_line;
-        if (file[i] == '\n')
+        if (file[i] == '\n') {
             current_line++;
+        }
     }
 }
 
@@ -65,8 +66,9 @@ void Lexer::prepare_column_prefix(std::string &file) {
     int last_line_start = 0;
     for (int i = 0; i < (int)file.size(); i++) {
         column_prefix[i] = last_line_start;
-        if (file[i] == '\n')
+        if (file[i] == '\n') {
             last_line_start = i + 1;
+        }
     }
 }
 

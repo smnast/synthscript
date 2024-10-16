@@ -5,8 +5,7 @@
 
 class RangeLiteralNode : public ASTNode {
 public:
-    explicit RangeLiteralNode(ASTNode *start, ASTNode *end, int line, int col)
-        : ASTNode(line, col), start(start), end(end) {}
+    explicit RangeLiteralNode(ASTNode *start, ASTNode *end, int line, int col) : ASTNode(line, col), start(start), end(end) {}
 
     ~RangeLiteralNode() override {
         delete start;

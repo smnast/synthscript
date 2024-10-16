@@ -7,9 +7,7 @@
 
 class FunctionStatementNode : public ASTNode {
 public:
-    FunctionStatementNode(std::string identifier, std::vector<ASTNode *> arguments, int line,
-                          int col)
-        : ASTNode(line, col), arguments(std::move(arguments)), identifier(std::move(identifier)) {}
+    FunctionStatementNode(std::string identifier, std::vector<ASTNode *> arguments, int line, int col) : ASTNode(line, col), arguments(std::move(arguments)), identifier(std::move(identifier)) {}
 
     ~FunctionStatementNode() override {
         for (auto &argument : arguments) {

@@ -15,8 +15,8 @@ void PrintVisitor::visit(BinOpNode *node, int arg) {
 }
 
 void PrintVisitor::visit(CastOpNode *node, int arg) {
-    std::cout << std::string(arg, '\t') << "CastOpNode" << "'" << type_strings[node->get_type()]
-              << "'" << std::endl;
+    std::cout << std::string(arg, '\t') << "CastOpNode"
+              << "'" << type_strings[node->get_type()] << "'" << std::endl;
     node->get_operand()->accept(this, arg + 1);
 }
 
@@ -27,8 +27,7 @@ void PrintVisitor::visit(SubscriptOpNode *node, int arg) {
 }
 
 void PrintVisitor::visit(UnaryOpNode *node, int arg) {
-    std::cout << std::string(arg, '\t') << "UnaryOpNode " << token_names[node->get_op()]
-              << std::endl;
+    std::cout << std::string(arg, '\t') << "UnaryOpNode " << token_names[node->get_op()] << std::endl;
     node->get_operand()->accept(this, arg + 1);
 }
 
@@ -116,11 +115,11 @@ void PrintVisitor::visit(CompoundStatementNode *node, int arg) {
 }
 
 void PrintVisitor::visit(IdentifierNode *node, int arg) {
-    std::cout << std::string(arg, '\t') << "IdentifierNode " << "'" << node->get_name() << "'"
-              << std::endl;
+    std::cout << std::string(arg, '\t') << "IdentifierNode "
+              << "'" << node->get_name() << "'" << std::endl;
 }
 
 void PrintVisitor::visit(LiteralNode *node, int arg) {
-    std::cout << std::string(arg, '\t') << "LiteralNode " << "'" << node->get_value() << "'"
-              << std::endl;
+    std::cout << std::string(arg, '\t') << "LiteralNode "
+              << "'" << node->get_value() << "'" << std::endl;
 }

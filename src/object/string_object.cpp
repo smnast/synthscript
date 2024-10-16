@@ -5,8 +5,7 @@
 
 std::shared_ptr<Object> StringObject::add(std::shared_ptr<Object> other) {
     if (other->get_type() == TYPE_STRING) {
-        return std::make_shared<StringObject>(
-            value + std::static_pointer_cast<StringObject>(other)->get_value());
+        return std::make_shared<StringObject>(value + std::static_pointer_cast<StringObject>(other)->get_value());
     } else {
         return nullptr;
     }
@@ -62,8 +61,7 @@ std::shared_ptr<Object> StringObject::bitwise_not() {
 
 std::shared_ptr<Object> StringObject::equal(std::shared_ptr<Object> other) {
     if (other->get_type() == TYPE_STRING) {
-        return std::make_shared<BoolObject>(
-            value == std::static_pointer_cast<StringObject>(other)->get_value());
+        return std::make_shared<BoolObject>(value == std::static_pointer_cast<StringObject>(other)->get_value());
     } else {
         return nullptr;
     }
@@ -71,8 +69,7 @@ std::shared_ptr<Object> StringObject::equal(std::shared_ptr<Object> other) {
 
 std::shared_ptr<Object> StringObject::not_equal(std::shared_ptr<Object> other) {
     if (other->get_type() == TYPE_STRING) {
-        return std::make_shared<BoolObject>(
-            value != std::static_pointer_cast<StringObject>(other)->get_value());
+        return std::make_shared<BoolObject>(value != std::static_pointer_cast<StringObject>(other)->get_value());
     } else {
         return nullptr;
     }
@@ -80,8 +77,7 @@ std::shared_ptr<Object> StringObject::not_equal(std::shared_ptr<Object> other) {
 
 std::shared_ptr<Object> StringObject::less_than(std::shared_ptr<Object> other) {
     if (other->get_type() == TYPE_STRING) {
-        return std::make_shared<BoolObject>(
-            value < std::static_pointer_cast<StringObject>(other)->get_value());
+        return std::make_shared<BoolObject>(value < std::static_pointer_cast<StringObject>(other)->get_value());
     } else {
         return nullptr;
     }
@@ -89,8 +85,7 @@ std::shared_ptr<Object> StringObject::less_than(std::shared_ptr<Object> other) {
 
 std::shared_ptr<Object> StringObject::greater_than(std::shared_ptr<Object> other) {
     if (other->get_type() == TYPE_STRING) {
-        return std::make_shared<BoolObject>(
-            value > std::static_pointer_cast<StringObject>(other)->get_value());
+        return std::make_shared<BoolObject>(value > std::static_pointer_cast<StringObject>(other)->get_value());
     } else {
         return nullptr;
     }
@@ -98,8 +93,7 @@ std::shared_ptr<Object> StringObject::greater_than(std::shared_ptr<Object> other
 
 std::shared_ptr<Object> StringObject::less_than_equal(std::shared_ptr<Object> other) {
     if (other->get_type() == TYPE_STRING) {
-        return std::make_shared<BoolObject>(
-            value <= std::static_pointer_cast<StringObject>(other)->get_value());
+        return std::make_shared<BoolObject>(value <= std::static_pointer_cast<StringObject>(other)->get_value());
     } else {
         return nullptr;
     }
@@ -107,8 +101,7 @@ std::shared_ptr<Object> StringObject::less_than_equal(std::shared_ptr<Object> ot
 
 std::shared_ptr<Object> StringObject::greater_than_equal(std::shared_ptr<Object> other) {
     if (other->get_type() == TYPE_STRING) {
-        return std::make_shared<BoolObject>(
-            value >= std::static_pointer_cast<StringObject>(other)->get_value());
+        return std::make_shared<BoolObject>(value >= std::static_pointer_cast<StringObject>(other)->get_value());
     } else {
         return nullptr;
     }
@@ -142,8 +135,7 @@ std::shared_ptr<Object> StringObject::cast(Type type) {
 
 std::shared_ptr<Object> StringObject::subscript(std::shared_ptr<Object> other) {
     if (other->get_type() == TYPE_INT) {
-        return std::make_shared<StringObject>(
-            std::string(1, value[std::static_pointer_cast<IntObject>(other)->get_value()]));
+        return std::make_shared<StringObject>(std::string(1, value[std::static_pointer_cast<IntObject>(other)->get_value()]));
     } else {
         return nullptr;
     }

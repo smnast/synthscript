@@ -5,17 +5,29 @@
 #include "visitor/print_visitor.h"
 #include <iostream>
 
-void run(ProgramNode *program) {
-    auto *interpreter_visitor = new InterpreterVisitor();
-    program->evaluate(interpreter_visitor, nullptr);
-    delete interpreter_visitor;
+void build_and_run(const std::string &path);
+void run(ProgramNode *program);
+void print_usage();
+
+int main(int argc, char *argv[]) {
+    bool valid_file_path = argc == 2 && Reader::file_exists(argv[1]);
+
+    if (valid_file_path) {
+        build_and_run(argv[1]);
+    } else {
+        print_usage();
+    }
 }
 
-void built_and_run(const std::string &path) {
+void build_and_run(const std::string &path) {
+    // Lexical analysis
     std::string code = Reader::read_file(path);
     std::vector<Token> tokens = Lexer::parse_tokens(code);
 
+    // Syntax analysis
     ProgramNode *program = Parser::parse_program(tokens);
+
+    // Semantic analysis
     auto *semantic_analysis_visitor = new SemanticAnalysisVisitor();
     program->analyze(semantic_analysis_visitor, nullptr);
     delete semantic_analysis_visitor;
@@ -24,21 +36,21 @@ void built_and_run(const std::string &path) {
     if (Error::should_quit()) {
         delete program;
         exit(1);
-    } else {
-        run(program);
     }
+
+    // Execution
+    run(program);
 
     delete program;
 }
 
-void print_usage() {
-    std::printf("Usage: sscript <path>\n");
+void run(ProgramNode *program) {
+    // Interpret the AST nodes
+    auto *interpreter_visitor = new InterpreterVisitor();
+    program->evaluate(interpreter_visitor, nullptr);
+    delete interpreter_visitor;
 }
 
-int main(int argc, char *argv[]) {
-    if (argc == 2 && Reader::file_exists(argv[1])) {
-        built_and_run(argv[1]);
-    } else {
-        print_usage();
-    }
+void print_usage() {
+    std::printf("Usage: sscript <path>\n");
 }

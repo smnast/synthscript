@@ -5,8 +5,7 @@
 
 class AssignmentNode : public ASTNode {
 public:
-    AssignmentNode(ASTNode *identifier, ASTNode *value, int line, int col)
-        : ASTNode(line, col), identifier(identifier), value(value) {}
+    AssignmentNode(ASTNode *identifier, ASTNode *value, int line, int col) : ASTNode(line, col), identifier(identifier), value(value) {}
 
     ~AssignmentNode() override {
         delete identifier;

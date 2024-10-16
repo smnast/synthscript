@@ -6,8 +6,7 @@
 
 class CastOpNode : public ASTNode {
 public:
-    CastOpNode(Type type, ASTNode *operand, int line, int col)
-        : ASTNode(line, col), type(std::move(type)), operand(operand) {}
+    CastOpNode(Type type, ASTNode *operand, int line, int col) : ASTNode(line, col), type(std::move(type)), operand(operand) {}
 
     ~CastOpNode() override { delete operand; }
 

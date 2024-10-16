@@ -5,8 +5,7 @@
 
 class ArrayLiteralNode : public ASTNode {
 public:
-    explicit ArrayLiteralNode(std::vector<ASTNode *> values, int line, int col)
-        : ASTNode(line, col), values(std::move(values)) {}
+    explicit ArrayLiteralNode(std::vector<ASTNode *> values, int line, int col) : ASTNode(line, col), values(std::move(values)) {}
 
     ~ArrayLiteralNode() override {
         for (auto &value : values) {

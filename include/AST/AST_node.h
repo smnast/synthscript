@@ -18,8 +18,7 @@ public:
     int get_column() const { return col; }
     virtual void accept(PrintVisitor *visitor, int arg) = 0;
     virtual void analyze(SemanticAnalysisVisitor *visitor, class SymbolTable *table) = 0;
-    virtual std::shared_ptr<Object> evaluate(InterpreterVisitor *visitor,
-                                             class SymbolTable *table) = 0;
+    virtual std::shared_ptr<Object> evaluate(InterpreterVisitor *visitor, class SymbolTable *table) = 0;
 
 private:
     int line;

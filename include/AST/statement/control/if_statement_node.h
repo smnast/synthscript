@@ -5,8 +5,7 @@
 
 class IfStatementNode : public ASTNode {
 public:
-    IfStatementNode(ASTNode *condition, ASTNode *if_body, ASTNode *else_body, int line, int col)
-        : ASTNode(line, col), condition(condition), if_body(if_body), else_body(else_body) {}
+    IfStatementNode(ASTNode *condition, ASTNode *if_body, ASTNode *else_body, int line, int col) : ASTNode(line, col), condition(condition), if_body(if_body), else_body(else_body) {}
 
     ~IfStatementNode() override {
         delete condition;

@@ -7,8 +7,7 @@
 class Error {
 public:
     static void error(const std::string &message, bool force_print = true);
-    static void error_at_pos(const std::string &message, int line, int col,
-                             bool force_print = true);
+    static void error_at_pos(const std::string &message, int line, int col, bool force_print = true);
     static void runtime_error(const std::string &message, int line, int col);
 
     static bool check_error();

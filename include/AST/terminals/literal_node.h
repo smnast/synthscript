@@ -5,8 +5,7 @@
 
 class LiteralNode : public ASTNode {
 public:
-    explicit LiteralNode(Type type, std::string value, int line, int col)
-        : ASTNode(line, col), type(type), value(std::move(value)) {}
+    explicit LiteralNode(Type type, std::string value, int line, int col) : ASTNode(line, col), type(type), value(std::move(value)) {}
 
     ~LiteralNode() override = default;
 

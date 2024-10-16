@@ -48,13 +48,11 @@ std::shared_ptr<Object> BoolObject::bitwise_not() {
 }
 
 std::shared_ptr<Object> BoolObject::equal(std::shared_ptr<Object> other) {
-    return std::make_shared<BoolObject>(value ==
-                                        std::static_pointer_cast<BoolObject>(other)->get_value());
+    return std::make_shared<BoolObject>(value == std::static_pointer_cast<BoolObject>(other)->get_value());
 }
 
 std::shared_ptr<Object> BoolObject::not_equal(std::shared_ptr<Object> other) {
-    return std::make_shared<BoolObject>(value !=
-                                        std::static_pointer_cast<BoolObject>(other)->get_value());
+    return std::make_shared<BoolObject>(value != std::static_pointer_cast<BoolObject>(other)->get_value());
 }
 
 std::shared_ptr<Object> BoolObject::less_than(std::shared_ptr<Object> other) {
@@ -74,13 +72,11 @@ std::shared_ptr<Object> BoolObject::greater_than_equal(std::shared_ptr<Object> o
 }
 
 std::shared_ptr<Object> BoolObject::logical_and(std::shared_ptr<Object> other) {
-    return std::make_shared<BoolObject>(value &&
-                                        std::static_pointer_cast<BoolObject>(other)->get_value());
+    return std::make_shared<BoolObject>(value && std::static_pointer_cast<BoolObject>(other)->get_value());
 }
 
 std::shared_ptr<Object> BoolObject::logical_or(std::shared_ptr<Object> other) {
-    return std::make_shared<BoolObject>(value ||
-                                        std::static_pointer_cast<BoolObject>(other)->get_value());
+    return std::make_shared<BoolObject>(value || std::static_pointer_cast<BoolObject>(other)->get_value());
 }
 
 std::shared_ptr<Object> BoolObject::logical_not() {

@@ -6,8 +6,7 @@
 
 class UnaryOpNode : public ASTNode {
 public:
-    UnaryOpNode(TokenType op, ASTNode *operand, int line, int col)
-        : ASTNode(line, col), op(op), operand(operand) {}
+    UnaryOpNode(TokenType op, ASTNode *operand, int line, int col) : ASTNode(line, col), op(op), operand(operand) {}
 
     ~UnaryOpNode() override { delete operand; }
 

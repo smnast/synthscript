@@ -6,8 +6,7 @@
 
 class ForStatementNode : public ASTNode {
 public:
-    ForStatementNode(std::string identifier, ASTNode *iterable, ASTNode *body, int line, int col)
-        : ASTNode(line, col), identifier(std::move(identifier)), iterable(iterable), body(body) {}
+    ForStatementNode(std::string identifier, ASTNode *iterable, ASTNode *body, int line, int col) : ASTNode(line, col), identifier(std::move(identifier)), iterable(iterable), body(body) {}
 
     ~ForStatementNode() override {
         delete iterable;
