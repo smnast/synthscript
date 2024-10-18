@@ -26,6 +26,7 @@ public:
     void visit(CompoundStatementNode *node, SymbolTable *arg) override;
     void visit(IdentifierNode *node, SymbolTable *arg) override;
     void visit(LiteralNode *node, SymbolTable *arg) override;
+    void visit(ErrorNode *node, SymbolTable *arg) override;
 
     static std::string get_array_identifier(SubscriptOpNode *node, SymbolTable *arg);
     static void semantic_error(const std::string &message, int line, int column);

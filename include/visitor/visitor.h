@@ -26,6 +26,7 @@ public:
     virtual T visit(CompoundStatementNode *node, A arg) = 0;
     virtual T visit(IdentifierNode *node, A arg) = 0;
     virtual T visit(LiteralNode *node, A arg) = 0;
+    virtual T visit(ErrorNode *node, A arg) = 0;
 };
 
 #endif // SYNTHSCRIPT_VISITOR_H

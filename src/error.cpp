@@ -6,18 +6,17 @@ int Error::error_count = 0;
 void Error::error(const std::string &message, bool force_print) {
     if (!errored || force_print) {
         std::printf("Error: %s\n", message.c_str());
+
+        errored = true;
         error_count++;
     }
-
-    errored = true;
 }
 
 void Error::error_at_pos(const std::string &message, int line, int col, bool force_print) {
-    if (errored && !force_print) {
-        return;
+    if (!errored || force_print) {
+        error(message, force_print);
+        Reader::show_position(line, col);
     }
-    error(message, force_print);
-    Reader::show_position(line, col);
 }
 
 void Error::runtime_error(const std::string &message, int line, int col) {

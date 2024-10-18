@@ -89,6 +89,7 @@ std::vector<std::string> Reader::get_lines(const std::string &file) {
 
     // Handle case where the last line does not end with a newline
     if (!cur_row.empty()) {
+        cur_row.push_back('\n');
         lines.push_back(cur_row);
     }
 

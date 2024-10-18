@@ -144,20 +144,24 @@ void SemanticAnalysisVisitor::visit(FunctionDeclarationNode *node, SymbolTable *
 void SemanticAnalysisVisitor::visit(FunctionStatementNode *node, SymbolTable *arg) {
     std::string name = node->get_identifier();
 
-    if (!arg->contains(name, false)) {
+    bool exists = arg->contains(name, false);
+    if (!exists) {
         semantic_error("Undeclared identifier '" + name + "'", node->get_line(), node->get_column());
     }
+
     for (auto &param : *node->get_arguments()) {
         param->analyze(this, arg);
     }
 
-    Symbol *function_symbol = arg->lookup(name, false);
-    if (function_symbol->get_type() != TYPE_FUNCTION) {
-        semantic_error("Identifier '" + name + "' is not a function", node->get_line(), node->get_column());
-    } else {
-        FunctionObject *function_object = dynamic_cast<FunctionObject *>(function_symbol->get_value().get());
-        if (function_object->get_parameters()->size() != node->get_arguments()->size()) {
-            semantic_error("Incorrect number of arguments to function '" + name + "'", node->get_line(), node->get_column());
+    if (exists) {
+        Symbol *function_symbol = arg->lookup(name, false);
+        if (function_symbol->get_type() != TYPE_FUNCTION) {
+            semantic_error("Identifier '" + name + "' is not a function", node->get_line(), node->get_column());
+        } else {
+            FunctionObject *function_object = dynamic_cast<FunctionObject *>(function_symbol->get_value().get());
+            if (function_object->get_parameters()->size() != node->get_arguments()->size()) {
+                semantic_error("Incorrect number of arguments to function '" + name + "'", node->get_line(), node->get_column());
+            }
         }
     }
 }
@@ -179,6 +183,8 @@ void SemanticAnalysisVisitor::visit(IdentifierNode *node, SymbolTable *arg) {
 }
 
 void SemanticAnalysisVisitor::visit(LiteralNode *node, SymbolTable *arg) {}
+
+void SemanticAnalysisVisitor::visit(ErrorNode *node, SymbolTable *arg) {}
 
 void SemanticAnalysisVisitor::semantic_error(const std::string &message, int line, int column) {
     Error::error_at_pos(message, line, column, true);

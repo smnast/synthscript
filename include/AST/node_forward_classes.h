@@ -21,5 +21,6 @@ class CompoundStatementNode;
 class IdentifierNode;
 class LiteralNode;
 class ProgramNode;
+class ErrorNode;
 
 #endif // SYNTHSCRIPT_NODEFORWARDCLASSES_H

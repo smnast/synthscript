@@ -123,3 +123,7 @@ void PrintVisitor::visit(LiteralNode *node, int arg) {
     std::cout << std::string(arg, '\t') << "LiteralNode "
               << "'" << node->get_value() << "'" << std::endl;
 }
+
+void PrintVisitor::visit(ErrorNode *node, int arg) {
+    std::cout << std::string(arg, '\t') << "ErrorNode" << std::endl;
+}

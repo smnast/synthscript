@@ -25,6 +25,7 @@ public:
     void visit(CompoundStatementNode *node, int arg) override;
     void visit(IdentifierNode *node, int arg) override;
     void visit(LiteralNode *node, int arg) override;
+    void visit(ErrorNode *node, int arg) override;
 };
 
 #endif // SYNTHSCRIPT_PRINTVISITOR_H

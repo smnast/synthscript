@@ -27,6 +27,11 @@ void build_and_run(const std::string &path) {
     // Syntax analysis
     ProgramNode *program = Parser::parse_program(tokens);
 
+    // Print the AST
+    auto *print_visitor = new PrintVisitor();
+    program->accept(print_visitor, 0);
+    delete print_visitor;
+
     // Semantic analysis
     auto *semantic_analysis_visitor = new SemanticAnalysisVisitor();
     program->analyze(semantic_analysis_visitor, nullptr);

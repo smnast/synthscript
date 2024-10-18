@@ -25,3 +25,5 @@
 #include "AST/terminals/literal_node.h"
 
 #include "AST/program_node.h"
+
+#include "AST/error_node.h"

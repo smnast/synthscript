@@ -314,3 +314,9 @@ std::shared_ptr<Object> InterpreterVisitor::visit(LiteralNode *node, SymbolTable
         return nullptr;
     }
 }
+
+std::shared_ptr<Object> InterpreterVisitor::visit(ErrorNode *node, SymbolTable *arg) {
+    // This should never occur!
+    Error::runtime_error("Error node", node->get_line(), node->get_column());
+    return nullptr;
+}
