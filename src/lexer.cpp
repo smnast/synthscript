@@ -36,8 +36,9 @@ void Lexer::lexer_error(const std::string &token, int line, int col) {
 }
 
 void Lexer::prepare_prefixes(std::string &code) {
-    line_prefix.assign(code.size(), 0);
-    line_offset_prefix.assign(code.size(), 0);
+    // Add one for EOF token
+    line_prefix.assign(code.size() + 1, 0);
+    line_offset_prefix.assign(code.size() + 1, 0);
 
     // Prepare the line and line offset prefixes
     int last_line_start = 0;
@@ -90,16 +91,16 @@ std::vector<Token> Lexer::get_tokens(std::string &code, std::string &token_regex
     }
 
     // Add the end of file token
-    Token end_token(END_OF_FILE, "", get_line((int)code.size() - 1), 1);
+    Token end_token(END_OF_FILE, "", get_line(code.size()), 1);
     tokens.push_back(end_token);
 
     return tokens;
 }
 
-int Lexer::get_line(int position) {
+int Lexer::get_line(size_t position) {
     return line_prefix[position];
 }
 
-int Lexer::get_column(int position) {
+int Lexer::get_column(size_t position) {
     return position - line_offset_prefix[position] + 1;
 }

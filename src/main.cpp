@@ -10,6 +10,8 @@ void run(ProgramNode *program);
 void print_usage();
 
 int main(int argc, char *argv[]) {
+    // TODO: handle case where the file path is provided but the file does not exist / other error
+    // with the file
     bool valid_file_path = argc == 2 && Reader::file_exists(argv[1]);
 
     if (valid_file_path) {

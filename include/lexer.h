@@ -51,14 +51,14 @@ private:
      * @param position The position of the character.
      * @return The line of the character.
      */
-    static int get_line(int position);
+    static int get_line(size_t position);
 
     /**
      * @brief Get the column of a character in the code.
      * @param position The position of the character.
      * @return The column of the character, relative to the line.
      */
-    static int get_column(int position);
+    static int get_column(size_t position);
 
     /**
      * @brief Report an error for an undefined token.
