@@ -10,12 +10,13 @@ void run(ProgramNode *program);
 void print_usage();
 
 int main(int argc, char *argv[]) {
-    // TODO: handle case where the file path is provided but the file does not exist / other error
-    // with the file
-    bool valid_file_path = argc == 2 && Reader::file_exists(argv[1]);
-
-    if (valid_file_path) {
-        build_and_run(argv[1]);
+    if (argc == 2) {
+        char *file_path = argv[1];
+        if (!Reader::file_exists(file_path)) {
+            printf("File not found: %s\n", file_path);
+        } else {
+            build_and_run(file_path);
+        }
     } else {
         print_usage();
     }
