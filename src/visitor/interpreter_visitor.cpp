@@ -10,21 +10,28 @@
 #include "object/string_object.h"
 #include "object/void_object.h"
 #include "operators.h"
+#include <stdexcept>
 
-std::shared_ptr<Object> InterpreterVisitor::visit(ProgramNode *node, SymbolTable *arg) {
+std::shared_ptr<Object> InterpreterVisitor::visit(ProgramNode *node, SymbolTable *table) {
+    // Create symbol table for the global scope
     auto *global_table = new SymbolTable(nullptr, false, false);
+
     BuiltInFunctions::register_built_in_functions(global_table);
+
     for (auto &statement : *node->get_statements()) {
         statement->evaluate(this, global_table);
     }
+
     delete global_table;
     return nullptr;
 }
 
-std::shared_ptr<Object> InterpreterVisitor::visit(BinOpNode *node, SymbolTable *arg) {
-    std::shared_ptr<Object> left = node->get_left_node()->evaluate(this, arg);
-    std::shared_ptr<Object> right = node->get_right_node()->evaluate(this, arg);
+std::shared_ptr<Object> InterpreterVisitor::visit(BinOpNode *node, SymbolTable *table) {
+    std::shared_ptr<Object> left = node->get_left_node()->evaluate(this, table);
+    std::shared_ptr<Object> right = node->get_right_node()->evaluate(this, table);
     std::shared_ptr<Object> result = get_binary_op_function(node->get_op())(left, right);
+
+    // nullptr result indicates an invalid operation
     if (result == nullptr) {
         Error::runtime_error("Invalid operands to binary operator " + token_values[node->get_op()] +
                                  " (" + type_strings[left->get_type()] + " and " +
@@ -36,10 +43,11 @@ std::shared_ptr<Object> InterpreterVisitor::visit(BinOpNode *node, SymbolTable *
     return result;
 }
 
-std::shared_ptr<Object> InterpreterVisitor::visit(CastOpNode *node, SymbolTable *arg) {
-    std::shared_ptr<Object> operand = node->get_operand()->evaluate(this, arg);
+std::shared_ptr<Object> InterpreterVisitor::visit(CastOpNode *node, SymbolTable *table) {
+    std::shared_ptr<Object> operand = node->get_operand()->evaluate(this, table);
     std::shared_ptr<Object> result = operand->cast(node->get_type());
 
+    // nullptr result indicates an invalid operation
     if (result == nullptr) {
         Error::runtime_error("Invalid cast from " + type_strings[operand->get_type()] + " to " +
                                  type_strings[node->get_type()],
@@ -50,11 +58,12 @@ std::shared_ptr<Object> InterpreterVisitor::visit(CastOpNode *node, SymbolTable 
     return result;
 }
 
-std::shared_ptr<Object> InterpreterVisitor::visit(SubscriptOpNode *node, SymbolTable *arg) {
-    std::shared_ptr<Object> identifier = node->get_identifier()->evaluate(this, arg);
-    std::shared_ptr<Object> index = node->get_index()->evaluate(this, arg);
+std::shared_ptr<Object> InterpreterVisitor::visit(SubscriptOpNode *node, SymbolTable *table) {
+    std::shared_ptr<Object> identifier = node->get_identifier()->evaluate(this, table);
+    std::shared_ptr<Object> index = node->get_index()->evaluate(this, table);
     std::shared_ptr<Object> result = identifier->subscript(index);
 
+    // nullptr result indicates an invalid operation
     if (result == nullptr) {
         Error::runtime_error("Invalid subscript operation on " +
                                  type_strings[identifier->get_type()],
@@ -65,10 +74,11 @@ std::shared_ptr<Object> InterpreterVisitor::visit(SubscriptOpNode *node, SymbolT
     return result;
 }
 
-std::shared_ptr<Object> InterpreterVisitor::visit(UnaryOpNode *node, SymbolTable *arg) {
-    std::shared_ptr<Object> operand = node->get_operand()->evaluate(this, arg);
+std::shared_ptr<Object> InterpreterVisitor::visit(UnaryOpNode *node, SymbolTable *table) {
+    std::shared_ptr<Object> operand = node->get_operand()->evaluate(this, table);
     std::shared_ptr<Object> result = get_unary_op_function(node->get_op())(operand);
 
+    // nullptr result indicates an invalid operation
     if (result == nullptr) {
         Error::runtime_error("Invalid operand to unary operator " + token_values[node->get_op()] +
                                  " (" + type_strings[operand->get_type()] + ")",
@@ -79,23 +89,29 @@ std::shared_ptr<Object> InterpreterVisitor::visit(UnaryOpNode *node, SymbolTable
     return result;
 }
 
-std::shared_ptr<Object> InterpreterVisitor::visit(ArrayLiteralNode *node, SymbolTable *arg) {
+std::shared_ptr<Object> InterpreterVisitor::visit(ArrayLiteralNode *node, SymbolTable *table) {
+    // Create an array object from the values
     std::vector<std::shared_ptr<Object>> values;
     for (auto &element : *node->get_values()) {
-        values.push_back(element->evaluate(this, arg));
+        values.push_back(element->evaluate(this, table));
     }
+
     return std::make_shared<ArrayObject>(values);
 }
 
-std::shared_ptr<Object> InterpreterVisitor::visit(RangeLiteralNode *node, SymbolTable *arg) {
-    std::shared_ptr<Object> start = node->get_start()->evaluate(this, arg);
-    std::shared_ptr<Object> end = node->get_end()->evaluate(this, arg);
+std::shared_ptr<Object> InterpreterVisitor::visit(RangeLiteralNode *node, SymbolTable *table) {
+    std::shared_ptr<Object> start = node->get_start()->evaluate(this, table);
+    std::shared_ptr<Object> end = node->get_end()->evaluate(this, table);
+
+    // The start value must be an integer
     if (start->get_type() != TYPE_INT) {
         Error::runtime_error("Invalid type for start of range (expected int, got " +
                                  type_strings[start->get_type()] + ")",
                              node->get_start()->get_line(),
                              node->get_start()->get_column());
-    } else if (end->get_type() != TYPE_INT) {
+    }
+    // The end value must be an integer
+    else if (end->get_type() != TYPE_INT) {
         Error::runtime_error("Invalid type for end of range (expected int, got " +
                                  type_strings[start->get_type()] + ")",
                              node->get_end()->get_line(),
@@ -106,11 +122,14 @@ std::shared_ptr<Object> InterpreterVisitor::visit(RangeLiteralNode *node, Symbol
     int end_val = std::static_pointer_cast<IntObject>(end)->get_value();
     std::vector<std::shared_ptr<Object>> values;
 
+    // Iterate from start to end (inclusive of both) and add each value to the array
     int dir = (start_val < end_val) ? 1 : -1;
-    bool equal = false;
+    bool last_equal = false;
     int cur_val = start_val;
-    while (!equal) {
-        equal = cur_val == end_val;
+    
+    // Iterate and add values
+    while (!last_equal) {
+        last_equal = cur_val == end_val;
         values.push_back(std::make_shared<IntObject>(cur_val));
         cur_val += dir;
     }
@@ -118,64 +137,82 @@ std::shared_ptr<Object> InterpreterVisitor::visit(RangeLiteralNode *node, Symbol
     return std::make_shared<ArrayObject>(values);
 }
 
-std::shared_ptr<Object> InterpreterVisitor::visit(AssignmentNode *node, SymbolTable *arg) {
-    std::shared_ptr<Object> value = node->get_value()->evaluate(this, arg);
+std::shared_ptr<Object> InterpreterVisitor::visit(AssignmentNode *node, SymbolTable *table) {
+    std::shared_ptr<Object> value = node->get_value()->evaluate(this, table);
+
+    // Cannot assign to void
     if (value->get_type() == TYPE_VOID) {
         Error::runtime_error("Invalid assignment to void", node->get_line(), node->get_column());
     }
 
-    if (dynamic_cast<IdentifierNode *>(node->get_identifier()) != nullptr) {
-        std::string name = dynamic_cast<IdentifierNode *>(node->get_identifier())->get_name();
-        if (!arg->contains(name, false)) {
-            Symbol symbol(name, value);
-            arg->insert(symbol);
-        } else {
-            Symbol *symbol = arg->lookup(name, false);
-            symbol->set_value(value);
-        }
-    } else if (dynamic_cast<SubscriptOpNode *>(node->get_identifier()) != nullptr) {
-        auto *left = dynamic_cast<SubscriptOpNode *>(node->get_identifier());
+    // If the identifier is an array subscript operation
+    if (auto left = dynamic_cast<SubscriptOpNode *>(node->get_identifier())) {
+        // Evaluate the expression on the left
         std::shared_ptr<ArrayObject> identifier =
-            std::static_pointer_cast<ArrayObject>(left->get_identifier()->evaluate(this, arg));
-        std::shared_ptr<Object> index = left->get_index()->evaluate(this, arg);
+            std::static_pointer_cast<ArrayObject>(left->get_identifier()->evaluate(this, table));
+
+        // Update the value at the index
+        std::shared_ptr<Object> index = left->get_index()->evaluate(this, table);
         identifier->subscript_update(index, value);
+    }
+    // If the identifier is just an identifier
+    else if (auto identifier_node = dynamic_cast<IdentifierNode *>(node->get_identifier())) {
+        std::string name = identifier_node->get_name();
+        
+        if (table->contains(name, false)) {
+            // Update the value of the existing symbol
+            Symbol *symbol = table->lookup(name, false);
+            symbol->set_value(value);
+        } else {
+            // Create a new symbol with the value
+            Symbol symbol(name, value);
+            table->insert(symbol);
+        }
     }
 
     return value;
 }
 
-std::shared_ptr<Object> InterpreterVisitor::visit(BreakStatementNode *node, SymbolTable *arg) {
+std::shared_ptr<Object> InterpreterVisitor::visit(BreakStatementNode *node, SymbolTable *table) {
     backtracking = true;
     breaking = true;
 
     return nullptr;
 }
 
-std::shared_ptr<Object> InterpreterVisitor::visit(ContinueStatementNode *node, SymbolTable *arg) {
+std::shared_ptr<Object> InterpreterVisitor::visit(ContinueStatementNode *node, SymbolTable *table) {
     backtracking = true;
 
     return nullptr;
 }
 
-std::shared_ptr<Object> InterpreterVisitor::visit(ReturnStatementNode *node, SymbolTable *arg) {
-    if (node->get_value() != nullptr) {
-        return_val = node->get_value()->evaluate(this, arg);
-    } else {
+std::shared_ptr<Object> InterpreterVisitor::visit(ReturnStatementNode *node, SymbolTable *table) {
+    // Evaluate the return value
+    if (node->has_value()) {
+        return_val = node->get_value()->evaluate(this, table);
+    } 
+    // No return value, so return void
+    else {
         return_val = std::make_shared<VoidObject>();
     }
+
     returning = true;
 
     return nullptr;
 }
 
-std::shared_ptr<Object> InterpreterVisitor::visit(ForStatementNode *node, SymbolTable *arg) {
+std::shared_ptr<Object> InterpreterVisitor::visit(ForStatementNode *node, SymbolTable *table) {
     std::string identifier = node->get_identifier();
-    std::shared_ptr<Object> iterable = node->get_iterable()->evaluate(this, arg);
 
+    std::shared_ptr<Object> iterable = node->get_iterable()->evaluate(this, table);
     int iterable_len = 0;
+
+    // Iterate through an array
     if (iterable->get_type() == TYPE_ARRAY) {
         iterable_len = (int)std::static_pointer_cast<ArrayObject>(iterable)->get_value()->size();
-    } else if (iterable->get_type() == TYPE_STRING) {
+    }
+    // Iterate through a string
+    else if (iterable->get_type() == TYPE_STRING) {
         iterable_len = (int)std::static_pointer_cast<StringObject>(iterable)->get_value().size();
     } else {
         Error::runtime_error("Invalid type for iterable (expected array or string, got " +
@@ -184,10 +221,12 @@ std::shared_ptr<Object> InterpreterVisitor::visit(ForStatementNode *node, Symbol
                              node->get_iterable()->get_column());
     }
 
-    auto *for_loop_scope = new SymbolTable(arg, true, arg->is_function());
-    for_loop_scope->insert(Symbol(identifier));
+    // Create a new scope for the for loop
+    auto *for_loop_table = new SymbolTable(table, true, table->is_function());
+    for_loop_table->insert(Symbol(identifier));
 
     for (int i = 0; i < iterable_len; i++) {
+        // Handle breaking
         if (backtracking || returning) {
             backtracking = false;
             if (breaking) {
@@ -196,35 +235,49 @@ std::shared_ptr<Object> InterpreterVisitor::visit(ForStatementNode *node, Symbol
             }
         }
 
-        Symbol *iterator_symbol = for_loop_scope->lookup(identifier, false);
+        // Set the value of the iterator
+        Symbol *iterator_symbol = for_loop_table->lookup(identifier, false);
         iterator_symbol->set_value(iterable->subscript(std::make_shared<IntObject>(i)));
-        node->get_body()->evaluate(this, for_loop_scope);
+
+        node->get_body()->evaluate(this, for_loop_table);
     }
 
     return nullptr;
 }
 
-std::shared_ptr<Object> InterpreterVisitor::visit(IfStatementNode *node, SymbolTable *arg) {
-    std::shared_ptr<Object> condition = node->get_condition()->evaluate(this, arg);
+std::shared_ptr<Object> InterpreterVisitor::visit(IfStatementNode *node, SymbolTable *table) {
+    // Create a new scope for the if statement
+    SymbolTable *if_statement_table = new SymbolTable(table, table->is_loop(), table->is_function());
+
+    std::shared_ptr<Object> condition = node->get_condition()->evaluate(this, if_statement_table);
+
+    // The condition must be a boolean
     if (condition->get_type() != TYPE_BOOL) {
         Error::runtime_error("Invalid type for if condition (expected bool, got " +
                                  type_strings[condition->get_type()] + ")",
                              node->get_condition()->get_line(),
                              node->get_condition()->get_column());
-    } else if (std::static_pointer_cast<BoolObject>(condition)->get_value()) {
-        node->get_if_body()->evaluate(this, arg);
+    }
+    // If condition, then evaluate the if body
+    else if (std::static_pointer_cast<BoolObject>(condition)->get_value()) {
+        node->get_if_body()->evaluate(this, if_statement_table);
         return nullptr;
-    } else if (node->get_else_body() != nullptr) {
-        node->get_else_body()->evaluate(this, arg);
+    }
+    // Else, evaluate the else body (if it exists)
+    else if (node->get_else_body() != nullptr) {
+        node->get_else_body()->evaluate(this, if_statement_table);
         return nullptr;
     }
 
     return nullptr;
 }
 
-std::shared_ptr<Object> InterpreterVisitor::visit(RepeatStatementNode *node, SymbolTable *arg) {
-    auto *repeat_loop_scope = new SymbolTable(arg, true, arg->is_function());
-    std::shared_ptr<Object> count = node->get_count()->evaluate(this, arg);
+std::shared_ptr<Object> InterpreterVisitor::visit(RepeatStatementNode *node, SymbolTable *table) {
+    // Create a new scope for the repeat loop
+    auto *repeat_loop_table = new SymbolTable(table, true, table->is_function());
+
+    // Count must be an integer
+    std::shared_ptr<Object> count = node->get_count()->evaluate(this, table);
     if (count->get_type() != TYPE_INT) {
         Error::runtime_error("Invalid type for repeat count (expected int, got " +
                                  type_strings[count->get_type()] + ")",
@@ -232,7 +285,9 @@ std::shared_ptr<Object> InterpreterVisitor::visit(RepeatStatementNode *node, Sym
                              node->get_count()->get_column());
     }
 
+    // Repeat the body `count` times
     for (int i = 0; i < std::static_pointer_cast<IntObject>(count)->get_value(); i++) {
+        // Handle breaking
         if (backtracking || returning) {
             backtracking = false;
             if (breaking) {
@@ -241,15 +296,18 @@ std::shared_ptr<Object> InterpreterVisitor::visit(RepeatStatementNode *node, Sym
             }
         }
 
-        node->get_body()->evaluate(this, repeat_loop_scope);
+        node->get_body()->evaluate(this, repeat_loop_table);
     }
 
     return nullptr;
 }
 
-std::shared_ptr<Object> InterpreterVisitor::visit(WhileStatementNode *node, SymbolTable *arg) {
-    auto *while_loop_scope = new SymbolTable(arg, true, arg->is_function());
-    std::shared_ptr<Object> condition = node->get_condition()->evaluate(this, arg);
+std::shared_ptr<Object> InterpreterVisitor::visit(WhileStatementNode *node, SymbolTable *table) {
+    // Create a new scope for the while loop
+    auto *while_loop_table = new SymbolTable(table, true, table->is_function());
+
+    // The condition must be a boolean
+    std::shared_ptr<Object> condition = node->get_condition()->evaluate(this, table);
     if (condition->get_type() != TYPE_BOOL) {
         Error::runtime_error("Invalid type for while condition (expected bool, got " +
                                  type_strings[condition->get_type()] + ")",
@@ -257,7 +315,9 @@ std::shared_ptr<Object> InterpreterVisitor::visit(WhileStatementNode *node, Symb
                              node->get_condition()->get_column());
     }
 
+    // While the condition is true, evaluate the body
     while (std::static_pointer_cast<BoolObject>(condition)->get_value()) {
+        // Handle breaking
         if (backtracking || returning) {
             backtracking = false;
             if (breaking) {
@@ -266,9 +326,11 @@ std::shared_ptr<Object> InterpreterVisitor::visit(WhileStatementNode *node, Symb
             }
         }
 
-        node->get_body()->evaluate(this, while_loop_scope);
-        condition = node->get_condition()->evaluate(this, arg);
+        // Evalulate the body
+        node->get_body()->evaluate(this, while_loop_table);
 
+        // Update the condition
+        condition = node->get_condition()->evaluate(this, table);
         if (condition->get_type() != TYPE_BOOL) {
             Error::runtime_error("Invalid type for while condition (expected bool, got " +
                                      type_strings[condition->get_type()] + ")",
@@ -280,83 +342,99 @@ std::shared_ptr<Object> InterpreterVisitor::visit(WhileStatementNode *node, Symb
     return nullptr;
 }
 
-std::shared_ptr<Object> InterpreterVisitor::visit(FunctionDeclarationNode *node, SymbolTable *arg) {
+std::shared_ptr<Object> InterpreterVisitor::visit(FunctionDeclarationNode *node, SymbolTable *table) {
+    // Create a symbol for the function
     std::shared_ptr<Object> function_object =
         std::make_shared<FunctionObject>(node->get_body(), *node->get_parameters());
     Symbol function_symbol(node->get_identifier(), function_object);
-    arg->insert(function_symbol);
-
-    auto *function_scope = new SymbolTable(arg, arg->is_loop(), true);
-    for (auto &param : *node->get_parameters()) {
-        function_scope->insert(Symbol(param));
-    }
+    table->insert(function_symbol);
 
     return nullptr;
 }
 
-std::shared_ptr<Object> InterpreterVisitor::visit(FunctionStatementNode *node, SymbolTable *arg) {
+std::shared_ptr<Object> InterpreterVisitor::visit(FunctionStatementNode *node, SymbolTable *table) {
+    // Get the function object from the symbol table
     std::string name = node->get_identifier();
-    Symbol *function_symbol = arg->lookup(name, false);
+    Symbol *function_symbol = table->lookup(name, false);
     std::shared_ptr<FunctionObject> function_object =
         std::static_pointer_cast<FunctionObject>(function_symbol->get_value());
 
+    // Handle built-in functions
     if (function_object->is_built_in()) {
         std::vector<std::shared_ptr<Object>> arguments;
         for (auto &argument : *node->get_arguments()) {
-            arguments.push_back(argument->evaluate(this, arg));
+            arguments.push_back(argument->evaluate(this, table));
         }
+
         return BuiltInFunctions::handle_built_in_function(
             name, &arguments, node->get_line(), node->get_column());
     }
 
+    // Reset the return value
     return_val = std::make_shared<VoidObject>();
 
-    auto *function_scope = new SymbolTable(arg->get_global_scope(), false, true);
-    for (int i = 0; i < (int)node->get_arguments()->size(); i++) {
+    // Create a new scope for the function with the arguments
+    auto *function_table = new SymbolTable(table->get_global_scope(), false, true);
+    for (size_t i = 0; i < node->get_arguments()->size(); i++) {
         std::string arg_name = function_object->get_parameters()->at(i);
-        std::shared_ptr<Object> arg_value = node->get_arguments()->at(i)->evaluate(this, arg);
-        function_scope->insert(Symbol(arg_name, arg_value));
+        std::shared_ptr<Object> arg_value = node->get_arguments()->at(i)->evaluate(this, table);
+        function_table->insert(Symbol(arg_name, arg_value));
     }
 
-    function_object->get_body()->evaluate(this, function_scope);
+    // Evaluate the function body
+    function_object->get_body()->evaluate(this, function_table);
+
     returning = false;
     return return_val;
 }
 
-std::shared_ptr<Object> InterpreterVisitor::visit(CompoundStatementNode *node, SymbolTable *arg) {
-    auto *scope = new SymbolTable(arg, arg->is_loop(), arg->is_function());
+std::shared_ptr<Object> InterpreterVisitor::visit(CompoundStatementNode *node, SymbolTable *table) {
+    // Create a new scope for the compound statement
+    auto *compound_statement_table = new SymbolTable(table, table->is_loop(), table->is_function());
+
     for (auto &statement : *node->get_statements()) {
-        if (backtracking) {
+        // Handle breaking
+        if (backtracking || returning) {
             return nullptr;
         }
-        statement->evaluate(this, scope);
+
+        statement->evaluate(this, compound_statement_table);
     }
 
     return nullptr;
 }
 
-std::shared_ptr<Object> InterpreterVisitor::visit(IdentifierNode *node, SymbolTable *arg) {
+std::shared_ptr<Object> InterpreterVisitor::visit(IdentifierNode *node, SymbolTable *table) {
+    // Get identifier value from the symbol table
     std::string name = node->get_name();
-    return arg->lookup(name, false)->get_value();
+    return table->lookup(name, false)->get_value();
 }
 
-std::shared_ptr<Object> InterpreterVisitor::visit(LiteralNode *node, SymbolTable *arg) {
+std::shared_ptr<Object> InterpreterVisitor::visit(LiteralNode *node, SymbolTable *table) {
+    // Create an object from the literal value
     switch (node->get_type()) {
     case TYPE_INT:
-        return std::make_shared<IntObject>(std::stoi(node->get_value()));
+        try {
+            return std::make_shared<IntObject>(node->get_value());
+        } catch (const std::out_of_range &e) {
+            Error::runtime_error("Integer value out of range", node->get_line(), node->get_column());
+        }
     case TYPE_FLOAT:
-        return std::make_shared<FloatObject>(std::stof(node->get_value()));
+        try {
+            return std::make_shared<FloatObject>(node->get_value());
+        } catch (const std::out_of_range &e) {
+            Error::runtime_error("Float value out of range", node->get_line(), node->get_column());
+        }
     case TYPE_BOOL:
-        return std::make_shared<BoolObject>(node->get_value() == "true");
+        return std::make_shared<BoolObject>(node->get_value());
     case TYPE_STRING:
-        return std::make_shared<StringObject>(
-            node->get_value().substr(1, node->get_value().length() - 2));
+        return StringObject::from_string_literal(node->get_value());
     default:
         return nullptr;
     }
 }
 
-std::shared_ptr<Object> InterpreterVisitor::visit(ErrorNode *node, SymbolTable *arg) {
+std::shared_ptr<Object> InterpreterVisitor::visit(ErrorNode *node, SymbolTable *table) {
     // This should never occur!
     Error::runtime_error("Error node", node->get_line(), node->get_column());
     return nullptr;

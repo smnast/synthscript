@@ -69,6 +69,7 @@ ASTNode *Parser::parse_compound_statement() {
     int line = cur_token().line, col = cur_token().column;
 
     expect(LBRACE);
+    accept_new_lines();
 
     // Statements inside the compound statement
     std::vector<ASTNode *> statements;

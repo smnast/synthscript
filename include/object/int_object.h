@@ -6,6 +6,7 @@
 class IntObject : public Object {
 public:
     explicit IntObject(int value) : value(value) {}
+    explicit IntObject(std::string value) : value(std::stoi(value)) {}
 
     Type get_type() override { return TYPE_INT; }
 

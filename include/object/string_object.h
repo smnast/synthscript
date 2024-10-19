@@ -6,6 +6,10 @@
 class StringObject : public Object {
 public:
     explicit StringObject(std::string value) : value(value) {}
+    static std::shared_ptr<StringObject> from_string_literal(std::string value) {
+        // Remove the quotes from the string
+        return std::make_shared<StringObject>(value.substr(1, value.length() - 2));
+    }
 
     Type get_type() override { return TYPE_STRING; }
 

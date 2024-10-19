@@ -9,6 +9,7 @@ public:
     ReturnStatementNode(ASTNode *value, int line, int col) : ASTNode(line, col), value(value) {}
     ~ReturnStatementNode() override { delete value; }
 
+    bool has_value() { return value != nullptr; }
     ASTNode *get_value() { return value; }
 
     DECLARE_VISITOR_FUNCTIONS

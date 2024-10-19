@@ -6,6 +6,7 @@
 class FloatObject : public Object {
 public:
     explicit FloatObject(float value) : value(value) {}
+    explicit FloatObject(std::string value) : value(std::stof(value)) {}
 
     Type get_type() override { return TYPE_FLOAT; }
 

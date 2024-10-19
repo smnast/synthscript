@@ -16,6 +16,8 @@ public:
 
     ASTNode *get_condition() { return condition; }
     ASTNode *get_if_body() { return if_body; }
+    
+    bool has_else_body() { return else_body != nullptr; }
     ASTNode *get_else_body() { return else_body; }
 
     DECLARE_VISITOR_FUNCTIONS

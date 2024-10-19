@@ -6,6 +6,7 @@
 class BoolObject : public Object {
 public:
     explicit BoolObject(bool value) : value(value) {}
+    explicit BoolObject(std::string value) : value(!value.empty()) {}
 
     Type get_type() override { return TYPE_BOOL; }
 
