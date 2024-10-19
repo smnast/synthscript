@@ -22,6 +22,8 @@ int main(int argc, char *argv[]) {
 }
 
 void build_and_run(const std::string &path) {
+    printf("Building program...\n");
+
     // Lexical analysis
     std::string code = Reader::read_file(path);
     std::vector<Token> tokens = Lexer::parse_tokens(code);
@@ -30,22 +32,27 @@ void build_and_run(const std::string &path) {
     ProgramNode *program = Parser::parse_program(tokens);
 
     // Print the AST
-    auto *print_visitor = new PrintVisitor();
-    program->accept(print_visitor, 0);
-    delete print_visitor;
+    // auto *print_visitor = new PrintVisitor();
+    // program->accept(print_visitor, 0);
+    // delete print_visitor;
 
     // Semantic analysis
     auto *semantic_analysis_visitor = new SemanticAnalysisVisitor();
     program->analyze(semantic_analysis_visitor, nullptr);
     delete semantic_analysis_visitor;
 
-    Error::print_build_status();
-    if (Error::should_quit()) {
+    // Print build status
+    std::string build_status = Error::get_status() == Error::BuildStatus::SUCCESS ? "SUCCESS" : "FAILURE";
+    printf("Build status:\t%s\n", build_status.c_str());
+    printf("Error count:\t%d\n", Error::get_error_count());
+
+    if (Error::get_status() == Error::BuildStatus::FAILURE) {
         delete program;
         exit(1);
     }
 
     // Execution
+    printf("Running program...\n");
     run(program);
 
     delete program;
