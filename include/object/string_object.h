@@ -6,7 +6,9 @@
 class StringObject : public Object {
 public:
     explicit StringObject(std::string value) : value(value) {}
+
     Type get_type() override { return TYPE_STRING; }
+
     std::shared_ptr<Object> add(std::shared_ptr<Object> other) override;
     std::shared_ptr<Object> subtract(std::shared_ptr<Object> other) override;
     std::shared_ptr<Object> positive() override;

@@ -1,4 +1,6 @@
 #include "lexer.h"
+#include "error.h"
+#include <regex>
 
 std::vector<int> Lexer::line_prefix, Lexer::line_offset_prefix;
 
@@ -75,7 +77,7 @@ std::vector<Token> Lexer::get_tokens(std::string &code, std::string &token_regex
                 // Check for undefined tokens
                 if (token_regexs[token_idx].first == UNDEFINED) {
                     Lexer::lexer_error(match[i].str(), line, column);
-                // Don't include new line escapes in the token list
+                    // Don't include new line escapes in the token list
                 } else if (token_regexs[token_idx].first != ESCAPED_NEW_LINE) {
                     tokens.push_back(cur_token);
                 }

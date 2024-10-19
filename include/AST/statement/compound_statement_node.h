@@ -2,13 +2,14 @@
 #define SYNTHSCRIPT_COMPOUNDSTATEMENTNODE_H
 
 #include "AST/AST_node.h"
+#include "AST/visit_functions_macro.h"
 #include <utility>
 #include <vector>
 
 class CompoundStatementNode : public ASTNode {
 public:
-    explicit CompoundStatementNode(std::vector<ASTNode *> statements, int line, int col) : ASTNode(line, col), statements(std::move(statements)) {}
-
+    CompoundStatementNode(std::vector<ASTNode *> statements, int line, int col)
+        : ASTNode(line, col), statements(std::move(statements)) {}
     ~CompoundStatementNode() override {
         for (auto &statement : statements) {
             delete statement;

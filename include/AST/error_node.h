@@ -2,6 +2,7 @@
 #define SYNTHSCRIPT_ERRORNODE_H
 
 #include "AST/AST_node.h"
+#include "AST/visit_functions_macro.h"
 
 class ErrorNode : public ASTNode {
 public:

@@ -7,7 +7,6 @@
 class SymbolTable {
 public:
     SymbolTable(SymbolTable *enclosing_scope, bool loop, bool function);
-
     ~SymbolTable() {
         for (auto &child : child_scope) {
             delete child;

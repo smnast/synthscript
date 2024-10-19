@@ -2,12 +2,13 @@
 #define SYNTHSCRIPT_IDENTIFIERNODE_H
 
 #include "AST/AST_node.h"
+#include "AST/visit_functions_macro.h"
 #include <utility>
 
 class IdentifierNode : public ASTNode {
 public:
-    explicit IdentifierNode(std::string name, int line, int col) : ASTNode(line, col), name(std::move(name)) {}
-
+    IdentifierNode(std::string name, int line, int col)
+        : ASTNode(line, col), name(std::move(name)) {}
     ~IdentifierNode() override = default;
 
     std::string get_name() const { return name; }

@@ -3,7 +3,6 @@
 
 #include "AST/AST_node.h"
 #include "AST/AST_nodes.h"
-#include "error.h"
 #include "tokens.h"
 #include <vector>
 

@@ -16,6 +16,7 @@ set(SOURCES
     object/bool_object.cpp
     object/void_object.cpp
     built_in_functions.cpp
+    operators.cpp
 )
 
 add_executable(SynthScript ${SOURCES})

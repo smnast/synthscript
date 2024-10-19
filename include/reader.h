@@ -1,8 +1,6 @@
 #ifndef SYNTHSCRIPT_READER_H
 #define SYNTHSCRIPT_READER_H
 
-#include <fstream>
-#include <sstream>
 #include <string>
 #include <vector>
 

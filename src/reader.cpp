@@ -1,4 +1,6 @@
 #include "reader.h"
+#include <fstream>
+#include <sstream>
 
 std::vector<std::string> Reader::file_lines;
 const char Reader::comment_char = '#';
@@ -25,7 +27,8 @@ std::string Reader::clean_file(const std::string &file) {
         }
 
         // Double comment character means start/end of a multi-line comment
-        if (!in_string_literal && file[i] == comment_char && i < (int)file.size() - 1 && file[i + 1] == comment_char) {
+        if (!in_string_literal && file[i] == comment_char && i < (int)file.size() - 1 &&
+            file[i + 1] == comment_char) {
             commented = !multi_line;
             multi_line = !multi_line;
             cleaned_file += "  ";

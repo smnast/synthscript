@@ -1,7 +1,6 @@
 #ifndef SYNTHSCRIPT_INTOBJECT_H
 #define SYNTHSCRIPT_INTOBJECT_H
 
-#include "AST/AST_node.h"
 #include "object.h"
 
 class IntObject : public Object {

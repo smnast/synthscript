@@ -1,4 +1,5 @@
 #include "error.h"
+#include "reader.h"
 
 bool Error::errored = false;
 int Error::error_count = 0;

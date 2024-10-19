@@ -59,7 +59,7 @@ typedef enum {
     END_OF_FILE,
 } TokenType;
 
-const std::vector<std::string> token_names = {
+const std::vector<std::string> token_values = {
     "'<-'",
     "'+'",
     "'-'",

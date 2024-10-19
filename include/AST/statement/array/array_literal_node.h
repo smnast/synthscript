@@ -2,11 +2,12 @@
 #define SYNTHSCRIPT_ARRAYLITERALNODE_H
 
 #include "AST/AST_node.h"
+#include "AST/visit_functions_macro.h"
 
 class ArrayLiteralNode : public ASTNode {
 public:
-    explicit ArrayLiteralNode(std::vector<ASTNode *> values, int line, int col) : ASTNode(line, col), values(std::move(values)) {}
-
+    ArrayLiteralNode(std::vector<ASTNode *> values, int line, int col)
+        : ASTNode(line, col), values(std::move(values)) {}
     ~ArrayLiteralNode() override {
         for (auto &value : values) {
             delete value;

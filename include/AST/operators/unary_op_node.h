@@ -2,12 +2,12 @@
 #define SYNTHSCRIPT_UNARYOPNODE_H
 
 #include "AST/AST_node.h"
-#include <functional>
+#include "AST/visit_functions_macro.h"
 
 class UnaryOpNode : public ASTNode {
 public:
-    UnaryOpNode(TokenType op, ASTNode *operand, int line, int col) : ASTNode(line, col), op(op), operand(operand) {}
-
+    UnaryOpNode(TokenType op, ASTNode *operand, int line, int col)
+        : ASTNode(line, col), op(op), operand(operand) {}
     ~UnaryOpNode() override { delete operand; }
 
     TokenType get_op() { return op; }

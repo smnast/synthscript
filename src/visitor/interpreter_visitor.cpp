@@ -1,17 +1,19 @@
 #include "visitor/interpreter_visitor.h"
 #include "AST/AST_nodes.h"
+#include "built_in_functions.h"
 #include "error.h"
 #include "object/array_object.h"
 #include "object/bool_object.h"
 #include "object/float_object.h"
 #include "object/function_object.h"
+#include "object/int_object.h"
 #include "object/string_object.h"
 #include "object/void_object.h"
 #include "operators.h"
 
 std::shared_ptr<Object> InterpreterVisitor::visit(ProgramNode *node, SymbolTable *arg) {
     auto *global_table = new SymbolTable(nullptr, false, false);
-    BuiltinFunctions::register_built_in_functions(global_table);
+    BuiltInFunctions::register_built_in_functions(global_table);
     for (auto &statement : *node->get_statements()) {
         statement->evaluate(this, global_table);
     }
@@ -24,7 +26,11 @@ std::shared_ptr<Object> InterpreterVisitor::visit(BinOpNode *node, SymbolTable *
     std::shared_ptr<Object> right = node->get_right_node()->evaluate(this, arg);
     std::shared_ptr<Object> result = get_binary_op_function(node->get_op())(left, right);
     if (result == nullptr) {
-        Error::runtime_error("Invalid operands to binary operator " + token_names[node->get_op()] + " (" + type_strings[left->get_type()] + " and " + type_strings[right->get_type()] + ")", node->get_line(), node->get_column());
+        Error::runtime_error("Invalid operands to binary operator " + token_values[node->get_op()] +
+                                 " (" + type_strings[left->get_type()] + " and " +
+                                 type_strings[right->get_type()] + ")",
+                             node->get_line(),
+                             node->get_column());
     }
 
     return result;
@@ -35,7 +41,10 @@ std::shared_ptr<Object> InterpreterVisitor::visit(CastOpNode *node, SymbolTable 
     std::shared_ptr<Object> result = operand->cast(node->get_type());
 
     if (result == nullptr) {
-        Error::runtime_error("Invalid cast from " + type_strings[operand->get_type()] + " to " + type_strings[node->get_type()], node->get_line(), node->get_column());
+        Error::runtime_error("Invalid cast from " + type_strings[operand->get_type()] + " to " +
+                                 type_strings[node->get_type()],
+                             node->get_line(),
+                             node->get_column());
     }
 
     return result;
@@ -47,7 +56,10 @@ std::shared_ptr<Object> InterpreterVisitor::visit(SubscriptOpNode *node, SymbolT
     std::shared_ptr<Object> result = identifier->subscript(index);
 
     if (result == nullptr) {
-        Error::runtime_error("Invalid subscript operation on " + type_strings[identifier->get_type()], node->get_line(), node->get_column());
+        Error::runtime_error("Invalid subscript operation on " +
+                                 type_strings[identifier->get_type()],
+                             node->get_line(),
+                             node->get_column());
     }
 
     return result;
@@ -58,7 +70,10 @@ std::shared_ptr<Object> InterpreterVisitor::visit(UnaryOpNode *node, SymbolTable
     std::shared_ptr<Object> result = get_unary_op_function(node->get_op())(operand);
 
     if (result == nullptr) {
-        Error::runtime_error("Invalid operand to unary operator " + token_names[node->get_op()] + " (" + type_strings[operand->get_type()] + ")", node->get_line(), node->get_column());
+        Error::runtime_error("Invalid operand to unary operator " + token_values[node->get_op()] +
+                                 " (" + type_strings[operand->get_type()] + ")",
+                             node->get_line(),
+                             node->get_column());
     }
 
     return result;
@@ -76,9 +91,15 @@ std::shared_ptr<Object> InterpreterVisitor::visit(RangeLiteralNode *node, Symbol
     std::shared_ptr<Object> start = node->get_start()->evaluate(this, arg);
     std::shared_ptr<Object> end = node->get_end()->evaluate(this, arg);
     if (start->get_type() != TYPE_INT) {
-        Error::runtime_error("Invalid type for start of range (expected int, got " + type_strings[start->get_type()] + ")", node->get_start()->get_line(), node->get_start()->get_column());
+        Error::runtime_error("Invalid type for start of range (expected int, got " +
+                                 type_strings[start->get_type()] + ")",
+                             node->get_start()->get_line(),
+                             node->get_start()->get_column());
     } else if (end->get_type() != TYPE_INT) {
-        Error::runtime_error("Invalid type for end of range (expected int, got " + type_strings[start->get_type()] + ")", node->get_end()->get_line(), node->get_end()->get_column());
+        Error::runtime_error("Invalid type for end of range (expected int, got " +
+                                 type_strings[start->get_type()] + ")",
+                             node->get_end()->get_line(),
+                             node->get_end()->get_column());
     }
 
     int start_val = std::static_pointer_cast<IntObject>(start)->get_value();
@@ -114,7 +135,8 @@ std::shared_ptr<Object> InterpreterVisitor::visit(AssignmentNode *node, SymbolTa
         }
     } else if (dynamic_cast<SubscriptOpNode *>(node->get_identifier()) != nullptr) {
         auto *left = dynamic_cast<SubscriptOpNode *>(node->get_identifier());
-        std::shared_ptr<ArrayObject> identifier = std::static_pointer_cast<ArrayObject>(left->get_identifier()->evaluate(this, arg));
+        std::shared_ptr<ArrayObject> identifier =
+            std::static_pointer_cast<ArrayObject>(left->get_identifier()->evaluate(this, arg));
         std::shared_ptr<Object> index = left->get_index()->evaluate(this, arg);
         identifier->subscript_update(index, value);
     }
@@ -156,7 +178,10 @@ std::shared_ptr<Object> InterpreterVisitor::visit(ForStatementNode *node, Symbol
     } else if (iterable->get_type() == TYPE_STRING) {
         iterable_len = (int)std::static_pointer_cast<StringObject>(iterable)->get_value().size();
     } else {
-        Error::runtime_error("Invalid type for iterable (expected array or string, got " + type_strings[iterable->get_type()] + ")", node->get_iterable()->get_line(), node->get_iterable()->get_column());
+        Error::runtime_error("Invalid type for iterable (expected array or string, got " +
+                                 type_strings[iterable->get_type()] + ")",
+                             node->get_iterable()->get_line(),
+                             node->get_iterable()->get_column());
     }
 
     auto *for_loop_scope = new SymbolTable(arg, true, arg->is_function());
@@ -182,7 +207,10 @@ std::shared_ptr<Object> InterpreterVisitor::visit(ForStatementNode *node, Symbol
 std::shared_ptr<Object> InterpreterVisitor::visit(IfStatementNode *node, SymbolTable *arg) {
     std::shared_ptr<Object> condition = node->get_condition()->evaluate(this, arg);
     if (condition->get_type() != TYPE_BOOL) {
-        Error::runtime_error("Invalid type for if condition (expected bool, got " + type_strings[condition->get_type()] + ")", node->get_condition()->get_line(), node->get_condition()->get_column());
+        Error::runtime_error("Invalid type for if condition (expected bool, got " +
+                                 type_strings[condition->get_type()] + ")",
+                             node->get_condition()->get_line(),
+                             node->get_condition()->get_column());
     } else if (std::static_pointer_cast<BoolObject>(condition)->get_value()) {
         node->get_if_body()->evaluate(this, arg);
         return nullptr;
@@ -198,7 +226,10 @@ std::shared_ptr<Object> InterpreterVisitor::visit(RepeatStatementNode *node, Sym
     auto *repeat_loop_scope = new SymbolTable(arg, true, arg->is_function());
     std::shared_ptr<Object> count = node->get_count()->evaluate(this, arg);
     if (count->get_type() != TYPE_INT) {
-        Error::runtime_error("Invalid type for repeat count (expected int, got " + type_strings[count->get_type()] + ")", node->get_count()->get_line(), node->get_count()->get_column());
+        Error::runtime_error("Invalid type for repeat count (expected int, got " +
+                                 type_strings[count->get_type()] + ")",
+                             node->get_count()->get_line(),
+                             node->get_count()->get_column());
     }
 
     for (int i = 0; i < std::static_pointer_cast<IntObject>(count)->get_value(); i++) {
@@ -220,7 +251,10 @@ std::shared_ptr<Object> InterpreterVisitor::visit(WhileStatementNode *node, Symb
     auto *while_loop_scope = new SymbolTable(arg, true, arg->is_function());
     std::shared_ptr<Object> condition = node->get_condition()->evaluate(this, arg);
     if (condition->get_type() != TYPE_BOOL) {
-        Error::runtime_error("Invalid type for while condition (expected bool, got " + type_strings[condition->get_type()] + ")", node->get_condition()->get_line(), node->get_condition()->get_column());
+        Error::runtime_error("Invalid type for while condition (expected bool, got " +
+                                 type_strings[condition->get_type()] + ")",
+                             node->get_condition()->get_line(),
+                             node->get_condition()->get_column());
     }
 
     while (std::static_pointer_cast<BoolObject>(condition)->get_value()) {
@@ -236,7 +270,10 @@ std::shared_ptr<Object> InterpreterVisitor::visit(WhileStatementNode *node, Symb
         condition = node->get_condition()->evaluate(this, arg);
 
         if (condition->get_type() != TYPE_BOOL) {
-            Error::runtime_error("Invalid type for while condition (expected bool, got " + type_strings[condition->get_type()] + ")", node->get_condition()->get_line(), node->get_condition()->get_column());
+            Error::runtime_error("Invalid type for while condition (expected bool, got " +
+                                     type_strings[condition->get_type()] + ")",
+                                 node->get_condition()->get_line(),
+                                 node->get_condition()->get_column());
         }
     }
 
@@ -244,7 +281,8 @@ std::shared_ptr<Object> InterpreterVisitor::visit(WhileStatementNode *node, Symb
 }
 
 std::shared_ptr<Object> InterpreterVisitor::visit(FunctionDeclarationNode *node, SymbolTable *arg) {
-    std::shared_ptr<Object> function_object = std::make_shared<FunctionObject>(node->get_body(), *node->get_parameters());
+    std::shared_ptr<Object> function_object =
+        std::make_shared<FunctionObject>(node->get_body(), *node->get_parameters());
     Symbol function_symbol(node->get_identifier(), function_object);
     arg->insert(function_symbol);
 
@@ -259,14 +297,16 @@ std::shared_ptr<Object> InterpreterVisitor::visit(FunctionDeclarationNode *node,
 std::shared_ptr<Object> InterpreterVisitor::visit(FunctionStatementNode *node, SymbolTable *arg) {
     std::string name = node->get_identifier();
     Symbol *function_symbol = arg->lookup(name, false);
-    std::shared_ptr<FunctionObject> function_object = std::static_pointer_cast<FunctionObject>(function_symbol->get_value());
+    std::shared_ptr<FunctionObject> function_object =
+        std::static_pointer_cast<FunctionObject>(function_symbol->get_value());
 
     if (function_object->is_built_in()) {
         std::vector<std::shared_ptr<Object>> arguments;
         for (auto &argument : *node->get_arguments()) {
             arguments.push_back(argument->evaluate(this, arg));
         }
-        return BuiltinFunctions::handle_built_in_function(name, &arguments, node->get_line(), node->get_column());
+        return BuiltInFunctions::handle_built_in_function(
+            name, &arguments, node->get_line(), node->get_column());
     }
 
     return_val = std::make_shared<VoidObject>();
@@ -309,7 +349,8 @@ std::shared_ptr<Object> InterpreterVisitor::visit(LiteralNode *node, SymbolTable
     case TYPE_BOOL:
         return std::make_shared<BoolObject>(node->get_value() == "true");
     case TYPE_STRING:
-        return std::make_shared<StringObject>(node->get_value().substr(1, node->get_value().length() - 2));
+        return std::make_shared<StringObject>(
+            node->get_value().substr(1, node->get_value().length() - 2));
     default:
         return nullptr;
     }

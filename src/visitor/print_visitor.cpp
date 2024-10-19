@@ -1,5 +1,6 @@
 #include "visitor/print_visitor.h"
 #include "AST/AST_nodes.h"
+#include <iostream>
 
 void PrintVisitor::visit(ProgramNode *node, int arg) {
     std::cout << std::string(arg, '\t') << "ProgramNode" << std::endl;
@@ -9,7 +10,8 @@ void PrintVisitor::visit(ProgramNode *node, int arg) {
 }
 
 void PrintVisitor::visit(BinOpNode *node, int arg) {
-    std::cout << std::string(arg, '\t') << "BinOpNode " << token_names[node->get_op()] << std::endl;
+    std::cout << std::string(arg, '\t') << "BinOpNode " << token_values[node->get_op()]
+              << std::endl;
     node->get_left_node()->accept(this, arg + 1);
     node->get_right_node()->accept(this, arg + 1);
 }
@@ -27,7 +29,8 @@ void PrintVisitor::visit(SubscriptOpNode *node, int arg) {
 }
 
 void PrintVisitor::visit(UnaryOpNode *node, int arg) {
-    std::cout << std::string(arg, '\t') << "UnaryOpNode " << token_names[node->get_op()] << std::endl;
+    std::cout << std::string(arg, '\t') << "UnaryOpNode " << token_values[node->get_op()]
+              << std::endl;
     node->get_operand()->accept(this, arg + 1);
 }
 

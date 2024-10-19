@@ -2,7 +2,6 @@
 #define SYNTHSCRIPT_VISITOR_H
 
 #include "AST/node_forward_classes.h"
-#include "built_in_functions.h"
 
 template <typename T, typename A> class Visitor {
 public:

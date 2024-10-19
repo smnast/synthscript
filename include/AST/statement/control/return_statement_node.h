@@ -2,11 +2,11 @@
 #define SYNTHSCRIPT_RETURNSTATEMENTNODE_H
 
 #include "AST/AST_node.h"
+#include "AST/visit_functions_macro.h"
 
 class ReturnStatementNode : public ASTNode {
 public:
-    explicit ReturnStatementNode(ASTNode *value, int line, int col) : ASTNode(line, col), value(value) {}
-
+    ReturnStatementNode(ASTNode *value, int line, int col) : ASTNode(line, col), value(value) {}
     ~ReturnStatementNode() override { delete value; }
 
     ASTNode *get_value() { return value; }

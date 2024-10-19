@@ -7,7 +7,9 @@
 class Object {
 public:
     Object() = default;
+
     virtual Type get_type() = 0;
+
     virtual std::shared_ptr<Object> add(std::shared_ptr<Object> other) = 0;
     virtual std::shared_ptr<Object> subtract(std::shared_ptr<Object> other) = 0;
     virtual std::shared_ptr<Object> positive() = 0;

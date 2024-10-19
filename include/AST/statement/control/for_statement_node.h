@@ -2,12 +2,13 @@
 #define SYNTHSCRIPT_FORSTATEMENTNODE_H
 
 #include "AST/AST_node.h"
+#include "AST/visit_functions_macro.h"
 #include <utility>
 
 class ForStatementNode : public ASTNode {
 public:
-    ForStatementNode(std::string identifier, ASTNode *iterable, ASTNode *body, int line, int col) : ASTNode(line, col), identifier(std::move(identifier)), iterable(iterable), body(body) {}
-
+    ForStatementNode(std::string identifier, ASTNode *iterable, ASTNode *body, int line, int col)
+        : ASTNode(line, col), identifier(std::move(identifier)), iterable(iterable), body(body) {}
     ~ForStatementNode() override {
         delete iterable;
         delete body;

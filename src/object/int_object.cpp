@@ -5,9 +5,11 @@
 
 std::shared_ptr<Object> IntObject::add(std::shared_ptr<Object> other) {
     if (other->get_type() == TYPE_INT) {
-        return std::make_shared<IntObject>(value + std::static_pointer_cast<IntObject>(other)->get_value());
+        return std::make_shared<IntObject>(value +
+                                           std::static_pointer_cast<IntObject>(other)->get_value());
     } else if (other->get_type() == TYPE_FLOAT) {
-        return std::make_shared<FloatObject>((float)value + std::static_pointer_cast<FloatObject>(other)->get_value());
+        return std::make_shared<FloatObject>(
+            (float)value + std::static_pointer_cast<FloatObject>(other)->get_value());
     } else {
         return nullptr;
     }
@@ -15,9 +17,11 @@ std::shared_ptr<Object> IntObject::add(std::shared_ptr<Object> other) {
 
 std::shared_ptr<Object> IntObject::subtract(std::shared_ptr<Object> other) {
     if (other->get_type() == TYPE_INT) {
-        return std::make_shared<IntObject>(value - std::static_pointer_cast<IntObject>(other)->get_value());
+        return std::make_shared<IntObject>(value -
+                                           std::static_pointer_cast<IntObject>(other)->get_value());
     } else if (other->get_type() == TYPE_FLOAT) {
-        return std::make_shared<FloatObject>((float)value - std::static_pointer_cast<FloatObject>(other)->get_value());
+        return std::make_shared<FloatObject>(
+            (float)value - std::static_pointer_cast<FloatObject>(other)->get_value());
     } else {
         return nullptr;
     }
@@ -33,9 +37,11 @@ std::shared_ptr<Object> IntObject::negative() {
 
 std::shared_ptr<Object> IntObject::multiply(std::shared_ptr<Object> other) {
     if (other->get_type() == TYPE_INT) {
-        return std::make_shared<IntObject>(value * std::static_pointer_cast<IntObject>(other)->get_value());
+        return std::make_shared<IntObject>(value *
+                                           std::static_pointer_cast<IntObject>(other)->get_value());
     } else if (other->get_type() == TYPE_FLOAT) {
-        return std::make_shared<FloatObject>((float)value * std::static_pointer_cast<FloatObject>(other)->get_value());
+        return std::make_shared<FloatObject>(
+            (float)value * std::static_pointer_cast<FloatObject>(other)->get_value());
     } else {
         return nullptr;
     }
@@ -43,9 +49,11 @@ std::shared_ptr<Object> IntObject::multiply(std::shared_ptr<Object> other) {
 
 std::shared_ptr<Object> IntObject::divide(std::shared_ptr<Object> other) {
     if (other->get_type() == TYPE_INT) {
-        return std::make_shared<IntObject>(value / std::static_pointer_cast<IntObject>(other)->get_value());
+        return std::make_shared<IntObject>(value /
+                                           std::static_pointer_cast<IntObject>(other)->get_value());
     } else if (other->get_type() == TYPE_FLOAT) {
-        return std::make_shared<FloatObject>((float)value / std::static_pointer_cast<FloatObject>(other)->get_value());
+        return std::make_shared<FloatObject>(
+            (float)value / std::static_pointer_cast<FloatObject>(other)->get_value());
     } else {
         return nullptr;
     }
@@ -53,7 +61,8 @@ std::shared_ptr<Object> IntObject::divide(std::shared_ptr<Object> other) {
 
 std::shared_ptr<Object> IntObject::modulo(std::shared_ptr<Object> other) {
     if (other->get_type() == TYPE_INT) {
-        return std::make_shared<IntObject>(value % std::static_pointer_cast<IntObject>(other)->get_value());
+        return std::make_shared<IntObject>(value %
+                                           std::static_pointer_cast<IntObject>(other)->get_value());
     } else {
         return nullptr;
     }
@@ -61,7 +70,8 @@ std::shared_ptr<Object> IntObject::modulo(std::shared_ptr<Object> other) {
 
 std::shared_ptr<Object> IntObject::bitwise_and(std::shared_ptr<Object> other) {
     if (other->get_type() == TYPE_INT) {
-        return std::make_shared<IntObject>(value & std::static_pointer_cast<IntObject>(other)->get_value());
+        return std::make_shared<IntObject>(value &
+                                           std::static_pointer_cast<IntObject>(other)->get_value());
     } else {
         return nullptr;
     }
@@ -69,7 +79,8 @@ std::shared_ptr<Object> IntObject::bitwise_and(std::shared_ptr<Object> other) {
 
 std::shared_ptr<Object> IntObject::bitwise_or(std::shared_ptr<Object> other) {
     if (other->get_type() == TYPE_INT) {
-        return std::make_shared<IntObject>(value | std::static_pointer_cast<IntObject>(other)->get_value());
+        return std::make_shared<IntObject>(value |
+                                           std::static_pointer_cast<IntObject>(other)->get_value());
     } else {
         return nullptr;
     }
@@ -77,7 +88,8 @@ std::shared_ptr<Object> IntObject::bitwise_or(std::shared_ptr<Object> other) {
 
 std::shared_ptr<Object> IntObject::bitwise_xor(std::shared_ptr<Object> other) {
     if (other->get_type() == TYPE_INT) {
-        return std::make_shared<IntObject>(value ^ std::static_pointer_cast<IntObject>(other)->get_value());
+        return std::make_shared<IntObject>(value ^
+                                           std::static_pointer_cast<IntObject>(other)->get_value());
     } else {
         return nullptr;
     }
@@ -89,9 +101,11 @@ std::shared_ptr<Object> IntObject::bitwise_not() {
 
 std::shared_ptr<Object> IntObject::equal(std::shared_ptr<Object> other) {
     if (other->get_type() == TYPE_INT) {
-        return std::make_shared<BoolObject>(value == std::static_pointer_cast<IntObject>(other)->get_value());
+        return std::make_shared<BoolObject>(
+            value == std::static_pointer_cast<IntObject>(other)->get_value());
     } else if (other->get_type() == TYPE_FLOAT) {
-        return std::make_shared<BoolObject>((float)value == std::static_pointer_cast<FloatObject>(other)->get_value());
+        return std::make_shared<BoolObject>(
+            (float)value == std::static_pointer_cast<FloatObject>(other)->get_value());
     } else {
         return nullptr;
     }
@@ -99,9 +113,11 @@ std::shared_ptr<Object> IntObject::equal(std::shared_ptr<Object> other) {
 
 std::shared_ptr<Object> IntObject::not_equal(std::shared_ptr<Object> other) {
     if (other->get_type() == TYPE_INT) {
-        return std::make_shared<BoolObject>(value != std::static_pointer_cast<IntObject>(other)->get_value());
+        return std::make_shared<BoolObject>(
+            value != std::static_pointer_cast<IntObject>(other)->get_value());
     } else if (other->get_type() == TYPE_FLOAT) {
-        return std::make_shared<BoolObject>((float)value != std::static_pointer_cast<FloatObject>(other)->get_value());
+        return std::make_shared<BoolObject>(
+            (float)value != std::static_pointer_cast<FloatObject>(other)->get_value());
     } else {
         return nullptr;
     }
@@ -109,9 +125,11 @@ std::shared_ptr<Object> IntObject::not_equal(std::shared_ptr<Object> other) {
 
 std::shared_ptr<Object> IntObject::less_than(std::shared_ptr<Object> other) {
     if (other->get_type() == TYPE_INT) {
-        return std::make_shared<BoolObject>(value < std::static_pointer_cast<IntObject>(other)->get_value());
+        return std::make_shared<BoolObject>(
+            value < std::static_pointer_cast<IntObject>(other)->get_value());
     } else if (other->get_type() == TYPE_FLOAT) {
-        return std::make_shared<BoolObject>((float)value < std::static_pointer_cast<FloatObject>(other)->get_value());
+        return std::make_shared<BoolObject>(
+            (float)value < std::static_pointer_cast<FloatObject>(other)->get_value());
     } else {
         return nullptr;
     }
@@ -119,9 +137,11 @@ std::shared_ptr<Object> IntObject::less_than(std::shared_ptr<Object> other) {
 
 std::shared_ptr<Object> IntObject::greater_than(std::shared_ptr<Object> other) {
     if (other->get_type() == TYPE_INT) {
-        return std::make_shared<BoolObject>(value > std::static_pointer_cast<IntObject>(other)->get_value());
+        return std::make_shared<BoolObject>(
+            value > std::static_pointer_cast<IntObject>(other)->get_value());
     } else if (other->get_type() == TYPE_FLOAT) {
-        return std::make_shared<BoolObject>((float)value > std::static_pointer_cast<FloatObject>(other)->get_value());
+        return std::make_shared<BoolObject>(
+            (float)value > std::static_pointer_cast<FloatObject>(other)->get_value());
     } else {
         return nullptr;
     }
@@ -129,9 +149,11 @@ std::shared_ptr<Object> IntObject::greater_than(std::shared_ptr<Object> other) {
 
 std::shared_ptr<Object> IntObject::less_than_equal(std::shared_ptr<Object> other) {
     if (other->get_type() == TYPE_INT) {
-        return std::make_shared<BoolObject>(value <= std::static_pointer_cast<IntObject>(other)->get_value());
+        return std::make_shared<BoolObject>(
+            value <= std::static_pointer_cast<IntObject>(other)->get_value());
     } else if (other->get_type() == TYPE_FLOAT) {
-        return std::make_shared<BoolObject>((float)value <= std::static_pointer_cast<FloatObject>(other)->get_value());
+        return std::make_shared<BoolObject>(
+            (float)value <= std::static_pointer_cast<FloatObject>(other)->get_value());
     } else {
         return nullptr;
     }
@@ -139,9 +161,11 @@ std::shared_ptr<Object> IntObject::less_than_equal(std::shared_ptr<Object> other
 
 std::shared_ptr<Object> IntObject::greater_than_equal(std::shared_ptr<Object> other) {
     if (other->get_type() == TYPE_INT) {
-        return std::make_shared<BoolObject>(value >= std::static_pointer_cast<IntObject>(other)->get_value());
+        return std::make_shared<BoolObject>(
+            value >= std::static_pointer_cast<IntObject>(other)->get_value());
     } else if (other->get_type() == TYPE_FLOAT) {
-        return std::make_shared<BoolObject>((float)value >= std::static_pointer_cast<FloatObject>(other)->get_value());
+        return std::make_shared<BoolObject>(
+            (float)value >= std::static_pointer_cast<FloatObject>(other)->get_value());
     } else {
         return nullptr;
     }

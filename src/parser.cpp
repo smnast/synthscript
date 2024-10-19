@@ -1,4 +1,5 @@
 #include "parser.h"
+#include "error.h"
 
 int Parser::cur_idx;
 std::vector<Token> Parser::tokens;
@@ -726,7 +727,7 @@ bool Parser::accept(TokenType type) {
 void Parser::expect(TokenType type) {
     // Expect the current token to be of the given type
     if (!accept(type)) {
-        syntax_error(token_names[type], cur_token());
+        syntax_error(token_values[type], cur_token());
     }
 }
 
@@ -738,7 +739,7 @@ void Parser::accept_new_lines() {
 
 void Parser::sync() {
     Error::handle_error();
-            
+
     // Skip tokens until a grounding token is found
     while (true) {
         switch (cur_token().token_type) {
@@ -760,6 +761,8 @@ void Parser::sync() {
 
 void Parser::syntax_error(const std::string &expected, const Token &actual) {
     // Report a syntax error at a the token's position
-    Error::error_at_pos("Expected " + expected + " but got " + token_names[actual.token_type],
-                        actual.line, actual.column, false);
+    Error::error_at_pos("Expected " + expected + " but got " + token_values[actual.token_type],
+                        actual.line,
+                        actual.column,
+                        false);
 }

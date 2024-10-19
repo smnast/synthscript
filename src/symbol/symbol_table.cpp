@@ -18,7 +18,8 @@ bool SymbolTable::contains(const std::string &name, bool current_scope) {
     if (symbols.find(name) != symbols.end()) {
         return true;
     } else {
-        return (!current_scope && enclosing_scope != nullptr && enclosing_scope->contains(name, false));
+        return (!current_scope && enclosing_scope != nullptr &&
+                enclosing_scope->contains(name, false));
     }
 }
 

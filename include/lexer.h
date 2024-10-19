@@ -1,9 +1,7 @@
 #ifndef SYNTHSCRIPT_LEXER_H
 #define SYNTHSCRIPT_LEXER_H
 
-#include "error.h"
 #include "tokens.h"
-#include <regex>
 
 /**
  * @class Lexer
@@ -14,7 +12,7 @@ public:
     /**
      * @brief Parse the input code into tokens.
      * @param code The code to be parsed.
-     * @return std::vector<Token> 
+     * @return std::vector<Token>
      */
     static std::vector<Token> parse_tokens(std::string &code);
 

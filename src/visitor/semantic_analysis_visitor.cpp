@@ -1,10 +1,12 @@
 #include "visitor/semantic_analysis_visitor.h"
 #include "AST/AST_nodes.h"
+#include "built_in_functions.h"
+#include "error.h"
 #include "object/function_object.h"
 
 void SemanticAnalysisVisitor::visit(ProgramNode *node, SymbolTable *arg) {
     auto *global_table = new SymbolTable(nullptr, false, false);
-    BuiltinFunctions::register_built_in_functions(global_table);
+    BuiltInFunctions::register_built_in_functions(global_table);
 
     for (auto &statement : *node->get_statements()) {
         statement->analyze(this, global_table);
@@ -55,7 +57,8 @@ void SemanticAnalysisVisitor::visit(AssignmentNode *node, SymbolTable *arg) {
         auto *subscript_op_node = dynamic_cast<SubscriptOpNode *>(node->get_identifier());
         std::string name = get_array_identifier(subscript_op_node, arg);
         if (!arg->contains(name, false)) {
-            semantic_error("Undeclared identifier '" + name + "'", node->get_line(), node->get_column());
+            semantic_error(
+                "Undeclared identifier '" + name + "'", node->get_line(), node->get_column());
         }
     } else if (dynamic_cast<IdentifierNode *>(node->get_identifier()) != nullptr) {
         std::string name = dynamic_cast<IdentifierNode *>(node->get_identifier())->get_name();
@@ -83,7 +86,8 @@ void SemanticAnalysisVisitor::visit(ContinueStatementNode *node, SymbolTable *ar
 
 void SemanticAnalysisVisitor::visit(ReturnStatementNode *node, SymbolTable *arg) {
     if (!arg->is_function()) {
-        semantic_error("Return statement outside of function", node->get_line(), node->get_column());
+        semantic_error(
+            "Return statement outside of function", node->get_line(), node->get_column());
     }
     if (node->get_value() != nullptr) {
         node->get_value()->analyze(this, arg);
@@ -122,14 +126,18 @@ void SemanticAnalysisVisitor::visit(WhileStatementNode *node, SymbolTable *arg) 
 
 void SemanticAnalysisVisitor::visit(FunctionDeclarationNode *node, SymbolTable *arg) {
     if (!arg->is_global_scope()) {
-        semantic_error("Function declaration outside of global scope", node->get_line(), node->get_column());
+        semantic_error(
+            "Function declaration outside of global scope", node->get_line(), node->get_column());
     }
 
     if (arg->contains(node->get_identifier(), false)) {
-        semantic_error("Identifier '" + node->get_identifier() + "' already declared", node->get_line(), node->get_column());
+        semantic_error("Identifier '" + node->get_identifier() + "' already declared",
+                       node->get_line(),
+                       node->get_column());
     }
 
-    std::shared_ptr<Object> function_object = std::make_shared<FunctionObject>(node->get_body(), *node->get_parameters());
+    std::shared_ptr<Object> function_object =
+        std::make_shared<FunctionObject>(node->get_body(), *node->get_parameters());
     Symbol function_symbol(node->get_identifier(), function_object);
     arg->insert(function_symbol);
 
@@ -146,7 +154,8 @@ void SemanticAnalysisVisitor::visit(FunctionStatementNode *node, SymbolTable *ar
 
     bool exists = arg->contains(name, false);
     if (!exists) {
-        semantic_error("Undeclared identifier '" + name + "'", node->get_line(), node->get_column());
+        semantic_error(
+            "Undeclared identifier '" + name + "'", node->get_line(), node->get_column());
     }
 
     for (auto &param : *node->get_arguments()) {
@@ -156,11 +165,16 @@ void SemanticAnalysisVisitor::visit(FunctionStatementNode *node, SymbolTable *ar
     if (exists) {
         Symbol *function_symbol = arg->lookup(name, false);
         if (function_symbol->get_type() != TYPE_FUNCTION) {
-            semantic_error("Identifier '" + name + "' is not a function", node->get_line(), node->get_column());
+            semantic_error("Identifier '" + name + "' is not a function",
+                           node->get_line(),
+                           node->get_column());
         } else {
-            FunctionObject *function_object = dynamic_cast<FunctionObject *>(function_symbol->get_value().get());
+            FunctionObject *function_object =
+                dynamic_cast<FunctionObject *>(function_symbol->get_value().get());
             if (function_object->get_parameters()->size() != node->get_arguments()->size()) {
-                semantic_error("Incorrect number of arguments to function '" + name + "'", node->get_line(), node->get_column());
+                semantic_error("Incorrect number of arguments to function '" + name + "'",
+                               node->get_line(),
+                               node->get_column());
             }
         }
     }
@@ -176,9 +190,11 @@ void SemanticAnalysisVisitor::visit(CompoundStatementNode *node, SymbolTable *ar
 void SemanticAnalysisVisitor::visit(IdentifierNode *node, SymbolTable *arg) {
     std::string name = node->get_name();
     if (!arg->contains(name, false)) {
-        semantic_error("Undeclared identifier '" + name + "'", node->get_line(), node->get_column());
+        semantic_error(
+            "Undeclared identifier '" + name + "'", node->get_line(), node->get_column());
     } else if (arg->lookup(name, false)->get_type() == TYPE_FUNCTION) {
-        semantic_error("Identifier '" + name + "' is a function", node->get_line(), node->get_column());
+        semantic_error(
+            "Identifier '" + name + "' is a function", node->get_line(), node->get_column());
     }
 }
 

@@ -2,11 +2,12 @@
 #define SYNTHSCRIPT_RANGELITERALNODE_H
 
 #include "AST/AST_node.h"
+#include "AST/visit_functions_macro.h"
 
 class RangeLiteralNode : public ASTNode {
 public:
-    explicit RangeLiteralNode(ASTNode *start, ASTNode *end, int line, int col) : ASTNode(line, col), start(start), end(end) {}
-
+    RangeLiteralNode(ASTNode *start, ASTNode *end, int line, int col)
+        : ASTNode(line, col), start(start), end(end) {}
     ~RangeLiteralNode() override {
         delete start;
         delete end;

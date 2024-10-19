@@ -2,11 +2,12 @@
 #define SYNTHSCRIPT_ASSIGNMENTNODE_H
 
 #include "AST/AST_node.h"
+#include "AST/visit_functions_macro.h"
 
 class AssignmentNode : public ASTNode {
 public:
-    AssignmentNode(ASTNode *identifier, ASTNode *value, int line, int col) : ASTNode(line, col), identifier(identifier), value(value) {}
-
+    AssignmentNode(ASTNode *identifier, ASTNode *value, int line, int col)
+        : ASTNode(line, col), identifier(identifier), value(value) {}
     ~AssignmentNode() override {
         delete identifier;
         delete value;

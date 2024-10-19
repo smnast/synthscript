@@ -2,12 +2,12 @@
 #define SYNTHSCRIPT_REPEATSTATEMENTNODE_H
 
 #include "AST/AST_node.h"
-#include <utility>
+#include "AST/visit_functions_macro.h"
 
 class RepeatStatementNode : public ASTNode {
 public:
-    RepeatStatementNode(ASTNode *count, ASTNode *body, int line, int col) : ASTNode(line, col), count(count), body(body) {}
-
+    RepeatStatementNode(ASTNode *count, ASTNode *body, int line, int col)
+        : ASTNode(line, col), count(count), body(body) {}
     ~RepeatStatementNode() override {
         delete count;
         delete body;
