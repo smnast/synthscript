@@ -4,6 +4,7 @@
 #include "reader.h"
 #include "tokens.h"
 #include "visitor/print_visitor.h"
+#include <iostream>
 
 void build_and_run(const std::string &path);
 void run(ProgramNode *program);
@@ -13,7 +14,7 @@ int main(int argc, char *argv[]) {
     if (argc == 2) {
         char *file_path = argv[1];
         if (!Reader::file_exists(file_path)) {
-            printf("File not found: %s\n", file_path);
+            std::cout << "File not found: " << file_path << std::endl;
         } else {
             build_and_run(file_path);
         }
@@ -23,7 +24,7 @@ int main(int argc, char *argv[]) {
 }
 
 void build_and_run(const std::string &path) {
-    printf("Building program...\n");
+    std::cout << "Building program..." << std::endl;
 
     // Lexical analysis
     std::string code = Reader::read_file(path);
@@ -43,9 +44,10 @@ void build_and_run(const std::string &path) {
     delete semantic_analysis_visitor;
 
     // Print build status
-    std::string build_status = Error::get_status() == Error::BuildStatus::SUCCESS ? "SUCCESS" : "FAILURE";
-    printf("Build status:\t%s\n", build_status.c_str());
-    printf("Error count:\t%d\n", Error::get_error_count());
+    std::string build_status =
+        Error::get_status() == Error::BuildStatus::SUCCESS ? "SUCCESS" : "FAILURE";
+    std::cout << "Build status:\t" << build_status << std::endl;
+    std::cout << "Error count:\t" << Error::get_error_count() << std::endl;
 
     if (Error::get_status() == Error::BuildStatus::FAILURE) {
         delete program;
@@ -53,7 +55,7 @@ void build_and_run(const std::string &path) {
     }
 
     // Execution
-    printf("Running program...\n");
+    std::cout << "Running program..." << std::endl;
     run(program);
 
     delete program;
@@ -67,5 +69,5 @@ void run(ProgramNode *program) {
 }
 
 void print_usage() {
-    std::printf("Usage: sscript <path>\n");
+    std::cout << "Usage: sscript <path>" << std::endl;
 }

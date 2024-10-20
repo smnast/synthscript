@@ -1,5 +1,6 @@
 #include "error.h"
 #include "reader.h"
+#include <iostream>
 
 bool Error::unhandled_error = false;
 int Error::error_count = 0;
@@ -7,7 +8,7 @@ int Error::error_count = 0;
 void Error::error(const std::string &message, bool force_print) {
     // Only print the error message if no other error has been encountered, unless forced to do so.
     if (!unhandled_error || force_print) {
-        std::printf("Error: %s\n", message.c_str());
+        std::cout << "Error: " << message << std::endl;
 
         unhandled_error = true;
         error_count++;
@@ -23,7 +24,7 @@ void Error::error_at_pos(const std::string &message, int line, int col, bool for
 }
 
 void Error::runtime_error(const std::string &message, int line, int col) {
-    std::printf("Runtime Error: %s\n", message.c_str());
+    std::cout << "Runtime Error: " << message << std::endl;
     Reader::show_position(line, col);
     exit(1);
 }

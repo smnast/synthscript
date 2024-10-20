@@ -1,5 +1,6 @@
 #include "reader.h"
 #include <fstream>
+#include <iostream>
 #include <sstream>
 
 std::vector<std::string> Reader::file_lines;
@@ -74,7 +75,7 @@ std::string Reader::read_file(const std::string &file_path) {
 void Reader::show_position(int line, int col) {
     // Show '^' under a specific position in the file
     std::string position = std::string(col - 1, ' ') + "^\n";
-    std::printf("%s%s", file_lines[line - 1].c_str(), position.c_str());
+    std::cout << file_lines[line - 1] << position;
 }
 
 std::vector<std::string> Reader::get_lines(const std::string &file) {

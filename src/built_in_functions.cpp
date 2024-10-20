@@ -60,7 +60,7 @@ std::shared_ptr<Object> BuiltInFunctions::built_in_output(
                              line,
                              col);
     } else {
-        printf("%s\n", std::static_pointer_cast<StringObject>(cast_obj)->get_value().c_str());
+        std::cout << std::static_pointer_cast<StringObject>(cast_obj)->get_value() << std::endl;
     }
 
     return std::make_shared<VoidObject>();
