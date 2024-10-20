@@ -7,6 +7,7 @@ set(SOURCES
     visitor/print_visitor.cpp
     symbol/symbol.cpp
     symbol/symbol_table.cpp
+    types/types.cpp
     visitor/semantic_analysis_visitor.cpp
     visitor/interpreter_visitor.cpp
     object/function_object.cpp

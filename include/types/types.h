@@ -15,30 +15,18 @@ enum Type {
     TYPE_UNDEF
 };
 
-static std::string type_strings[] = {
-    "int", "float", "bool", "string", "void", "array", "function", "<error>"};
+/**
+ * @brief Converts a type to a string name.
+ * @param type The type.
+ * @return The string name of the type.
+ */
+std::string type_to_string(Type type);
 
-static Type token_to_type(TokenType type) {
-    switch (type) {
-    case INT_TYPE:
-    case INT_LITERAL:
-        return TYPE_INT;
-    case FLOAT_TYPE:
-    case FLOAT_LITERAL:
-        return TYPE_FLOAT;
-    case BOOL_TYPE:
-    case BOOL_LITERAL:
-        return TYPE_BOOL;
-    case STRING_TYPE:
-    case STRING_LITERAL:
-        return TYPE_STRING;
-    case ARRAY_TYPE:
-        return TYPE_ARRAY;
-    case VOID_TYPE:
-        return TYPE_VOID;
-    default:
-        return TYPE_UNDEF;
-    }
-}
+/**
+ * @brief Converts a token type to a type.
+ * @param type The token type.
+ * @return The type.
+ */
+Type token_to_type(TokenType type);
 
 #endif // SYNTHSCRIPT_TYPES_H

@@ -20,5 +20,9 @@ std::shared_ptr<Object> Symbol::get_value() const {
 }
 
 Type Symbol::get_type() const {
-    return value->get_type();
+    if (value) {
+        return value->get_type();
+    } else {
+        return Type::TYPE_UNDEF;
+    }
 }

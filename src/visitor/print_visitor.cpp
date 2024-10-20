@@ -20,7 +20,7 @@ void PrintVisitor::visit(BinOpNode *node, int indentation) {
 
 void PrintVisitor::visit(CastOpNode *node, int indentation) {
     std::cout << std::string(indentation, '\t') << "CastOpNode"
-              << "'" << type_strings[node->get_type()] << "'" << std::endl;
+              << "'" << type_to_string(node->get_type()) << "'" << std::endl;
 
     node->get_operand()->accept(this, indentation + 1);
 }

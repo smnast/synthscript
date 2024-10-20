@@ -34,8 +34,8 @@ std::shared_ptr<Object> InterpreterVisitor::visit(BinOpNode *node, SymbolTable *
     // nullptr result indicates an invalid operation
     if (result == nullptr) {
         Error::runtime_error("Invalid operands to binary operator " + token_values[node->get_op()] +
-                                 " (" + type_strings[left->get_type()] + " and " +
-                                 type_strings[right->get_type()] + ")",
+                                 " (" + type_to_string(left->get_type()) + " and " +
+                                 type_to_string(right->get_type()) + ")",
                              node->get_line(),
                              node->get_column());
     }
@@ -49,8 +49,8 @@ std::shared_ptr<Object> InterpreterVisitor::visit(CastOpNode *node, SymbolTable 
 
     // nullptr result indicates an invalid operation
     if (result == nullptr) {
-        Error::runtime_error("Invalid cast from " + type_strings[operand->get_type()] + " to " +
-                                 type_strings[node->get_type()],
+        Error::runtime_error("Invalid cast from " + type_to_string(operand->get_type()) + " to " +
+                                 type_to_string(node->get_type()),
                              node->get_line(),
                              node->get_column());
     }
@@ -66,7 +66,7 @@ std::shared_ptr<Object> InterpreterVisitor::visit(SubscriptOpNode *node, SymbolT
     // nullptr result indicates an invalid operation
     if (result == nullptr) {
         Error::runtime_error("Invalid subscript operation on " +
-                                 type_strings[identifier->get_type()],
+                                 type_to_string(identifier->get_type()),
                              node->get_line(),
                              node->get_column());
     }
@@ -81,7 +81,7 @@ std::shared_ptr<Object> InterpreterVisitor::visit(UnaryOpNode *node, SymbolTable
     // nullptr result indicates an invalid operation
     if (result == nullptr) {
         Error::runtime_error("Invalid operand to unary operator " + token_values[node->get_op()] +
-                                 " (" + type_strings[operand->get_type()] + ")",
+                                 " (" + type_to_string(operand->get_type()) + ")",
                              node->get_line(),
                              node->get_column());
     }
@@ -106,14 +106,14 @@ std::shared_ptr<Object> InterpreterVisitor::visit(RangeLiteralNode *node, Symbol
     // The start value must be an integer
     if (start->get_type() != TYPE_INT) {
         Error::runtime_error("Invalid type for start of range (expected int, got " +
-                                 type_strings[start->get_type()] + ")",
+                                 type_to_string(start->get_type()) + ")",
                              node->get_start()->get_line(),
                              node->get_start()->get_column());
     }
     // The end value must be an integer
     else if (end->get_type() != TYPE_INT) {
         Error::runtime_error("Invalid type for end of range (expected int, got " +
-                                 type_strings[start->get_type()] + ")",
+                                 type_to_string(start->get_type()) + ")",
                              node->get_end()->get_line(),
                              node->get_end()->get_column());
     }
@@ -126,7 +126,7 @@ std::shared_ptr<Object> InterpreterVisitor::visit(RangeLiteralNode *node, Symbol
     int dir = (start_val < end_val) ? 1 : -1;
     bool last_equal = false;
     int cur_val = start_val;
-    
+
     // Iterate and add values
     while (!last_equal) {
         last_equal = cur_val == end_val;
@@ -158,7 +158,7 @@ std::shared_ptr<Object> InterpreterVisitor::visit(AssignmentNode *node, SymbolTa
     // If the identifier is just an identifier
     else if (auto identifier_node = dynamic_cast<IdentifierNode *>(node->get_identifier())) {
         std::string name = identifier_node->get_name();
-        
+
         if (table->contains(name, false)) {
             // Update the value of the existing symbol
             Symbol *symbol = table->get(name, false);
@@ -190,7 +190,7 @@ std::shared_ptr<Object> InterpreterVisitor::visit(ReturnStatementNode *node, Sym
     // Evaluate the return value
     if (node->has_value()) {
         return_val = node->get_value()->evaluate(this, table);
-    } 
+    }
     // No return value, so return void
     else {
         return_val = std::make_shared<VoidObject>();
@@ -216,7 +216,7 @@ std::shared_ptr<Object> InterpreterVisitor::visit(ForStatementNode *node, Symbol
         iterable_len = (int)std::static_pointer_cast<StringObject>(iterable)->get_value().size();
     } else {
         Error::runtime_error("Invalid type for iterable (expected array or string, got " +
-                                 type_strings[iterable->get_type()] + ")",
+                                 type_to_string(iterable->get_type()) + ")",
                              node->get_iterable()->get_line(),
                              node->get_iterable()->get_column());
     }
@@ -247,14 +247,15 @@ std::shared_ptr<Object> InterpreterVisitor::visit(ForStatementNode *node, Symbol
 
 std::shared_ptr<Object> InterpreterVisitor::visit(IfStatementNode *node, SymbolTable *table) {
     // Create a new scope for the if statement
-    SymbolTable *if_statement_table = new SymbolTable(table, table->is_loop(), table->is_function());
+    SymbolTable *if_statement_table =
+        new SymbolTable(table, table->is_loop(), table->is_function());
 
     std::shared_ptr<Object> condition = node->get_condition()->evaluate(this, if_statement_table);
 
     // The condition must be a boolean
     if (condition->get_type() != TYPE_BOOL) {
         Error::runtime_error("Invalid type for if condition (expected bool, got " +
-                                 type_strings[condition->get_type()] + ")",
+                                 type_to_string(condition->get_type()) + ")",
                              node->get_condition()->get_line(),
                              node->get_condition()->get_column());
     }
@@ -280,7 +281,7 @@ std::shared_ptr<Object> InterpreterVisitor::visit(RepeatStatementNode *node, Sym
     std::shared_ptr<Object> count = node->get_count()->evaluate(this, table);
     if (count->get_type() != TYPE_INT) {
         Error::runtime_error("Invalid type for repeat count (expected int, got " +
-                                 type_strings[count->get_type()] + ")",
+                                 type_to_string(count->get_type()) + ")",
                              node->get_count()->get_line(),
                              node->get_count()->get_column());
     }
@@ -310,7 +311,7 @@ std::shared_ptr<Object> InterpreterVisitor::visit(WhileStatementNode *node, Symb
     std::shared_ptr<Object> condition = node->get_condition()->evaluate(this, table);
     if (condition->get_type() != TYPE_BOOL) {
         Error::runtime_error("Invalid type for while condition (expected bool, got " +
-                                 type_strings[condition->get_type()] + ")",
+                                 type_to_string(condition->get_type()) + ")",
                              node->get_condition()->get_line(),
                              node->get_condition()->get_column());
     }
@@ -333,7 +334,7 @@ std::shared_ptr<Object> InterpreterVisitor::visit(WhileStatementNode *node, Symb
         condition = node->get_condition()->evaluate(this, table);
         if (condition->get_type() != TYPE_BOOL) {
             Error::runtime_error("Invalid type for while condition (expected bool, got " +
-                                     type_strings[condition->get_type()] + ")",
+                                     type_to_string(condition->get_type()) + ")",
                                  node->get_condition()->get_line(),
                                  node->get_condition()->get_column());
         }
@@ -342,7 +343,8 @@ std::shared_ptr<Object> InterpreterVisitor::visit(WhileStatementNode *node, Symb
     return nullptr;
 }
 
-std::shared_ptr<Object> InterpreterVisitor::visit(FunctionDeclarationNode *node, SymbolTable *table) {
+std::shared_ptr<Object> InterpreterVisitor::visit(FunctionDeclarationNode *node,
+                                                  SymbolTable *table) {
     // Create a symbol for the function
     std::shared_ptr<Object> function_object =
         std::make_shared<FunctionObject>(node->get_body(), *node->get_parameters());
@@ -417,7 +419,8 @@ std::shared_ptr<Object> InterpreterVisitor::visit(LiteralNode *node, SymbolTable
         try {
             return std::make_shared<IntObject>(node->get_value());
         } catch (const std::out_of_range &e) {
-            Error::runtime_error("Integer value out of range", node->get_line(), node->get_column());
+            Error::runtime_error(
+                "Integer value out of range", node->get_line(), node->get_column());
         }
     case TYPE_FLOAT:
         try {
