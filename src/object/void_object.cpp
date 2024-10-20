@@ -91,3 +91,7 @@ std::shared_ptr<Object> VoidObject::subscript(std::shared_ptr<Object> other) {
 std::shared_ptr<Object> VoidObject::duplicate() {
     return nullptr;
 }
+
+std::shared_ptr<Object> VoidObject::call(InterpreterVisitor *visitor, SymbolTable *table) {
+    return nullptr;
+}

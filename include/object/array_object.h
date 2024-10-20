@@ -35,6 +35,7 @@ public:
     std::shared_ptr<Object> subscript_update(const std::shared_ptr<Object> &index,
                                              const std::shared_ptr<Object> &val);
     std::shared_ptr<Object> duplicate() override;
+    std::shared_ptr<Object> call(InterpreterVisitor *visitor, SymbolTable *table) override;
 
     int get_len() const { return (int)value.size(); };
     std::vector<std::shared_ptr<Object>> *get_value() { return &value; }

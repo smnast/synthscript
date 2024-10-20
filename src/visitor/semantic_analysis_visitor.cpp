@@ -130,24 +130,9 @@ void SemanticAnalysisVisitor::visit(WhileStatementNode *node, SymbolTable *table
 }
 
 void SemanticAnalysisVisitor::visit(FunctionDeclarationNode *node, SymbolTable *table) {
-    // Function declarations must be in the global scope
-    if (!table->is_global_scope()) {
-        semantic_error(
-            "Function declaration outside of global scope", node->get_line(), node->get_column());
-    }
-
-    // Check if the function's identifier has already been declared
-    if (table->contains(node->get_identifier(), false)) {
-        semantic_error("Identifier '" + node->get_identifier() + "' already declared",
-                       node->get_line(),
-                       node->get_column());
-    }
-
     // Insert the function into the symbol table
     std::shared_ptr<Object> function_object =
         std::make_shared<FunctionObject>(node->get_body(), *node->get_parameters());
-    Symbol function_symbol(node->get_identifier(), function_object);
-    table->insert(function_symbol);
 
     // New scope for the function (includes the function's parameters)
     auto *function_table = new SymbolTable(table, table->is_loop(), true);
@@ -158,7 +143,7 @@ void SemanticAnalysisVisitor::visit(FunctionDeclarationNode *node, SymbolTable *
     node->get_body()->analyze(this, function_table);
 }
 
-void SemanticAnalysisVisitor::visit(FunctionStatementNode *node, SymbolTable *table) {
+void SemanticAnalysisVisitor::visit(CallNode *node, SymbolTable *table) {
     std::string name = node->get_identifier();
 
     // The function must be declared before it is called
@@ -170,30 +155,6 @@ void SemanticAnalysisVisitor::visit(FunctionStatementNode *node, SymbolTable *ta
 
     for (auto &param : *node->get_arguments()) {
         param->analyze(this, table);
-    }
-
-    if (function_exists) {
-        Symbol *function_symbol = table->get(name, false);
-
-        // If the symbol is a function
-        if (function_symbol->get_type() == TYPE_FUNCTION) {
-            // Check if the number of arguments is correct
-            FunctionObject *function_object =
-                dynamic_cast<FunctionObject *>(function_symbol->get_value().get());
-
-            if (function_object->get_parameters()->size() != node->get_arguments()->size()) {
-                semantic_error("Incorrect number of arguments to function '" + name +
-                                   "' (expected " +
-                                   std::to_string(function_object->get_parameters()->size()) +
-                                   ", given " + std::to_string(node->get_arguments()->size()) + ")",
-                               node->get_line(),
-                               node->get_column());
-            }
-        } else {
-            semantic_error("Identifier '" + name + "' is not a function",
-                           node->get_line(),
-                           node->get_column());
-        }
     }
 }
 

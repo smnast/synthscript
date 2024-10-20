@@ -24,7 +24,7 @@ Run from terminal `sscript <file_path>`
 
 ## Example
 ```sscript
-function count_words_in_file(file_path) {
+count_words_in_file <- function(file_path) {
     file_text <- read(file_path)
     current_word <- ""
     word_count <- 0

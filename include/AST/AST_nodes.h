@@ -2,6 +2,7 @@
 #include "AST/operators/cast_op_node.h"
 #include "AST/operators/subscript_op_node.h"
 #include "AST/operators/unary_op_node.h"
+#include "AST/operators/call_node.h"
 
 #include "AST/statement/array/array_literal_node.h"
 #include "AST/statement/array/range_literal_node.h"
@@ -17,7 +18,6 @@
 #include "AST/statement/control/while_statement_node.h"
 
 #include "AST/statement/function/function_declaration_node.h"
-#include "AST/statement/function/function_statement_node.h"
 
 #include "AST/statement/compound_statement_node.h"
 

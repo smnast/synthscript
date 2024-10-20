@@ -4,6 +4,11 @@
 #include "types/types.h"
 #include <memory>
 
+// Forward declarations, so we can add the call function, and include object.h in
+// interpreter_visitor.h class
+class InterpreterVisitor;
+class SymbolTable;
+
 class Object {
 public:
     Object() = default;
@@ -33,6 +38,7 @@ public:
     virtual std::shared_ptr<Object> cast(Type type) = 0;
     virtual std::shared_ptr<Object> subscript(std::shared_ptr<Object> other) = 0;
     virtual std::shared_ptr<Object> duplicate() = 0;
+    virtual std::shared_ptr<Object> call(InterpreterVisitor *visitor, SymbolTable *table) = 0;
 };
 
 #endif // SYNTHSCRIPT_OBJECT_H

@@ -36,6 +36,8 @@ public:
     std::shared_ptr<Object> cast(Type type) override;
     std::shared_ptr<Object> subscript(std::shared_ptr<Object> other) override;
     std::shared_ptr<Object> duplicate() override;
+    std::shared_ptr<Object> call(InterpreterVisitor *visitor, SymbolTable *table) override;
+
     int get_len() const { return (int)value.size(); };
     std::string get_value() { return value; }
 

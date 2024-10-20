@@ -204,3 +204,7 @@ std::shared_ptr<Object> IntObject::subscript(std::shared_ptr<Object> other) {
 std::shared_ptr<Object> IntObject::duplicate() {
     return std::make_shared<IntObject>(value);
 }
+
+std::shared_ptr<Object> IntObject::call(InterpreterVisitor *visitor, SymbolTable *table) {
+    return nullptr;
+}

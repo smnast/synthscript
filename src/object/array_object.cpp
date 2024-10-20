@@ -148,10 +148,11 @@ std::shared_ptr<Object> ArrayObject::cast(Type type) {
 std::shared_ptr<Object> ArrayObject::subscript(std::shared_ptr<Object> other) {
     if (other->get_type() == TYPE_INT) {
         int index = std::static_pointer_cast<IntObject>(other)->get_value();
-        if (index < 0 || index >= value.size()) {
+        if (index >= 0 && index < value.size()) {
+            return value[index];
+        } else {
             return nullptr;
         }
-        return value[index];
     } else {
         return nullptr;
     }
@@ -161,11 +162,12 @@ std::shared_ptr<Object> ArrayObject::subscript_update(const std::shared_ptr<Obje
                                                       const std::shared_ptr<Object> &val) {
     if (index->get_type() == TYPE_INT) {
         int i = std::static_pointer_cast<IntObject>(index)->get_value();
-        if (i < 0 || i >= value.size()) {
+        if (i >= 0 && i < value.size()) {
+            value[i] = val;
+            return val;
+        } else {
             return nullptr;
         }
-        value[i] = val;
-        return val;
     } else {
         return nullptr;
     }
@@ -177,4 +179,8 @@ std::shared_ptr<Object> ArrayObject::duplicate() {
         result[i] = value[i]->duplicate();
     }
     return std::make_shared<ArrayObject>(result);
+}
+
+std::shared_ptr<Object> ArrayObject::call(InterpreterVisitor *visitor, SymbolTable *table) {
+    return nullptr;
 }

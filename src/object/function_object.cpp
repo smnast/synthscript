@@ -91,3 +91,7 @@ std::shared_ptr<Object> FunctionObject::subscript(std::shared_ptr<Object> other)
 std::shared_ptr<Object> FunctionObject::duplicate() {
     return nullptr;
 }
+
+std::shared_ptr<Object> FunctionObject::call(InterpreterVisitor *visitor, SymbolTable *table) {
+    return body->evaluate(visitor, table);
+}

@@ -184,3 +184,7 @@ std::shared_ptr<Object> FloatObject::subscript(std::shared_ptr<Object> other) {
 std::shared_ptr<Object> FloatObject::duplicate() {
     return std::make_shared<FloatObject>(value);
 }
+
+std::shared_ptr<Object> FloatObject::call(InterpreterVisitor *visitor, SymbolTable *table) {
+    return nullptr;
+}

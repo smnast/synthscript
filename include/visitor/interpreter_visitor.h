@@ -5,6 +5,7 @@
 #include "symbol/symbol_table.h"
 #include "visitor.h"
 #include <memory>
+#include <stack>
 
 class InterpreterVisitor : public Visitor<std::shared_ptr<Object>, SymbolTable *> {
 public:
@@ -24,21 +25,23 @@ public:
     std::shared_ptr<Object> visit(RepeatStatementNode *node, SymbolTable *table) override;
     std::shared_ptr<Object> visit(WhileStatementNode *node, SymbolTable *table) override;
     std::shared_ptr<Object> visit(FunctionDeclarationNode *node, SymbolTable *table) override;
-    std::shared_ptr<Object> visit(FunctionStatementNode *node, SymbolTable *table) override;
+    std::shared_ptr<Object> visit(CallNode *node, SymbolTable *table) override;
     std::shared_ptr<Object> visit(CompoundStatementNode *node, SymbolTable *table) override;
     std::shared_ptr<Object> visit(IdentifierNode *node, SymbolTable *table) override;
     std::shared_ptr<Object> visit(LiteralNode *node, SymbolTable *table) override;
     std::shared_ptr<Object> visit(ErrorNode *node, SymbolTable *table) override;
 
+    static void runtime_error(const std::string &message, int line, int column);
+
 private:
     /**
-     * @brief Current return value of the function.
+     * @brief Stack of return values from each function call.
      */
-    std::shared_ptr<Object> return_val = nullptr;
-    
+    std::stack<std::shared_ptr<Object>> return_values;
+
     /**
      * @brief Stores if the interpreter is backtracking out of a node.
-     * 
+     *
      * Backtracking will stop after reaching node like a loop.
      */
     bool backtracking = false;
@@ -50,7 +53,7 @@ private:
 
     /**
      * @brief Stores if the interpreter is returning from a function.
-     * 
+     *
      * Returning will not stop until reaching a function node.
      */
     bool returning = false;

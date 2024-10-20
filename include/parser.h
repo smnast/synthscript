@@ -32,13 +32,13 @@ private:
 
     // Parsing functions
     static ASTNode *parse_statement(), *parse_compound_statement();
-    static ASTNode *parse_function_declaration_statement(), *parse_function_statement();
     static ASTNode *parse_array_literal(), *parse_array_subscript();
     static ASTNode *parse_cast();
     static ASTNode *parse_if_statement(), *parse_while_statement(), *parse_for_statement(),
         *parse_repeat_statement();
     static ASTNode *parse_break_statement(), *parse_continue_statement(), *parse_return_statement();
     static ASTNode *parse_identifier(), *parse_literal();
+    static ASTNode *parse_function_declaration(), *parse_call();
     static ASTNode *parse_primary_expression(), *parse_assignment_expression(),
         *parse_logical_or_expression(), *parse_logical_and_expression(),
         *parse_bitwise_or_expression(), *parse_bitwise_xor_expression(),

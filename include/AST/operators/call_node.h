@@ -1,19 +1,16 @@
-#ifndef SYNTHSCRIPT_FUNCTIONSTATEMENTNODE_H
-#define SYNTHSCRIPT_FUNCTIONSTATEMENTNODE_H
+#ifndef SYNTHSCRIPT_CALLNODE_H
+#define SYNTHSCRIPT_CALLNODE_H
 
 #include "AST/AST_node.h"
 #include "AST/visit_functions_macro.h"
 #include <utility>
 #include <vector>
 
-class FunctionStatementNode : public ASTNode {
+class CallNode : public ASTNode {
 public:
-    FunctionStatementNode(std::string identifier,
-                          std::vector<ASTNode *> arguments,
-                          int line,
-                          int col)
+    CallNode(std::string identifier, std::vector<ASTNode *> arguments, int line, int col)
         : ASTNode(line, col), arguments(std::move(arguments)), identifier(std::move(identifier)) {}
-    ~FunctionStatementNode() override {
+    ~CallNode() override {
         for (auto &argument : arguments) {
             delete argument;
         }

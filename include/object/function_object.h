@@ -34,8 +34,8 @@ public:
     std::shared_ptr<Object> cast(Type type) override;
     std::shared_ptr<Object> subscript(std::shared_ptr<Object> other) override;
     std::shared_ptr<Object> duplicate() override;
+    std::shared_ptr<Object> call(InterpreterVisitor *visitor, SymbolTable *table) override;
 
-    ASTNode *get_body() { return body; }
     std::vector<std::string> *get_parameters() { return &parameters; }
     bool is_built_in() const { return built_in; }
 

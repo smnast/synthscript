@@ -22,7 +22,7 @@ public:
     void visit(RepeatStatementNode *node, SymbolTable *table) override;
     void visit(WhileStatementNode *node, SymbolTable *table) override;
     void visit(FunctionDeclarationNode *node, SymbolTable *table) override;
-    void visit(FunctionStatementNode *node, SymbolTable *table) override;
+    void visit(CallNode *node, SymbolTable *table) override;
     void visit(CompoundStatementNode *node, SymbolTable *table) override;
     void visit(IdentifierNode *node, SymbolTable *table) override;
     void visit(LiteralNode *node, SymbolTable *table) override;

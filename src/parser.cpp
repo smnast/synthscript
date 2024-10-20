@@ -30,9 +30,7 @@ ASTNode *Parser::parse_statement() {
 
     // Parse the statement
     ASTNode *node = nullptr;
-    if (check(FUNCTION_KEYWORD)) {
-        node = parse_function_declaration_statement();
-    } else if (check(IF_KEYWORD)) {
+    if (check(IF_KEYWORD)) {
         node = parse_if_statement();
     } else if (check(WHILE_KEYWORD)) {
         node = parse_while_statement();
@@ -88,72 +86,6 @@ ASTNode *Parser::parse_compound_statement() {
     expect(RBRACE);
 
     return new CompoundStatementNode(statements, line, col);
-}
-
-ASTNode *Parser::parse_function_declaration_statement() {
-    /*
-        Example:
-        function identifier(parameter1, parameter2) {
-            statement1
-            statement2
-        }
-    */
-
-    int line = cur_token().line, col = cur_token().column;
-
-    expect(FUNCTION_KEYWORD);
-    std::string identifier = cur_token().value;
-    expect(IDENTIFIER);
-    expect(LPAREN);
-
-    // List of comma-separated parameters within the parentheses
-    std::vector<std::string> parameters;
-    while (!check(RPAREN) && !check(END_OF_FILE)) {
-        // Parse the identifier as a parameter
-        std::string parameter = cur_token().value;
-        expect(IDENTIFIER);
-        parameters.push_back(parameter);
-
-        // Require comma if there are more parameters
-        if (!accept(COMMA)) {
-            break;
-        }
-    }
-
-    expect(RPAREN);
-    ASTNode *body = parse_compound_statement();
-
-    return new FunctionDeclarationNode(identifier, parameters, body, line, col);
-}
-
-ASTNode *Parser::parse_function_statement() {
-    /*
-        Example:
-        identifier(argument1, argument2)
-    */
-
-    int line = cur_token().line, col = cur_token().column;
-
-    std::string identifier = cur_token().value;
-    expect(IDENTIFIER);
-    expect(LPAREN);
-
-    // List of comma-separated arguments within the parentheses
-    std::vector<ASTNode *> arguments;
-    while (!check(RPAREN) && !check(END_OF_FILE)) {
-        // Parse the primary expression as an argument
-        auto *argument = parse_primary_expression();
-        arguments.push_back(argument);
-
-        // Require comma if there are more arguments
-        if (!accept(COMMA)) {
-            break;
-        }
-    }
-
-    expect(RPAREN);
-
-    return new FunctionStatementNode(identifier, arguments, line, col);
 }
 
 ASTNode *Parser::parse_array_literal() {
@@ -395,6 +327,70 @@ ASTNode *Parser::parse_literal() {
     next_token();
 
     return new LiteralNode(type, value, line, col);
+}
+
+ASTNode *Parser::parse_function_declaration() {
+    /*
+        Example:
+        function(parameter1, parameter2) {
+            statement1
+            statement2
+        }
+    */
+
+    int line = cur_token().line, col = cur_token().column;
+
+    expect(FUNCTION_KEYWORD);
+    expect(LPAREN);
+
+    // List of comma-separated parameters within the parentheses
+    std::vector<std::string> parameters;
+    while (!check(RPAREN) && !check(END_OF_FILE)) {
+        // Parse the identifier as a parameter
+        std::string parameter = cur_token().value;
+        expect(IDENTIFIER);
+        parameters.push_back(parameter);
+
+        // Require comma if there are more parameters
+        if (!accept(COMMA)) {
+            break;
+        }
+    }
+
+    expect(RPAREN);
+    ASTNode *body = parse_compound_statement();
+
+    return new FunctionDeclarationNode(parameters, body, line, col);
+}
+
+ASTNode *Parser::parse_call() {
+    /*
+        Example:
+        identifier(argument1, argument2)
+    */
+
+    int line = cur_token().line, col = cur_token().column;
+
+    std::string identifier = cur_token().value;
+    expect(IDENTIFIER);
+    expect(LPAREN);
+
+    // List of comma-separated arguments within the parentheses
+    std::vector<ASTNode *> arguments;
+    while (!check(RPAREN) && !check(END_OF_FILE)) {
+        // Parse the primary expression as an argument
+        auto *argument = parse_primary_expression();
+        arguments.push_back(argument);
+
+        // Require comma if there are more arguments
+        if (!accept(COMMA)) {
+            break;
+        }
+    }
+
+    expect(RPAREN);
+
+    return new CallNode(identifier, arguments, line, col);
 }
 
 ASTNode *Parser::parse_primary_expression() {
@@ -666,10 +662,12 @@ ASTNode *Parser::parse_factor_expression() {
 
     if (token_is_type(cur_token().token_type)) {
         return parse_cast();
+    } else if (check(FUNCTION_KEYWORD)) {
+        return parse_function_declaration();
+    } else if (check(IDENTIFIER) && peek_token(LPAREN, 1)) {
+        return parse_call();
     } else if (check(IDENTIFIER) && peek_token(LBRACKET, 1)) {
         return parse_array_subscript();
-    } else if (check(IDENTIFIER) && peek_token(LPAREN, 1)) {
-        return parse_function_statement();
     } else if (check(IDENTIFIER)) {
         return parse_identifier();
     } else if (check(LPAREN)) {

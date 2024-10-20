@@ -108,3 +108,7 @@ std::shared_ptr<Object> BoolObject::subscript(std::shared_ptr<Object> other) {
 std::shared_ptr<Object> BoolObject::duplicate() {
     return std::make_shared<BoolObject>(value);
 }
+
+std::shared_ptr<Object> BoolObject::call(InterpreterVisitor *visitor, SymbolTable *table) {
+    return nullptr;
+}

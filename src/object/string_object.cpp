@@ -152,3 +152,7 @@ std::shared_ptr<Object> StringObject::subscript(std::shared_ptr<Object> other) {
 std::shared_ptr<Object> StringObject::duplicate() {
     return std::make_shared<StringObject>(value);
 }
+
+std::shared_ptr<Object> StringObject::call(InterpreterVisitor *visitor, SymbolTable *table) {
+    return nullptr;
+}

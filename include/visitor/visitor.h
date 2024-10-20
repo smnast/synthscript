@@ -21,7 +21,7 @@ public:
     virtual T visit(RepeatStatementNode *node, A arg) = 0;
     virtual T visit(WhileStatementNode *node, A arg) = 0;
     virtual T visit(FunctionDeclarationNode *node, A arg) = 0;
-    virtual T visit(FunctionStatementNode *node, A arg) = 0;
+    virtual T visit(CallNode *node, A arg) = 0;
     virtual T visit(CompoundStatementNode *node, A arg) = 0;
     virtual T visit(IdentifierNode *node, A arg) = 0;
     virtual T visit(LiteralNode *node, A arg) = 0;

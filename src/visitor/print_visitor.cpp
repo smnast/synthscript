@@ -111,7 +111,7 @@ void PrintVisitor::visit(WhileStatementNode *node, int indentation) {
 
 void PrintVisitor::visit(FunctionDeclarationNode *node, int indentation) {
     std::cout << std::string(indentation, '\t') << "FunctionDeclarationNode" << std::endl;
-    std::cout << std::string(indentation + 1, '\t') << node->get_identifier() << std::endl;
+    std::cout << std::string(indentation + 1, '\t') << std::endl;
     for (auto &param : *node->get_parameters()) {
         std::cout << std::string(indentation + 1, '\t') << param << std::endl;
     }
@@ -119,8 +119,8 @@ void PrintVisitor::visit(FunctionDeclarationNode *node, int indentation) {
     node->get_body()->accept(this, indentation + 1);
 }
 
-void PrintVisitor::visit(FunctionStatementNode *node, int indentation) {
-    std::cout << std::string(indentation, '\t') << "FunctionStatementNode" << std::endl;
+void PrintVisitor::visit(CallNode *node, int indentation) {
+    std::cout << std::string(indentation, '\t') << "CallNode" << std::endl;
     std::cout << std::string(indentation + 1, '\t') << node->get_identifier() << std::endl;
 
     for (auto &param : *node->get_arguments()) {

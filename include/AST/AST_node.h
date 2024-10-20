@@ -9,8 +9,10 @@ class ASTNode {
 public:
     ASTNode(int line, int col) : line(line), col(col) {}
     virtual ~ASTNode() = default;
+
     int get_line() const { return line; }
     int get_column() const { return col; }
+
     virtual void accept(PrintVisitor *visitor, int arg) = 0;
     virtual void analyze(SemanticAnalysisVisitor *visitor, class SymbolTable *table) = 0;
     virtual std::shared_ptr<Object> evaluate(InterpreterVisitor *visitor,
