@@ -173,7 +173,7 @@ void SemanticAnalysisVisitor::visit(FunctionStatementNode *node, SymbolTable *ta
     }
 
     if (function_exists) {
-        Symbol *function_symbol = table->lookup(name, false);
+        Symbol *function_symbol = table->get(name, false);
 
         // If the symbol is a function
         if (function_symbol->get_type() == TYPE_FUNCTION) {
@@ -215,7 +215,7 @@ void SemanticAnalysisVisitor::visit(IdentifierNode *node, SymbolTable *table) {
             "Undeclared identifier '" + name + "'", node->get_line(), node->get_column());
     }
     // Check if the identifier is a function (functions cannot be used as normal variables)
-    else if (table->lookup(name, false)->get_type() == TYPE_FUNCTION) {
+    else if (table->get(name, false)->get_type() == TYPE_FUNCTION) {
         semantic_error(
             "Identifier '" + name + "' is a function", node->get_line(), node->get_column());
     }

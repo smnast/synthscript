@@ -161,7 +161,7 @@ std::shared_ptr<Object> InterpreterVisitor::visit(AssignmentNode *node, SymbolTa
         
         if (table->contains(name, false)) {
             // Update the value of the existing symbol
-            Symbol *symbol = table->lookup(name, false);
+            Symbol *symbol = table->get(name, false);
             symbol->set_value(value);
         } else {
             // Create a new symbol with the value
@@ -236,7 +236,7 @@ std::shared_ptr<Object> InterpreterVisitor::visit(ForStatementNode *node, Symbol
         }
 
         // Set the value of the iterator
-        Symbol *iterator_symbol = for_loop_table->lookup(identifier, false);
+        Symbol *iterator_symbol = for_loop_table->get(identifier, false);
         iterator_symbol->set_value(iterable->subscript(std::make_shared<IntObject>(i)));
 
         node->get_body()->evaluate(this, for_loop_table);
@@ -355,7 +355,7 @@ std::shared_ptr<Object> InterpreterVisitor::visit(FunctionDeclarationNode *node,
 std::shared_ptr<Object> InterpreterVisitor::visit(FunctionStatementNode *node, SymbolTable *table) {
     // Get the function object from the symbol table
     std::string name = node->get_identifier();
-    Symbol *function_symbol = table->lookup(name, false);
+    Symbol *function_symbol = table->get(name, false);
     std::shared_ptr<FunctionObject> function_object =
         std::static_pointer_cast<FunctionObject>(function_symbol->get_value());
 
@@ -407,7 +407,7 @@ std::shared_ptr<Object> InterpreterVisitor::visit(CompoundStatementNode *node, S
 std::shared_ptr<Object> InterpreterVisitor::visit(IdentifierNode *node, SymbolTable *table) {
     // Get identifier value from the symbol table
     std::string name = node->get_name();
-    return table->lookup(name, false)->get_value();
+    return table->get(name, false)->get_value();
 }
 
 std::shared_ptr<Object> InterpreterVisitor::visit(LiteralNode *node, SymbolTable *table) {

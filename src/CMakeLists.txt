@@ -5,6 +5,7 @@ set(SOURCES
     error.cpp
     parser.cpp
     visitor/print_visitor.cpp
+    symbol/symbol.cpp
     symbol/symbol_table.cpp
     visitor/semantic_analysis_visitor.cpp
     visitor/interpreter_visitor.cpp
