@@ -2,11 +2,11 @@
 #include "error.h"
 #include <regex>
 
-std::vector<int> Lexer::line_prefix, Lexer::line_offset_prefix;
+Lexer::Lexer(const std::string &code, ErrorManager *error_manager)
+    : code(std::move(code)), error_manager(error_manager) {}
 
-std::vector<Token> Lexer::parse_tokens(std::string &code) {
+std::vector<Token> Lexer::parse_tokens() {
     // Preparation for lexical analysis
-    prepare_prefixes(code);
     prepare_prefixes(code);
     std::string token_regex = combine_regex();
 
@@ -32,7 +32,7 @@ std::string Lexer::combine_regex() {
 }
 
 void Lexer::lexer_error(const std::string &token, int line, int col) {
-    Error::error_at_pos("Undefined token: '" + token + "'", line, col);
+    error_manager->error_at_pos("Undefined token: '" + token + "'", line, col);
 }
 
 void Lexer::prepare_prefixes(std::string &code) {

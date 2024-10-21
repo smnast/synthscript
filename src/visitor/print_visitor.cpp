@@ -2,6 +2,13 @@
 #include "AST/AST_nodes.h"
 #include <iostream>
 
+PrintVisitor::PrintVisitor(ProgramNode *program_node, ErrorManager *error_manager)
+    : program_node(program_node), error_manager(error_manager) {}
+
+void PrintVisitor::print() {
+    program_node->accept(this, 0);
+}
+
 void PrintVisitor::visit(ProgramNode *node, int indentation) {
     std::cout << std::string(indentation, '\t') << "ProgramNode" << std::endl;
 

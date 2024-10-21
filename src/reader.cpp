@@ -3,8 +3,27 @@
 #include <iostream>
 #include <sstream>
 
-std::vector<std::string> Reader::file_lines;
-const char Reader::comment_char = '#';
+const char comment_char = '#';
+
+Reader::Reader(const std::string &file_path, ErrorManager *error_manager)
+    : file_path(file_path), error_manager(error_manager) {}
+
+std::string Reader::read_file() {
+    if (!file_exists(file_path)) {
+        error_manager->error("File '" + file_path + "' does not exist");
+        return "";
+    }
+
+    file_contents = get_file_text(file_path);
+    
+    std::string cleaned_file = clean_file(file_contents);
+    return cleaned_file;
+}
+
+std::vector<std::string> Reader::get_lines() {
+    std::vector<std::string> file_lines = get_lines(file_contents);
+    return file_lines;
+}
 
 bool Reader::file_exists(const std::string &path) {
     std::ifstream file(path);
@@ -64,24 +83,10 @@ std::string Reader::clean_file(const std::string &file) {
     return cleaned_file;
 }
 
-std::string Reader::read_file(const std::string &file_path) {
-    std::string file_contents = get_file_text(file_path);
-    file_lines = get_lines(file_contents);
-
-    std::string cleaned_file = clean_file(file_contents);
-    return cleaned_file;
-}
-
-void Reader::show_position(int line, int col) {
-    // Show '^' under a specific position in the file
-    std::string position = std::string(col - 1, ' ') + "^\n";
-    std::cout << file_lines[line - 1] << position;
-}
-
-std::vector<std::string> Reader::get_lines(const std::string &file) {
+std::vector<std::string> Reader::get_lines(const std::string &file_contents) {
     std::vector<std::string> lines;
     std::string cur_row;
-    for (char i : file) {
+    for (char i : file_contents) {
         cur_row.push_back(i);
 
         // New line

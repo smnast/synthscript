@@ -1,5 +1,4 @@
 #include "built_in_functions.h"
-#include "error.h"
 #include "object/array_object.h"
 #include "object/function_object.h"
 #include "object/int_object.h"
@@ -10,28 +9,17 @@
 #include <sstream>
 #include <unistd.h>
 
-#define BUILT_IN_FUNCTION(name, param_count)                                                       \
-    {                                                                                              \
-        #name, {                                                                                   \
-            [](std::vector<std::shared_ptr<Object>> arguments,                                     \
-               int line,                                                                           \
-               int col) -> std::shared_ptr<Object> {                                               \
-                return BuiltInFunctions::built_in_##name(&arguments, line, col);                   \
-            },                                                                                     \
-                param_count                                                                        \
-        }                                                                                          \
-    }
-
-std::unordered_map<std::string, BuiltInFunction> BuiltInFunctions::built_in_functions = {
-    BUILT_IN_FUNCTION(output, 1),
-    BUILT_IN_FUNCTION(input, 0),
-    BUILT_IN_FUNCTION(read, 1),
-    BUILT_IN_FUNCTION(write, 2),
-    BUILT_IN_FUNCTION(append, 2),
-    BUILT_IN_FUNCTION(current_directory, 0),
-    BUILT_IN_FUNCTION(len, 1),
-    BUILT_IN_FUNCTION(sum, 1),
-    BUILT_IN_FUNCTION(product, 1)};
+BuiltInFunctions::BuiltInFunctions(ErrorManager *error_manager) : error_manager(error_manager) {
+    built_in_functions = {BUILT_IN_FUNCTION(output, 1, this),
+                          BUILT_IN_FUNCTION(input, 0, this),
+                          BUILT_IN_FUNCTION(read, 1, this),
+                          BUILT_IN_FUNCTION(write, 2, this),
+                          BUILT_IN_FUNCTION(append, 2, this),
+                          BUILT_IN_FUNCTION(current_directory, 0, this),
+                          BUILT_IN_FUNCTION(len, 1, this),
+                          BUILT_IN_FUNCTION(sum, 1, this),
+                          BUILT_IN_FUNCTION(product, 1, this)};
+}
 
 void BuiltInFunctions::register_built_in_functions(SymbolTable *symbol_table) {
     for (const auto &built_in_function : built_in_functions) {
@@ -55,10 +43,10 @@ std::shared_ptr<Object> BuiltInFunctions::built_in_output(
     std::vector<std::shared_ptr<Object>> *arguments, int line, int col) {
     std::shared_ptr<Object> cast_obj = arguments->at(0)->cast(TYPE_STRING);
     if (cast_obj == nullptr) {
-        Error::runtime_error("Invalid argument to built-in output of type " +
-                                 type_to_string(arguments->at(0)->get_type()),
-                             line,
-                             col);
+        error_manager->runtime_error("Invalid argument to built-in output of type " +
+                                         type_to_string(arguments->at(0)->get_type()),
+                                     line,
+                                     col);
     } else {
         std::cout << std::static_pointer_cast<StringObject>(cast_obj)->get_value() << std::endl;
     }
@@ -77,15 +65,15 @@ std::shared_ptr<Object> BuiltInFunctions::built_in_read(
     std::vector<std::shared_ptr<Object>> *arguments, int line, int col) {
     std::shared_ptr<Object> file_path_obj = arguments->at(0)->cast(TYPE_STRING);
     if (file_path_obj == nullptr) {
-        Error::runtime_error("Invalid argument to built-in read of type " +
-                                 type_to_string(arguments->at(0)->get_type()),
-                             line,
-                             col);
+        error_manager->runtime_error("Invalid argument to built-in read of type " +
+                                         type_to_string(arguments->at(0)->get_type()),
+                                     line,
+                                     col);
     }
     std::string file_path = std::static_pointer_cast<StringObject>(file_path_obj)->get_value();
     std::ifstream stream(file_path);
     if (!stream.good()) {
-        Error::runtime_error("Cannot access file from path '" + file_path + "'", line, col);
+        error_manager->runtime_error("Cannot access file from path '" + file_path + "'", line, col);
     }
     std::stringstream buffer;
     buffer << stream.rdbuf();
@@ -97,18 +85,18 @@ std::shared_ptr<Object> BuiltInFunctions::built_in_write(
     std::vector<std::shared_ptr<Object>> *arguments, int line, int col) {
     std::shared_ptr<Object> file_path_obj = arguments->at(0)->cast(TYPE_STRING);
     if (file_path_obj == nullptr) {
-        Error::runtime_error("Invalid argument to built-in write of type " +
-                                 type_to_string(arguments->at(0)->get_type()),
-                             line,
-                             col);
+        error_manager->runtime_error("Invalid argument to built-in write of type " +
+                                         type_to_string(arguments->at(0)->get_type()),
+                                     line,
+                                     col);
     }
     std::string file_path = std::static_pointer_cast<StringObject>(file_path_obj)->get_value();
     std::shared_ptr<Object> file_text_obj = arguments->at(1)->cast(TYPE_STRING);
     if (file_text_obj == nullptr) {
-        Error::runtime_error("Invalid argument to built-in write of type " +
-                                 type_to_string(arguments->at(1)->get_type()),
-                             line,
-                             col);
+        error_manager->runtime_error("Invalid argument to built-in write of type " +
+                                         type_to_string(arguments->at(1)->get_type()),
+                                     line,
+                                     col);
     }
     std::string file_text = std::static_pointer_cast<StringObject>(file_text_obj)->get_value();
     std::ofstream stream(file_path);
@@ -120,18 +108,18 @@ std::shared_ptr<Object> BuiltInFunctions::built_in_append(
     std::vector<std::shared_ptr<Object>> *arguments, int line, int col) {
     std::shared_ptr<Object> file_path_obj = arguments->at(0)->cast(TYPE_STRING);
     if (file_path_obj == nullptr) {
-        Error::runtime_error("Invalid argument to built-in append of type " +
-                                 type_to_string(arguments->at(0)->get_type()),
-                             line,
-                             col);
+        error_manager->runtime_error("Invalid argument to built-in append of type " +
+                                         type_to_string(arguments->at(0)->get_type()),
+                                     line,
+                                     col);
     }
     std::string file_path = std::static_pointer_cast<StringObject>(file_path_obj)->get_value();
     std::shared_ptr<Object> file_text_obj = arguments->at(1)->cast(TYPE_STRING);
     if (file_text_obj == nullptr) {
-        Error::runtime_error("Invalid argument to built-in append of type " +
-                                 type_to_string(arguments->at(1)->get_type()),
-                             line,
-                             col);
+        error_manager->runtime_error("Invalid argument to built-in append of type " +
+                                         type_to_string(arguments->at(1)->get_type()),
+                                     line,
+                                     col);
     }
     std::string file_text = std::static_pointer_cast<StringObject>(file_text_obj)->get_value();
     std::ofstream stream(file_path, std::ios_base::app);
@@ -150,10 +138,10 @@ std::shared_ptr<Object> BuiltInFunctions::built_in_current_directory(
 std::shared_ptr<Object>
 BuiltInFunctions::built_in_len(std::vector<std::shared_ptr<Object>> *arguments, int line, int col) {
     if (arguments->at(0)->get_type() != TYPE_ARRAY && arguments->at(0)->get_type() != TYPE_STRING) {
-        Error::runtime_error("Invalid argument to built-in len of type " +
-                                 type_to_string(arguments->at(0)->get_type()),
-                             line,
-                             col);
+        error_manager->runtime_error("Invalid argument to built-in len of type " +
+                                         type_to_string(arguments->at(0)->get_type()),
+                                     line,
+                                     col);
     }
 
     if (arguments->at(0)->get_type() == TYPE_ARRAY) {
@@ -168,10 +156,10 @@ BuiltInFunctions::built_in_len(std::vector<std::shared_ptr<Object>> *arguments, 
 std::shared_ptr<Object>
 BuiltInFunctions::built_in_sum(std::vector<std::shared_ptr<Object>> *arguments, int line, int col) {
     if (arguments->at(0)->get_type() != TYPE_ARRAY) {
-        Error::runtime_error("Invalid argument to built-in sum of type " +
-                                 type_to_string(arguments->at(0)->get_type()),
-                             line,
-                             col);
+        error_manager->runtime_error("Invalid argument to built-in sum of type " +
+                                         type_to_string(arguments->at(0)->get_type()),
+                                     line,
+                                     col);
     }
 
     std::shared_ptr<Object> sum = std::make_shared<IntObject>(0);
@@ -180,10 +168,10 @@ BuiltInFunctions::built_in_sum(std::vector<std::shared_ptr<Object>> *arguments, 
     for (auto &argument : arg_value) {
         sum = sum->add(argument);
         if (sum == nullptr) {
-            Error::runtime_error("Invalid argument to built-in sum of type " +
-                                     type_to_string(argument->get_type()),
-                                 line,
-                                 col);
+            error_manager->runtime_error("Invalid argument to built-in sum of type " +
+                                             type_to_string(argument->get_type()),
+                                         line,
+                                         col);
         }
     }
     return sum;
@@ -192,10 +180,10 @@ BuiltInFunctions::built_in_sum(std::vector<std::shared_ptr<Object>> *arguments, 
 std::shared_ptr<Object> BuiltInFunctions::built_in_product(
     std::vector<std::shared_ptr<Object>> *arguments, int line, int col) {
     if (arguments->at(0)->get_type() != TYPE_ARRAY) {
-        Error::runtime_error("Invalid argument to built-in product of type " +
-                                 type_to_string(arguments->at(0)->get_type()),
-                             line,
-                             col);
+        error_manager->runtime_error("Invalid argument to built-in product of type " +
+                                         type_to_string(arguments->at(0)->get_type()),
+                                     line,
+                                     col);
     }
 
     std::shared_ptr<Object> product = std::make_shared<IntObject>(1);
@@ -204,10 +192,10 @@ std::shared_ptr<Object> BuiltInFunctions::built_in_product(
     for (auto &argument : arg_value) {
         product = product->multiply(argument);
         if (product == nullptr) {
-            Error::runtime_error("Invalid argument to built-in product of type " +
-                                     type_to_string(argument->get_type()),
-                                 line,
-                                 col);
+            error_manager->runtime_error("Invalid argument to built-in product of type " +
+                                             type_to_string(argument->get_type()),
+                                         line,
+                                         col);
         }
     }
     return product;

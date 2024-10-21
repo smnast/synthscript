@@ -2,6 +2,7 @@
 #define SYNTHSCRIPT_VISITOR_H
 
 #include "AST/node_forward_classes.h"
+#include "error_manager.h"
 
 template <typename T, typename A> class Visitor {
 public:

@@ -1,6 +1,8 @@
 #ifndef SYNTHSCRIPT_INTERPRETERVISITOR_H
 #define SYNTHSCRIPT_INTERPRETERVISITOR_H
 
+#include "built_in_functions.h"
+#include "error_manager.h"
 #include "object/object.h"
 #include "symbol/symbol_table.h"
 #include "visitor.h"
@@ -9,6 +11,18 @@
 
 class InterpreterVisitor : public Visitor<std::shared_ptr<Object>, SymbolTable *> {
 public:
+    /**
+     * @brief Construct a new InterpreterVisitor object
+     * @param error_manager The error manager to use for error handling
+     *
+     * @note
+     * The visitor does not take ownership of the program node or error manager.
+     */
+    InterpreterVisitor(ProgramNode *program_node, ErrorManager *error_manager);
+    ~InterpreterVisitor() = default;
+
+    void interpret();
+
     std::shared_ptr<Object> visit(ProgramNode *node, SymbolTable *table) override;
     std::shared_ptr<Object> visit(BinOpNode *node, SymbolTable *table) override;
     std::shared_ptr<Object> visit(CastOpNode *node, SymbolTable *table) override;
@@ -31,9 +45,31 @@ public:
     std::shared_ptr<Object> visit(LiteralNode *node, SymbolTable *table) override;
     std::shared_ptr<Object> visit(ErrorNode *node, SymbolTable *table) override;
 
-    static void runtime_error(const std::string &message, int line, int column);
-
 private:
+    /**
+     * @brief The error manager to use for error handling.
+     */
+    ErrorManager *error_manager;
+
+    /**
+     * @brief The root node of the program to visit.
+     */
+    ProgramNode *program_node;
+
+    /**
+     * @brief Report a runtime error.
+     *
+     * @param message The error message.
+     * @param line The line of the error.
+     * @param column The column of the error.
+     */
+    void runtime_error(const std::string &message, int line, int column);
+
+    /**
+     * @brief Built-in functions manager.
+     */
+    BuiltInFunctions built_in_functions;
+
     /**
      * @brief Stack of return values from each function call.
      */

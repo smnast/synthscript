@@ -4,9 +4,17 @@
 #include "error.h"
 #include "object/function_object.h"
 
+SemanticAnalysisVisitor::SemanticAnalysisVisitor(ProgramNode *program_node,
+                                                 ErrorManager *error_manager)
+    : program_node(program_node), error_manager(error_manager), built_in_functions(error_manager) {}
+
+void SemanticAnalysisVisitor::analyze() {
+    program_node->analyze(this, nullptr);
+}
+
 void SemanticAnalysisVisitor::visit(ProgramNode *node, SymbolTable *table) {
     auto *global_table = new SymbolTable(nullptr, false, false);
-    BuiltInFunctions::register_built_in_functions(global_table);
+    built_in_functions.register_built_in_functions(global_table);
 
     for (auto &statement : *node->get_statements()) {
         statement->analyze(this, global_table);
@@ -203,5 +211,5 @@ std::string SemanticAnalysisVisitor::get_array_identifier(SubscriptOpNode *node,
 }
 
 void SemanticAnalysisVisitor::semantic_error(const std::string &message, int line, int column) {
-    Error::error_at_pos(message, line, column, true);
+    error_manager->error_at_pos(message, line, column, true);
 }

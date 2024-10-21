@@ -1,10 +1,10 @@
 #include "parser.h"
 #include "error.h"
 
-int Parser::cur_idx;
-std::vector<Token> Parser::tokens;
+Parser::Parser(std::vector<Token> program_tokens, ErrorManager *error_manager)
+    : program_tokens(std::move(program_tokens)), error_manager(error_manager) {}
 
-ProgramNode *Parser::parse_program(std::vector<Token> program_tokens) {
+ProgramNode *Parser::parse_program() {
     cur_idx = 0;
     tokens = std::move(program_tokens);
 
@@ -12,7 +12,7 @@ ProgramNode *Parser::parse_program(std::vector<Token> program_tokens) {
     std::vector<ASTNode *> statements;
     while (!check(END_OF_FILE)) {
         // If there is an error, handle it before continuing parsing
-        if (Error::check_error()) {
+        if (error_manager->check_error()) {
             sync();
         } else {
             auto *statement_node = parse_statement();
@@ -74,7 +74,7 @@ ASTNode *Parser::parse_compound_statement() {
     while (!check(RBRACE) && !check(END_OF_FILE)) {
         // If there is an error, handle it before continuing parsing
         // TODO: remove repeated code! (from parse program function)
-        if (Error::check_error()) {
+        if (error_manager->check_error()) {
             sync();
         } else {
             auto *statement_node = parse_statement();
@@ -737,7 +737,7 @@ void Parser::accept_new_lines() {
 }
 
 void Parser::sync() {
-    Error::handle_error();
+    error_manager->handle_error();
 
     // Skip tokens until a grounding token is found
     while (true) {
@@ -760,8 +760,9 @@ void Parser::sync() {
 
 void Parser::syntax_error(const std::string &expected, const Token &actual) {
     // Report a syntax error at a the token's position
-    Error::error_at_pos("Expected " + expected + " but got " + token_values[actual.token_type],
-                        actual.line,
-                        actual.column,
-                        false);
+    error_manager->error_at_pos("Expected " + expected + " but got " +
+                                    token_values[actual.token_type],
+                                actual.line + 1,
+                                actual.column + 1,
+                                false);
 }

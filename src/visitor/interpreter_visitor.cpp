@@ -12,11 +12,18 @@
 #include "operators.h"
 #include <stdexcept>
 
+InterpreterVisitor::InterpreterVisitor(ProgramNode *program_node, ErrorManager *error_manager)
+    : program_node(program_node), error_manager(error_manager), built_in_functions(error_manager) {}
+
+void InterpreterVisitor::interpret() {
+    program_node->evaluate(this, nullptr);
+}
+
 std::shared_ptr<Object> InterpreterVisitor::visit(ProgramNode *node, SymbolTable *table) {
     // Create symbol table for the global scope
     auto *global_table = new SymbolTable(nullptr, false, false);
 
-    BuiltInFunctions::register_built_in_functions(global_table);
+    built_in_functions.register_built_in_functions(global_table);
 
     for (auto &statement : *node->get_statements()) {
         statement->evaluate(this, global_table);
@@ -380,7 +387,7 @@ std::shared_ptr<Object> InterpreterVisitor::visit(CallNode *node, SymbolTable *t
             arguments.push_back(argument->evaluate(this, table));
         }
 
-        return BuiltInFunctions::handle_built_in_function(
+        return built_in_functions.handle_built_in_function(
             name, &arguments, node->get_line(), node->get_column());
     }
 
@@ -460,5 +467,5 @@ std::shared_ptr<Object> InterpreterVisitor::visit(ErrorNode *node, SymbolTable *
 }
 
 void InterpreterVisitor::runtime_error(const std::string &message, int line, int column) {
-    Error::runtime_error(message, line, column);
+    error_manager->runtime_error(message, line, column);
 }

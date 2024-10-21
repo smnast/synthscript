@@ -1,4 +1,5 @@
 #include "error.h"
+#include "error_manager.h"
 #include "lexer.h"
 #include "parser.h"
 #include "reader.h"
@@ -13,11 +14,7 @@ void print_usage();
 int main(int argc, char *argv[]) {
     if (argc == 2) {
         char *file_path = argv[1];
-        if (!Reader::file_exists(file_path)) {
-            std::cout << "File not found: " << file_path << std::endl;
-        } else {
-            build_and_run(file_path);
-        }
+        build_and_run(file_path);
     } else {
         print_usage();
     }
@@ -26,46 +23,49 @@ int main(int argc, char *argv[]) {
 void build_and_run(const std::string &path) {
     std::cout << "Building program..." << std::endl;
 
+    ErrorManager *error_manager = new ErrorManager();
+
+    // Read the file
+    Reader reader(path, error_manager);
+    std::string code = reader.read_file();
+    std::vector<std::string> file_lines = reader.get_lines();
+    error_manager->set_file_lines(file_lines);
+
     // Lexical analysis
-    std::string code = Reader::read_file(path);
-    std::vector<Token> tokens = Lexer::parse_tokens(code);
+    Lexer lexer(code, error_manager);
+    std::vector<Token> tokens = lexer.parse_tokens();
 
     // Syntax analysis
-    ProgramNode *program = Parser::parse_program(tokens);
+    Parser parser(tokens, error_manager);
+    ProgramNode *program = parser.parse_program();
 
     // Print the AST
-    // auto *print_visitor = new PrintVisitor();
-    // program->accept(print_visitor, 0);
-    // delete print_visitor;
+    PrintVisitor print_visitor(program, error_manager);
+    print_visitor.print();
 
     // Semantic analysis
-    auto *semantic_analysis_visitor = new SemanticAnalysisVisitor();
-    program->analyze(semantic_analysis_visitor, nullptr);
-    delete semantic_analysis_visitor;
+    SemanticAnalysisVisitor semantic_analysis_visitor(program, error_manager);
+    semantic_analysis_visitor.analyze();
 
     // Print build status
     std::string build_status =
-        Error::get_status() == Error::BuildStatus::SUCCESS ? "SUCCESS" : "FAILURE";
+        error_manager->get_status() == ErrorManager::BuildStatus::SUCCESS ? "SUCCESS" : "FAILURE";
     std::cout << "Build status:\t" << build_status << std::endl;
-    std::cout << "Error count:\t" << Error::get_error_count() << std::endl;
+    std::cout << "Error count:\t" << error_manager->get_error_count() << std::endl;
 
-    if (Error::get_status() == Error::BuildStatus::FAILURE) {
+    if (error_manager->get_status() == ErrorManager::BuildStatus::FAILURE) {
         delete program;
         exit(1);
+    } else {
+        // Execution
+        std::cout << "Running program..." << std::endl;
+
+        // Interpret the AST nodes
+        InterpreterVisitor interpreter_visitor(program, error_manager);
+        interpreter_visitor.interpret();
+
+        delete program;
     }
-
-    // Execution
-    std::cout << "Running program..." << std::endl;
-    run(program);
-
-    delete program;
-}
-
-void run(ProgramNode *program) {
-    // Interpret the AST nodes
-    auto *interpreter_visitor = new InterpreterVisitor();
-    program->evaluate(interpreter_visitor, nullptr);
-    delete interpreter_visitor;
 }
 
 void print_usage() {

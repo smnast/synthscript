@@ -1,10 +1,24 @@
 #ifndef SYNTHSCRIPT_PRINTVISITOR_H
 #define SYNTHSCRIPT_PRINTVISITOR_H
 
+#include "error_manager.h"
+#include "built_in_functions.h"
 #include "visitor.h"
 
 class PrintVisitor : public Visitor<void, int> {
 public:
+    /**
+     * @brief Construct a new InterpreterVisitor object
+     * @param error_manager The error manager to use for error handling
+     *
+     * @note
+     * The visitor does not take ownership of the program node or error manager.
+     */
+    PrintVisitor(ProgramNode *program_node, ErrorManager *error_manager);
+    ~PrintVisitor() = default;
+
+    void print();
+
     void visit(ProgramNode *node, int indentation) override;
     void visit(BinOpNode *node, int indentation) override;
     void visit(CastOpNode *node, int indentation) override;
@@ -26,6 +40,17 @@ public:
     void visit(IdentifierNode *node, int indentation) override;
     void visit(LiteralNode *node, int indentation) override;
     void visit(ErrorNode *node, int indentation) override;
+
+private:
+    /**
+     * @brief The error manager to use for error handling.
+     */
+    ErrorManager *error_manager;
+
+    /**
+     * @brief The root node of the program to visit.
+     */
+    ProgramNode *program_node;
 };
 
 #endif // SYNTHSCRIPT_PRINTVISITOR_H

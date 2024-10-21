@@ -2,8 +2,8 @@ set(SOURCES
     main.cpp
     reader.cpp
     lexer.cpp
-    error.cpp
     parser.cpp
+    error_manager.cpp
     visitor/print_visitor.cpp
     symbol/symbol.cpp
     symbol/symbol_table.cpp

@@ -1,15 +1,19 @@
-#ifndef SYNTHSCRIPT_ERROR_H
-#define SYNTHSCRIPT_ERROR_H
+#ifndef SYNTHSCRIPT_ERRORMANAGER_H
+#define SYNTHSCRIPT_ERRORMANAGER_H
 
 #include <string>
+#include <vector>
 
-class Error {
+class ErrorManager {
 public:
-    enum class BuildStatus {
-        SUCCESS,
-        FAILURE,
-        WARNING
-    };
+    enum class BuildStatus { SUCCESS, FAILURE, WARNING };
+
+    /**
+     * @brief Create a new Error Manager object
+     */
+    ErrorManager();
+
+    ~ErrorManager() = default;
 
     /**
      * @brief Print an error message if no other error has been encountered.
@@ -17,7 +21,7 @@ public:
      * @param force_print Force the error message to be printed, even if another error has been
      * encountered.
      */
-    static void error(const std::string &message, bool force_print = true);
+    void error(const std::string &message, bool force_print = true);
 
     /**
      * @brief Print an error message showing where the error occured.
@@ -32,8 +36,7 @@ public:
      * @param force_print Force the error message to be printed, even if another error has been
      * encountered.
      */
-    static void
-    error_at_pos(const std::string &message, int line, int col, bool force_print = true);
+    void error_at_pos(const std::string &message, int line, int col, bool force_print = true);
 
     /**
      * @brief Print a runtime error message showing where the error occured and exit the program.
@@ -45,41 +48,60 @@ public:
      * @param line The line number where the error occurred.
      * @param col The column number where the error occurred.
      */
-    static void runtime_error(const std::string &message, int line, int col);
+    void runtime_error(const std::string &message, int line, int col);
 
     /**
      * @brief Check if an error has been encountered and not yet handled.
      * @return True if there is an unhandled error, false otherwise.
      */
-    static bool check_error();
+    bool check_error();
 
     /**
      * @brief Handle the current error.
      */
-    static void handle_error();
+    void handle_error();
 
     /**
      * @brief Get the total error count.
      * @return Number of errors encountered during the build process.
      */
-    static int get_error_count();
+    int get_error_count();
 
     /**
      * @brief Get the build status.
      * @return The build status.
      */
-    static BuildStatus get_status();
+    BuildStatus get_status();
+
+    /**
+     * @brief Set the lines of the currently processed file.
+     * @param lines The lines of the file.
+     */
+    void set_file_lines(const std::vector<std::string> &lines);
 
 private:
     /**
      * @brief The total number of errors during the build process.
      */
-    static int error_count;
+    int error_count;
 
     /**
      * @brief If an error has been encountered and not yet handled.
      */
-    static bool unhandled_error;
+    bool unhandled_error;
+
+    /**
+     * @brief Stores the lines of the currently processed file.
+     * Newlines are preserved within each line entry.
+     */
+    std::vector<std::string> file_lines;
+
+    /**
+     * @brief Displays the position in the file based on the line and column number.
+     * @param line The line number (1-based).
+     * @param col The column number (1-based).
+     */
+    void show_position(int line, int col);
 };
 
-#endif // SYNTHSCRIPT_ERROR_H
+#endif // SYNTHSCRIPT_ERRORMANAGER_H

@@ -1,6 +1,7 @@
 #ifndef SYNTHSCRIPT_READER_H
 #define SYNTHSCRIPT_READER_H
 
+#include "error_manager.h"
 #include <string>
 #include <vector>
 
@@ -11,58 +12,76 @@
 class Reader {
 public:
     /**
-     * @brief Checks if a file exists at the given path.
-     * @param path The path to the file.
-     * @return True if the file exists, otherwise false.
+     * @brief Construct a new Reader object.
+     * @param path The path to the file to read.
+     * @param error_manager The error manager to use for error handling.
+     *
+     * @note
+     * The reader does not take ownership of the error manager object.
      */
-    static bool file_exists(const std::string &path);
+    Reader(const std::string &file_path, ErrorManager *error_manager);
 
     /**
      * @brief Reads the contents of a file into a string.
      * @param file_path The path to the file.
      * @return The file contents as a string.
      */
-    static std::string read_file(const std::string &file_path);
+    std::string read_file();
 
     /**
-     * @brief Displays the position in the file based on the line and column number.
-     * @param line The line number (1-based).
-     * @param col The column number (1-based).
+     * @brief Get the file lines.
+     * @return The file lines.
      */
-    static void show_position(int line, int col);
+    std::vector<std::string> get_lines();
 
 private:
     /**
+     * @brief The error manager to use for error handling.
+     */
+    ErrorManager *error_manager;
+
+    /**
+     * @brief The path to the file to read.
+     */
+    std::string file_path;
+
+    /**
+     * @brief The contents of the file.
+     */
+    std::string file_contents;
+
+    /**
      * @brief The character used to denote comments in the file.
      */
-    static const char comment_char;
+    const char comment_char = '#';
+
+    /**
+     * @brief Checks if a file exists at the given path.
+     * @param path The path to the file.
+     * @return True if the file exists, otherwise false.
+     */
+    bool file_exists(const std::string &path);
 
     /**
      * @brief Retrieves the raw text from a file.
      * @param file_path The path to the file.
      * @return The raw file text.
      */
-    static std::string get_file_text(const std::string &file_path);
+    std::string get_file_text(const std::string &file_path);
 
     /**
      * @brief Cleans the file contents by removing comments.
      * @param file The raw file contents.
      * @return The cleaned file content as a string.
      */
-    static std::string clean_file(const std::string &file);
-
-    /**
-     * @brief Stores the lines of the currently processed file.
-     * Newlines are preserved within each line entry.
-     */
-    static std::vector<std::string> file_lines;
+    std::string clean_file(const std::string &file);
 
     /**
      * @brief Splits the file content into individual lines.
-     * @param file The raw or cleaned file content.
+     * @param file_contents The raw or cleaned file content.
      * @return A vector containing the lines of the file.
      */
-    static std::vector<std::string> get_lines(const std::string &file);
+    std::vector<std::string> get_lines(const std::string &file_contents);
 };
 
 #endif // SYNTHSCRIPT_READER_H
