@@ -1,5 +1,4 @@
-set(SOURCES
-    main.cpp
+set(LIBRARY_SOURCES
     reader.cpp
     lexer.cpp
     parser.cpp
@@ -21,7 +20,11 @@ set(SOURCES
     operators.cpp
 )
 
-add_executable(SynthScript ${SOURCES})
+add_library(SynthScriptLib ${LIBRARY_SOURCES})
+
+add_executable(SynthScript main.cpp)
+target_link_libraries(SynthScript PRIVATE SynthScriptLib)
+
 set_target_properties(SynthScript PROPERTIES
     OUTPUT_NAME "sscript"
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
