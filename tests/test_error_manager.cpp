@@ -79,14 +79,14 @@ TEST_CASE("ErrorManager error at pos") {
     CHECK(error_manager.check_error());
     CHECK_EQ(error_manager.get_error_count(), 1);
     CHECK_EQ(error_manager.get_status(), ErrorManager::BuildStatus::FAILURE);
-    CHECK_EQ(cout_redirect.get_string(), "Error: Error message\nline 1\n ^\n");
+    CHECK_EQ(cout_redirect.get_string(), "Error: Error message (line 1, column 2)\nline 1\n ^\n");
 
     // Add another error message at a different position.
     cout_redirect.run([&]() { error_manager.error_at_pos("Error message 2", 2, 3, false); });
     CHECK(error_manager.check_error());
     CHECK_EQ(error_manager.get_error_count(), 1);
     CHECK_EQ(error_manager.get_status(), ErrorManager::BuildStatus::FAILURE);
-    CHECK_EQ(cout_redirect.get_string(), "Error: Error message\nline 1\n ^\n");
+    CHECK_EQ(cout_redirect.get_string(), "Error: Error message (line 1, column 2)\nline 1\n ^\n");
 
     // Handle the error.
     error_manager.handle_error();
@@ -101,5 +101,5 @@ TEST_CASE("ErrorManager error at pos") {
     CHECK(error_manager.check_error());
     CHECK_EQ(error_manager.get_error_count(), 2);
     CHECK_EQ(error_manager.get_status(), ErrorManager::BuildStatus::FAILURE);
-    CHECK_EQ(cout_redirect.get_string(), "Error: Error message 3\nline 3\n   ^\n");
+    CHECK_EQ(cout_redirect.get_string(), "Error: Error message 3 (line 3, column 4)\nline 3\n   ^\n");
 }

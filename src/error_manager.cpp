@@ -20,7 +20,9 @@ void ErrorManager::error(const std::string &message, bool force_print) {
 void ErrorManager::error_at_pos(const std::string &message, int line, int col, bool force_print) {
     // Only print the error message if no other error has been encountered, unless forced to do so.
     if (!unhandled_error || force_print) {
-        error(message, true);
+        std::string message_with_pos =
+            message + " (line " + std::to_string(line) + ", column " + std::to_string(col) + ")";
+        error(message_with_pos, true);
         show_position(line, col);
     }
 }
@@ -32,9 +34,11 @@ void ErrorManager::runtime_error(const std::string &message, int line, int col) 
 }
 
 void ErrorManager::show_position(int line, int col) {
-    // Show '^' under a specific position in the file
-    std::string position = std::string(col - 1, ' ') + "^\n";
-    std::cout << file_lines[line - 1] << position;
+    if (!file_lines.empty()) {
+        // Show '^' under a specific position in the file
+        std::string position = std::string(col - 1, ' ') + "^\n";
+        std::cout << file_lines[line - 1] << position;
+    }
 }
 
 bool ErrorManager::check_error() {
