@@ -5,6 +5,7 @@
 #include <vector>
 
 typedef enum {
+    STRING_LITERAL,
     ASSIGNMENT_OPERATOR,
     ADDITION_OPERATOR,
     SUBTRACTION_OPERATOR,
@@ -18,12 +19,12 @@ typedef enum {
     BITWISE_OR_OPERATOR,
     BITWISE_XOR_OPERATOR,
     BITWISE_NOT_OPERATOR,
-    LESS_THAN_OPERATOR,
     LESS_THAN_EQUAL_OPERATOR,
-    GREATER_THAN_OPERATOR,
+    LESS_THAN_OPERATOR,
     GREATER_THAN_EQUAL_OPERATOR,
-    EQUAL_OPERATOR,
+    GREATER_THAN_OPERATOR,
     NOT_EQUAL_OPERATOR,
+    EQUAL_OPERATOR,
     LPAREN,
     RPAREN,
     LBRACE,
@@ -42,17 +43,16 @@ typedef enum {
     IN_KEYWORD,
     RANGE_SYMBOL,
     FUNCTION_KEYWORD,
-    INT_LITERAL,
-    FLOAT_LITERAL,
-    STRING_LITERAL,
-    BOOL_LITERAL,
     INT_TYPE,
     FLOAT_TYPE,
     STRING_TYPE,
     BOOL_TYPE,
     VOID_TYPE,
     ARRAY_TYPE,
+    BOOL_LITERAL,
     IDENTIFIER,
+    FLOAT_LITERAL,
+    INT_LITERAL,
     UNDEFINED,
     ESCAPED_NEW_LINE,
     NEW_LINE,
@@ -60,6 +60,7 @@ typedef enum {
 } TokenType;
 
 const std::vector<std::string> token_values = {
+    "string literal",
     "'<-'",
     "'+'",
     "'-'",
@@ -73,12 +74,12 @@ const std::vector<std::string> token_values = {
     "'|'",
     "'^'",
     "'~'",
-    "'<'",
     "'<='",
-    "'>'",
+    "'<'",
     "'>='",
-    "'='",
+    "'>'",
     "'!='",
+    "'='",
     "'('",
     "')'",
     "'{'",
@@ -97,17 +98,16 @@ const std::vector<std::string> token_values = {
     "'in'",
     "'..'",
     "'function'",
-    "int literal",
-    "float literal",
-    "string literal",
-    "bool literal",
     "'int'",
     "'float'",
     "'string'",
     "'bool'",
     "'void'",
     "'array'",
+    "bool literal",
     "identifier",
+    "float literal",
+    "int literal",
     "undefined token",
     "escaped new line",
     "new line",
@@ -115,6 +115,7 @@ const std::vector<std::string> token_values = {
 };
 
 const std::vector<std::pair<TokenType, std::string>> token_regexs = {
+    {STRING_LITERAL, R"("(?:[^"\\]|\\.)*")"},
     {ASSIGNMENT_OPERATOR, R"(\<\-)"},
     {ADDITION_OPERATOR, R"(\+)"},
     {SUBTRACTION_OPERATOR, R"(\-)"},
@@ -128,12 +129,12 @@ const std::vector<std::pair<TokenType, std::string>> token_regexs = {
     {BITWISE_OR_OPERATOR, R"(\|)"},
     {BITWISE_XOR_OPERATOR, R"(\^)"},
     {BITWISE_NOT_OPERATOR, R"(\~)"},
-    {LESS_THAN_OPERATOR, R"(<)"},
     {LESS_THAN_EQUAL_OPERATOR, R"(<=)"},
-    {GREATER_THAN_OPERATOR, R"(>)"},
+    {LESS_THAN_OPERATOR, R"(<)"},
     {GREATER_THAN_EQUAL_OPERATOR, R"(>=)"},
-    {EQUAL_OPERATOR, R"(=)"},
+    {GREATER_THAN_OPERATOR, R"(>)"},
     {NOT_EQUAL_OPERATOR, R"(!=)"},
+    {EQUAL_OPERATOR, R"(=)"},
     {LPAREN, R"(\()"},
     {RPAREN, R"(\))"},
     {LBRACE, R"(\{)"},
@@ -152,29 +153,33 @@ const std::vector<std::pair<TokenType, std::string>> token_regexs = {
     {IN_KEYWORD, R"(\bin\b)"},
     {RANGE_SYMBOL, R"(\.\.)"},
     {FUNCTION_KEYWORD, R"(\bfunction\b)"},
-    {FLOAT_LITERAL, R"(\d+\.\d+)"},
-    {INT_LITERAL, R"(\d+)"},
-    {STRING_LITERAL, R"("(?:[^"\\]|\\.)*")"},
-    {BOOL_LITERAL, R"(\b(?:true|false)\b)"},
     {INT_TYPE, R"(\bint\b)"},
     {FLOAT_TYPE, R"(\bfloat\b)"},
     {STRING_TYPE, R"(\bstring\b)"},
     {BOOL_TYPE, R"(\bbool\b)"},
     {VOID_TYPE, R"(\bvoid\b)"},
     {ARRAY_TYPE, R"(\barray\b)"},
+    {BOOL_LITERAL, R"(\b(?:true|false)\b)"},
     {IDENTIFIER, R"([a-zA-Z_]\w*)"},
+    {FLOAT_LITERAL, R"(\d+\.\d+)"},
+    {INT_LITERAL, R"(\d+)"},
     {ESCAPED_NEW_LINE, R"(\\ *\n)"},
     {NEW_LINE, R"(\n)"},
-    {UNDEFINED, R"([^\ \n]+)"},
+    {UNDEFINED, R"([^\ \t\n]+)"},
 };
 
 struct Token {
-    const TokenType token_type{};
+    const TokenType type{};
     const std::string value{};
     const int line, column;
 
     Token(TokenType type, std::string val, int line, int column)
-        : token_type(type), value(std::move(val)), line(line), column(column) {}
+        : type(type), value(std::move(val)), line(line), column(column) {}
+
+    bool operator==(const Token &other) const {
+        return type == other.type && value == other.value && line == other.line &&
+               column == other.column;
+    }
 };
 
 static bool token_is_type(TokenType type) {

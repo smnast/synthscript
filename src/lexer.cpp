@@ -42,16 +42,20 @@ void Lexer::prepare_prefixes(std::string &code) {
     // Prepare the line and line offset prefixes
     int last_line_start = 0;
     int current_line = 1;
-    for (int i = 0; i < (int)code.size(); i++) {
+    for (size_t i = 0; i < code.size(); i++) {
         line_offset_prefix[i] = last_line_start;
         line_prefix[i] = current_line;
 
         // New line
-        if (code[i] == '\n') {
+        if (code[i] == '\n' && !(i != 0 && code[i - 1] == '\\')) {
             last_line_start = i + 1;
             current_line++;
         }
     }
+
+    // Add the EOF token
+    line_offset_prefix[code.size()] = last_line_start;
+    line_prefix[code.size()] = current_line;
 }
 
 std::vector<Token> Lexer::get_tokens(std::string &code, std::string &token_regex) {
@@ -76,9 +80,11 @@ std::vector<Token> Lexer::get_tokens(std::string &code, std::string &token_regex
 
                 // Check for undefined tokens
                 if (token_regexs[token_idx].first == UNDEFINED) {
-                    Lexer::lexer_error(match[i].str(), line, column);
-                    // Don't include new line escapes in the token list
-                } else if (token_regexs[token_idx].first != ESCAPED_NEW_LINE) {
+                    lexer_error(match[i].str(), line, column);
+                }
+
+                // Don't include new line escapes in the token list
+                if (token_regexs[token_idx].first != ESCAPED_NEW_LINE) {
                     tokens.push_back(cur_token);
                 }
 
@@ -90,7 +96,7 @@ std::vector<Token> Lexer::get_tokens(std::string &code, std::string &token_regex
     }
 
     // Add the end of file token
-    Token end_token(END_OF_FILE, "", get_line(code.size()), 1);
+    Token end_token(END_OF_FILE, "", get_line(code.size()), get_column(code.size()));
     tokens.push_back(end_token);
 
     return tokens;

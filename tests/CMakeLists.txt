@@ -2,6 +2,7 @@ set (TEST_SOURCES
     test_main.cpp
     test_error_manager.cpp
     test_reader.cpp
+    test_lexer.cpp
     utils/cout_redirect.cpp
     utils/test_cout_redirect.cpp
     utils/temp_file.cpp

@@ -146,8 +146,8 @@ ASTNode *Parser::parse_cast() {
 
     int line = cur_token().line, col = cur_token().column;
 
-    if (token_is_type(cur_token().token_type)) {
-        TokenType token_type = cur_token().token_type;
+    if (token_is_type(cur_token().type)) {
+        TokenType token_type = cur_token().type;
         next_token();
 
         expect(LPAREN);
@@ -321,7 +321,7 @@ ASTNode *Parser::parse_literal() {
     int line = cur_token().line, col = cur_token().column;
 
     // Parse the literal value
-    Type type = token_to_type(cur_token().token_type);
+    Type type = token_to_type(cur_token().type);
     std::string value = cur_token().value;
     next_token();
 
@@ -428,7 +428,7 @@ ASTNode *Parser::parse_logical_or_expression() {
     // Align to the left
     auto *left = parse_logical_and_expression();
     while (check(LOGICAL_OR_OPERATOR)) {
-        TokenType op = cur_token().token_type;
+        TokenType op = cur_token().type;
         accept(LOGICAL_OR_OPERATOR);
 
         auto *right = parse_logical_and_expression();
@@ -449,7 +449,7 @@ ASTNode *Parser::parse_logical_and_expression() {
     // Align to the left
     auto *left = parse_bitwise_or_expression();
     while (check(LOGICAL_AND_OPERATOR)) {
-        TokenType op = cur_token().token_type;
+        TokenType op = cur_token().type;
         accept(LOGICAL_AND_OPERATOR);
 
         auto *right = parse_bitwise_or_expression();
@@ -470,7 +470,7 @@ ASTNode *Parser::parse_bitwise_or_expression() {
     // Align to the left
     auto *left = parse_bitwise_xor_expression();
     while (check(BITWISE_OR_OPERATOR)) {
-        TokenType op = cur_token().token_type;
+        TokenType op = cur_token().type;
         accept(BITWISE_OR_OPERATOR);
 
         auto *right = parse_bitwise_xor_expression();
@@ -491,7 +491,7 @@ ASTNode *Parser::parse_bitwise_xor_expression() {
     // Align to the left
     auto *left = parse_bitwise_and_expression();
     while (check(BITWISE_XOR_OPERATOR)) {
-        TokenType op = cur_token().token_type;
+        TokenType op = cur_token().type;
         accept(BITWISE_XOR_OPERATOR);
 
         auto *right = parse_bitwise_and_expression();
@@ -513,7 +513,7 @@ ASTNode *Parser::parse_bitwise_and_expression() {
     // Align to the left
     auto *left = parse_equality_expression();
     while (check(BITWISE_AND_OPERATOR)) {
-        TokenType op = cur_token().token_type;
+        TokenType op = cur_token().type;
         accept(BITWISE_AND_OPERATOR);
 
         auto *right = parse_equality_expression();
@@ -535,8 +535,8 @@ ASTNode *Parser::parse_equality_expression() {
     // Align to the left
     auto *left = parse_relational_expression();
     while (check(EQUAL_OPERATOR) || check(NOT_EQUAL_OPERATOR)) {
-        TokenType op = cur_token().token_type;
-        accept(cur_token().token_type);
+        TokenType op = cur_token().type;
+        accept(cur_token().type);
 
         auto *right = parse_relational_expression();
         left = new BinOpNode(op, left, right, line, col);
@@ -559,8 +559,8 @@ ASTNode *Parser::parse_relational_expression() {
     auto *left = parse_range_literal_expression();
     while (check(LESS_THAN_OPERATOR) || check(LESS_THAN_EQUAL_OPERATOR) ||
            check(GREATER_THAN_OPERATOR) || check(GREATER_THAN_EQUAL_OPERATOR)) {
-        TokenType op = cur_token().token_type;
-        accept(cur_token().token_type);
+        TokenType op = cur_token().type;
+        accept(cur_token().type);
 
         auto *right = parse_range_literal_expression();
         left = new BinOpNode(op, left, right, line, col);
@@ -596,8 +596,8 @@ ASTNode *Parser::parse_additive_expression() {
     // Align to the left
     auto *left = parse_multiplicative_expression();
     while (check(ADDITION_OPERATOR) || check(SUBTRACTION_OPERATOR)) {
-        TokenType op = cur_token().token_type;
-        accept(cur_token().token_type);
+        TokenType op = cur_token().type;
+        accept(cur_token().type);
 
         auto *right = parse_multiplicative_expression();
         left = new BinOpNode(op, left, right, line, col);
@@ -619,8 +619,8 @@ ASTNode *Parser::parse_multiplicative_expression() {
     // Align to the left
     auto *left = parse_unary_expression();
     while (check(MULTIPLICATIVE_OPERATOR) || check(DIVISION_OPERATOR) || check(MOD_OPERATOR)) {
-        TokenType op = cur_token().token_type;
-        accept(cur_token().token_type);
+        TokenType op = cur_token().type;
+        accept(cur_token().type);
 
         auto *right = parse_unary_expression();
         left = new BinOpNode(op, left, right, line, col);
@@ -641,8 +641,8 @@ ASTNode *Parser::parse_unary_expression() {
 
     if (check(LOGICAL_NOT_OPERATOR) || check(BITWISE_NOT_OPERATOR) || check(SUBTRACTION_OPERATOR) ||
         check(ADDITION_OPERATOR)) {
-        TokenType op = cur_token().token_type;
-        accept(cur_token().token_type);
+        TokenType op = cur_token().type;
+        accept(cur_token().type);
 
         auto *right = parse_factor_expression();
         return new UnaryOpNode(op, right, line, col);
@@ -659,7 +659,7 @@ ASTNode *Parser::parse_factor_expression() {
         ...etc.
     */
 
-    if (token_is_type(cur_token().token_type)) {
+    if (token_is_type(cur_token().type)) {
         return parse_cast();
     } else if (check(FUNCTION_KEYWORD)) {
         return parse_function_declaration();
@@ -699,7 +699,7 @@ Token Parser::cur_token() {
 bool Parser::peek_token(TokenType type, int cnt) {
     // Check if the token `cnt` ahead is of the given type
     if (cur_idx + cnt < tokens.size()) {
-        return tokens[cur_idx + cnt].token_type == type;
+        return tokens[cur_idx + cnt].type == type;
     } else {
         // If the token index is out of bounds, return false
         return false;
@@ -708,7 +708,7 @@ bool Parser::peek_token(TokenType type, int cnt) {
 
 bool Parser::check(TokenType type) {
     // Check the current token type
-    return type == cur_token().token_type;
+    return type == cur_token().type;
 }
 
 bool Parser::accept(TokenType type) {
@@ -740,7 +740,7 @@ void Parser::sync() {
 
     // Skip tokens until a grounding token is found
     while (true) {
-        switch (cur_token().token_type) {
+        switch (cur_token().type) {
         // Gounding tokens
         case IF_KEYWORD:
         case FOR_KEYWORD:
@@ -760,7 +760,7 @@ void Parser::sync() {
 void Parser::syntax_error(const std::string &expected, const Token &actual) {
     // Report a syntax error at a the token's position
     error_manager->error_at_pos("Expected " + expected + " but got " +
-                                    token_values[actual.token_type],
+                                    token_values[actual.type],
                                 actual.line + 1,
                                 actual.column + 1,
                                 false);
