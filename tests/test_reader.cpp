@@ -14,7 +14,7 @@ TEST_CASE("Reader invalid file") {
     // Error when loading non-existent file
     redirect.run([&]() { reader.read_file(); });
     CHECK(error_manager.check_error());
-    CHECK(redirect.get_string() == "Error: File '" + filename + "' does not exist\n");
+    CHECK_EQ(redirect.get_string(), "Error: File '" + filename + "' does not exist\n");
 }
 
 TEST_CASE("Reader comments") {
@@ -71,7 +71,7 @@ TEST_CASE("Reader comments") {
     CHECK_FALSE(error_manager.check_error());
 
     // Check that the contents are as expected
-    CHECK(contents == comments_clean);
+    CHECK_EQ(contents, comments_clean);
 }
 
 TEST_CASE("Reader file lines") {
@@ -107,5 +107,5 @@ TEST_CASE("Reader file lines") {
     CHECK_FALSE(error_manager.check_error());
 
     // Check that the lines are as expected
-    CHECK(lines == correct_lines);
+    CHECK_EQ(lines, correct_lines);
 }
