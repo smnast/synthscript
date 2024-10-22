@@ -1,5 +1,4 @@
 #include "lexer.h"
-#include "error.h"
 #include <regex>
 
 Lexer::Lexer(const std::string &code, ErrorManager *error_manager)

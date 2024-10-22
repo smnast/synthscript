@@ -1,7 +1,6 @@
 #include "visitor/interpreter_visitor.h"
 #include "AST/AST_nodes.h"
 #include "built_in_functions.h"
-#include "error.h"
 #include "object/array_object.h"
 #include "object/bool_object.h"
 #include "object/float_object.h"

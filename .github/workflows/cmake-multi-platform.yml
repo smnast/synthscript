@@ -13,26 +13,29 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     strategy:
-      # Set fail-fast to false to ensure that feedback is delivered for all matrix combinations. Consider changing this to true when your workflow is stable.
+      # Set fail-fast to false to ensure that feedback is delivered for all matrix combinations.
       fail-fast: false
       
       matrix:
         os: [ubuntu-latest, windows-latest, macOS-latest]
         build_type: [Release]
         c_compiler: [gcc, clang, cl]
+        cpp_compiler: [g++, clang++, cl]
+
         include:
-          - os: windows-latest
-            c_compiler: cl
-            cpp_compiler: cl
           - os: ubuntu-latest
             c_compiler: gcc
             cpp_compiler: g++
           - os: ubuntu-latest
             c_compiler: clang
             cpp_compiler: clang++
-          - os: macos-latest
+          - os: windows-latest
+            c_compiler: cl
+            cpp_compiler: cl
+          - os: macOS-latest
             c_compiler: clang
             cpp_compiler: clang++
+
         exclude:
           - os: windows-latest
             c_compiler: gcc
@@ -40,6 +43,14 @@ jobs:
             c_compiler: clang
           - os: ubuntu-latest
             c_compiler: cl
+          - os: ubuntu-latest
+            cpp_compiler: cl
+          - os: macOS-latest
+            c_compiler: gcc
+          - os: macOS-latest
+            c_compiler: cl
+          - os: macOS-latest
+            cpp_compiler: cl
 
     steps:
     - uses: actions/checkout@v4
@@ -71,7 +82,7 @@ jobs:
 
     - name: Upload Build Artifacts
       if: success() # Only upload if build was successful
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        name: build-artifacts
+        name: build-artifacts-${{ github.run_id }}-${{ matrix.os }}-${{ matrix.c_compiler }}-${{ matrix.cpp_compiler }}-${{ matrix.build_type }}
         path: ${{ steps.strings.outputs.build-output-dir }}/*

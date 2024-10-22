@@ -5,7 +5,37 @@
 #include "symbol/symbol_table.h"
 #include <functional>
 
-struct BuiltInFunction;
+/**
+ * @struct BuiltInFunction
+ * @brief Represents a built-in function in the SynthScript language.
+ */
+struct BuiltInFunction {
+    /**
+     * @brief The function that the built-in function calls.
+     * @param arguments The arguments to the function.
+     * @param line The line number where the function was called.
+     * @param col The column number where the function was called.
+     * @return The result of the function.
+     */
+    std::function<std::shared_ptr<Object>(std::vector<std::shared_ptr<Object>>, int, int)> function;
+
+    /**
+     * @brief The number of parameters the function takes.
+     */
+    int param_count;
+};
+
+#define BUILT_IN_FUNCTION(name, param_count, instance)                                             \
+    {                                                                                              \
+        #name, {                                                                                   \
+            [instance](std::vector<std::shared_ptr<Object>> arguments,                             \
+                       int line,                                                                   \
+                       int col) -> std::shared_ptr<Object> {                                       \
+                return instance->built_in_##name(&arguments, line, col);                           \
+            },                                                                                     \
+                param_count                                                                        \
+        }                                                                                          \
+    }
 
 /**
  * @class BuiltInFunctions
@@ -72,37 +102,5 @@ private:
      */
     ErrorManager *error_manager;
 };
-
-/**
- * @struct BuiltInFunction
- * @brief Represents a built-in function in the SynthScript language.
- */
-struct BuiltInFunction {
-    /**
-     * @brief The function that the built-in function calls.
-     * @param arguments The arguments to the function.
-     * @param line The line number where the function was called.
-     * @param col The column number where the function was called.
-     * @return The result of the function.
-     */
-    std::function<std::shared_ptr<Object>(std::vector<std::shared_ptr<Object>>, int, int)> function;
-
-    /**
-     * @brief The number of parameters the function takes.
-     */
-    int param_count;
-};
-
-#define BUILT_IN_FUNCTION(name, param_count, instance)                                             \
-    {                                                                                              \
-        #name, {                                                                                   \
-            [instance](std::vector<std::shared_ptr<Object>> arguments,                             \
-                       int line,                                                                   \
-                       int col) -> std::shared_ptr<Object> {                                       \
-                return instance->built_in_##name(&arguments, line, col);                           \
-            },                                                                                     \
-                param_count                                                                        \
-        }                                                                                          \
-    }
 
 #endif // SYNTHSCRIPT_BUILTINFUNCTIONS_H

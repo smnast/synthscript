@@ -1,5 +1,4 @@
 #include "parser.h"
-#include "error.h"
 
 Parser::Parser(std::vector<Token> program_tokens, ErrorManager *error_manager)
     : program_tokens(std::move(program_tokens)), error_manager(error_manager) {}

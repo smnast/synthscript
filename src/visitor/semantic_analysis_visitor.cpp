@@ -1,7 +1,6 @@
 #include "visitor/semantic_analysis_visitor.h"
 #include "AST/AST_nodes.h"
 #include "built_in_functions.h"
-#include "error.h"
 #include "object/function_object.h"
 
 SemanticAnalysisVisitor::SemanticAnalysisVisitor(ProgramNode *program_node,

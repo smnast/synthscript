@@ -4,10 +4,10 @@
 #include "object/int_object.h"
 #include "object/string_object.h"
 #include "object/void_object.h"
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <sstream>
-#include <unistd.h>
 
 BuiltInFunctions::BuiltInFunctions(ErrorManager *error_manager) : error_manager(error_manager) {
     built_in_functions = {BUILT_IN_FUNCTION(output, 1, this),
@@ -129,10 +129,14 @@ std::shared_ptr<Object> BuiltInFunctions::built_in_append(
 
 std::shared_ptr<Object> BuiltInFunctions::built_in_current_directory(
     std::vector<std::shared_ptr<Object>> *arguments, int line, int col) {
-    char cwd[1024];
-    getcwd(cwd, sizeof(cwd));
-    std::string cwd_str(cwd);
-    return std::make_shared<StringObject>(cwd_str);
+    try {
+        std::string cwd_str = std::filesystem::current_path().string();
+        return std::make_shared<StringObject>(cwd_str);
+    } catch (const std::filesystem::filesystem_error &e) {
+        error_manager->runtime_error(
+            "Error getting current directory: " + std::string(e.what()), line, col);
+        return nullptr;
+    }
 }
 
 std::shared_ptr<Object>
