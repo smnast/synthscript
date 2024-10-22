@@ -1,5 +1,5 @@
 #include "error_manager.h"
-#include "utils/test_output_utils.h"
+#include "utils/cout_redirect.h"
 #include <doctest/doctest.h>
 
 TEST_CASE("ErrorManager initialization") {

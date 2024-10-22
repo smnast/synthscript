@@ -1,7 +1,11 @@
 set (TEST_SOURCES
     test_main.cpp
     test_error_manager.cpp
+    test_reader.cpp
+    utils/cout_redirect.cpp
     utils/test_cout_redirect.cpp
+    utils/temp_file.cpp
+    utils/test_temp_file.cpp
 )
 
 add_executable(tests ${TEST_SOURCES})

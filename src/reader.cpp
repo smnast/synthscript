@@ -15,7 +15,7 @@ std::string Reader::read_file() {
     }
 
     file_contents = get_file_text(file_path);
-    
+
     std::string cleaned_file = clean_file(file_contents);
     return cleaned_file;
 }
@@ -42,13 +42,13 @@ std::string Reader::clean_file(const std::string &file) {
     bool commented = false, multi_line = false, in_string_literal = false;
     for (size_t i = 0; i < file.size(); i++) {
         // Update if we are in a string literal and not escaping it
-        if (file[i] == '"' && (i == 0 || file[i - 1] != '\\')) {
+        if (!commented && file[i] == '"' && (i == 0 || file[i - 1] != '\\')) {
             in_string_literal = !in_string_literal;
         }
 
         // Double comment character means start/end of a multi-line comment
-        if (!in_string_literal && file[i] == comment_char && i < (int)file.size() - 1 &&
-            file[i + 1] == comment_char) {
+        if (!(commented && !multi_line) && !in_string_literal && file[i] == comment_char &&
+            i < (int)file.size() - 1 && file[i + 1] == comment_char) {
             commented = !multi_line;
             multi_line = !multi_line;
             cleaned_file += "  ";
@@ -56,10 +56,12 @@ std::string Reader::clean_file(const std::string &file) {
             // Skip the next character as well
             i++;
             continue;
-            // Single comment character means start of a single-line comment
-        } else if (!in_string_literal && file[i] == comment_char) {
+        }
+        // Single comment character means start of a single-line comment
+        else if (!(commented && multi_line) && !in_string_literal && file[i] == comment_char) {
             commented = true;
             cleaned_file.push_back(' ');
+            continue;
         }
 
         // Single line comment ends at the end of the line
@@ -74,6 +76,8 @@ std::string Reader::clean_file(const std::string &file) {
             // White space is preserved in comments
             if (file[i] == '\n') {
                 cleaned_file.push_back('\n');
+            } else if (file[i] == '\t') {
+                cleaned_file.push_back('\t');
             } else {
                 cleaned_file.push_back(' ');
             }

@@ -1,4 +1,4 @@
-#include "test_output_utils.h"
+#include "cout_redirect.h"
 #include <doctest/doctest.h>
 #include <iostream>
 
