@@ -14,6 +14,8 @@ public:
         delete body;
     }
 
+    NodeType get_node_type() const override { return FOR_STATEMENT_NODE; }
+
     std::string get_identifier() const { return identifier; }
     ASTNode *get_iterable() const { return iterable; }
     ASTNode *get_body() const { return body; }

@@ -13,6 +13,8 @@ public:
         delete right;
     }
 
+    NodeType get_node_type() const override { return BIN_OP_NODE; }
+
     TokenType get_op() { return op; }
     ASTNode *get_left_node() { return left; }
     ASTNode *get_right_node() { return right; }

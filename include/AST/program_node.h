@@ -16,6 +16,8 @@ public:
         }
     }
 
+    NodeType get_node_type() const override { return PROGRAM_NODE; }
+
     std::vector<ASTNode *> *get_statements() { return &statements; }
 
     DECLARE_VISITOR_FUNCTIONS

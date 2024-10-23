@@ -151,8 +151,9 @@ std::shared_ptr<Object> InterpreterVisitor::visit(AssignmentNode *node, SymbolTa
     }
 
     // If the identifier is an array subscript operation
-    if (auto left = dynamic_cast<SubscriptOpNode *>(node->get_identifier())) {
+    if (node->get_identifier()->get_node_type() == NodeType::SUBSCRIPT_OP_NODE) {
         // Evaluate the expression on the left
+        auto *left = static_cast<SubscriptOpNode *>(node->get_identifier());
         std::shared_ptr<ArrayObject> identifier =
             std::static_pointer_cast<ArrayObject>(left->get_identifier()->evaluate(this, table));
 
@@ -161,7 +162,8 @@ std::shared_ptr<Object> InterpreterVisitor::visit(AssignmentNode *node, SymbolTa
         identifier->subscript_update(index, value);
     }
     // If the identifier is just an identifier
-    else if (auto identifier_node = dynamic_cast<IdentifierNode *>(node->get_identifier())) {
+    else if (node->get_identifier()->get_node_type() == NodeType::IDENTIFIER_NODE) {
+        auto identifier_node = static_cast<IdentifierNode *>(node->get_identifier());
         std::string name = identifier_node->get_name();
 
         if (table->contains(name, false)) {

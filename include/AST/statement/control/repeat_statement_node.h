@@ -13,6 +13,8 @@ public:
         delete body;
     }
 
+    NodeType get_node_type() const override { return REPEAT_STATEMENT_NODE; }
+
     ASTNode *get_count() { return count; }
     ASTNode *get_body() { return body; }
 

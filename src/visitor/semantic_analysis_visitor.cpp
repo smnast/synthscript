@@ -53,7 +53,8 @@ void SemanticAnalysisVisitor::visit(RangeLiteralNode *node, SymbolTable *table) 
 
 void SemanticAnalysisVisitor::visit(AssignmentNode *node, SymbolTable *table) {
     // Check if the identifier is an array subscript operation
-    if (auto subscript_op_node = dynamic_cast<SubscriptOpNode *>(node->get_identifier())) {
+    if (node->get_identifier()->get_node_type() == NodeType::SUBSCRIPT_OP_NODE) {
+        auto subscript_op_node = static_cast<SubscriptOpNode *>(node->get_identifier());
         std::string name = get_array_identifier(subscript_op_node, table);
         if (!table->contains(name, false)) {
             semantic_error(
@@ -61,7 +62,8 @@ void SemanticAnalysisVisitor::visit(AssignmentNode *node, SymbolTable *table) {
         }
     }
     // Check if the identifier is just an identifier
-    else if (auto identifier_node = dynamic_cast<IdentifierNode *>(node->get_identifier())) {
+    else if (node->get_identifier()->get_node_type() == NodeType::IDENTIFIER_NODE) {
+        auto identifier_node = static_cast<IdentifierNode *>(node->get_identifier());
         std::string name = identifier_node->get_name();
         if (!table->contains(name, false)) {
             table->insert(Symbol(name));
@@ -200,12 +202,16 @@ void SemanticAnalysisVisitor::visit(ErrorNode *node, SymbolTable *table) {
 std::string SemanticAnalysisVisitor::get_array_identifier(SubscriptOpNode *node,
                                                           SymbolTable *table) {
     // Check if the array is nested
-    if (auto subscript_op_node = dynamic_cast<SubscriptOpNode *>(node->get_identifier())) {
+    if (node->get_identifier()->get_node_type() == NodeType::SUBSCRIPT_OP_NODE) {
+        auto subscript_op_node = static_cast<SubscriptOpNode *>(node->get_identifier());
         return get_array_identifier(subscript_op_node, table);
     }
     // Otherwise, it is just an identifier
-    else {
-        return dynamic_cast<IdentifierNode *>(node->get_identifier())->get_name();
+    else if (node->get_identifier()->get_node_type() == NodeType::IDENTIFIER_NODE) {
+        return static_cast<IdentifierNode *>(node->get_identifier())->get_name();
+    } else {
+        semantic_error("Invalid subscript operation", node->get_line(), node->get_column());
+        return "";
     }
 }
 

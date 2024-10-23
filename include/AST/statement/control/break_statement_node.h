@@ -9,6 +9,8 @@ public:
     BreakStatementNode(int line, int col) : ASTNode(line, col) {}
     ~BreakStatementNode() override = default;
 
+    NodeType get_node_type() const override { return BREAK_STATEMENT_NODE; }
+
     DECLARE_VISITOR_FUNCTIONS
 };
 

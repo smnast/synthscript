@@ -13,6 +13,8 @@ public:
         delete value;
     }
 
+    NodeType get_node_type() const override { return ASSIGNMENT_NODE; }
+
     ASTNode *get_identifier() { return identifier; }
     ASTNode *get_value() { return value; }
 

@@ -9,6 +9,8 @@ public:
     ContinueStatementNode(int line, int col) : ASTNode(line, col) {}
     ~ContinueStatementNode() override = default;
 
+    NodeType get_node_type() const override { return CONTINUE_STATEMENT_NODE; }
+
     DECLARE_VISITOR_FUNCTIONS;
 };
 

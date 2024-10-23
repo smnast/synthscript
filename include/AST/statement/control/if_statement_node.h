@@ -13,6 +13,8 @@ public:
         delete if_body;
         delete else_body;
     }
+    
+    NodeType get_node_type() const override { return IF_STATEMENT_NODE; }
 
     ASTNode *get_condition() { return condition; }
     ASTNode *get_if_body() { return if_body; }

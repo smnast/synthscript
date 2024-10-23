@@ -12,6 +12,8 @@ public:
         : ASTNode(line, col), parameters(std::move(parameters)), body(body) {}
     ~FunctionDeclarationNode() override { delete body; }
 
+    NodeType get_node_type() const override { return FUNCTION_DECLARATION_NODE; }
+
     std::vector<std::string> *get_parameters() { return &parameters; }
     ASTNode *get_body() { return body; }
 

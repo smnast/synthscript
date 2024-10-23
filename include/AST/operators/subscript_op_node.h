@@ -13,6 +13,8 @@ public:
         delete index;
     }
 
+    NodeType get_node_type() const override { return SUBSCRIPT_OP_NODE; }
+
     ASTNode *get_identifier() { return identifier; }
     ASTNode *get_index() { return index; }
     DECLARE_VISITOR_FUNCTIONS

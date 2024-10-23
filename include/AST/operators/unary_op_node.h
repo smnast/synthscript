@@ -10,6 +10,8 @@ public:
         : ASTNode(line, col), op(op), operand(operand) {}
     ~UnaryOpNode() override { delete operand; }
 
+    NodeType get_node_type() const override { return UNARY_OP_NODE; }
+
     TokenType get_op() { return op; }
     ASTNode *get_operand() { return operand; }
 

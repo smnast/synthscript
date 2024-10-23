@@ -11,6 +11,8 @@ public:
         : ASTNode(line, col), type(std::move(type)), operand(operand) {}
     ~CastOpNode() override { delete operand; }
 
+    NodeType get_node_type() const override { return CAST_OP_NODE; }
+
     Type get_type() const { return type; }
     ASTNode *get_operand() const { return operand; }
 

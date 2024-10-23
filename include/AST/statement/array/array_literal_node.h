@@ -14,6 +14,8 @@ public:
         }
     }
 
+    NodeType get_node_type() const override { return ARRAY_LITERAL_NODE; }
+
     std::vector<ASTNode *> *get_values() { return &values; }
 
     DECLARE_VISITOR_FUNCTIONS

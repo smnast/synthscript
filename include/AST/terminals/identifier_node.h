@@ -11,6 +11,8 @@ public:
         : ASTNode(line, col), name(std::move(name)) {}
     ~IdentifierNode() override = default;
 
+    NodeType get_node_type() const override { return IDENTIFIER_NODE; }
+
     std::string get_name() const { return name; }
 
     DECLARE_VISITOR_FUNCTIONS

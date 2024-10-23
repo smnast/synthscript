@@ -49,7 +49,7 @@ public:
      * @param table The symbol table.
      * @return The identifier of the array.
      */
-    static std::string get_array_identifier(SubscriptOpNode *node, SymbolTable *table);
+    std::string get_array_identifier(SubscriptOpNode *node, SymbolTable *table);
 
 private:
     /**

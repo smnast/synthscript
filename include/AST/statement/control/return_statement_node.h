@@ -9,6 +9,8 @@ public:
     ReturnStatementNode(ASTNode *value, int line, int col) : ASTNode(line, col), value(value) {}
     ~ReturnStatementNode() override { delete value; }
 
+    NodeType get_node_type() const override { return RETURN_STATEMENT_NODE; }
+
     bool has_value() { return value != nullptr; }
     ASTNode *get_value() { return value; }
 

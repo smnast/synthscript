@@ -13,6 +13,8 @@ public:
         delete body;
     }
 
+    NodeType get_node_type() const override { return WHILE_STATEMENT_NODE; }
+
     ASTNode *get_condition() { return condition; }
     ASTNode *get_body() { return body; }
 

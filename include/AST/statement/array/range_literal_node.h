@@ -13,6 +13,8 @@ public:
         delete end;
     }
 
+    NodeType get_node_type() const override { return RANGE_LITERAL_NODE; }
+
     ASTNode *get_start() { return start; }
     ASTNode *get_end() { return end; }
 

@@ -10,6 +10,8 @@ public:
         : ASTNode(line, col), type(type), value(std::move(value)) {}
     ~LiteralNode() override = default;
 
+    NodeType get_node_type() const override { return LITERAL_NODE; }
+
     Type get_type() { return type; }
     std::string get_value() { return value; }
 
