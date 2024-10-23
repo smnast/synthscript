@@ -12,6 +12,7 @@ public:
     ~IdentifierNode() override = default;
 
     NodeType get_node_type() const override { return IDENTIFIER_NODE; }
+    static NodeType get_node_type_static() { return IDENTIFIER_NODE; }
 
     std::string get_name() const { return name; }
 

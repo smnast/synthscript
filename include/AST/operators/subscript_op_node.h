@@ -14,6 +14,7 @@ public:
     }
 
     NodeType get_node_type() const override { return SUBSCRIPT_OP_NODE; }
+    static NodeType get_node_type_static() { return SUBSCRIPT_OP_NODE; }
 
     ASTNode *get_identifier() { return identifier; }
     ASTNode *get_index() { return index; }

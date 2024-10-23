@@ -11,6 +11,7 @@ public:
     ~UnaryOpNode() override { delete operand; }
 
     NodeType get_node_type() const override { return UNARY_OP_NODE; }
+    static NodeType get_node_type_static() { return UNARY_OP_NODE; }
 
     TokenType get_op() { return op; }
     ASTNode *get_operand() { return operand; }

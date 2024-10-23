@@ -14,6 +14,7 @@ public:
     }
 
     NodeType get_node_type() const override { return REPEAT_STATEMENT_NODE; }
+    static NodeType get_node_type_static() { return REPEAT_STATEMENT_NODE; }
 
     ASTNode *get_count() { return count; }
     ASTNode *get_body() { return body; }

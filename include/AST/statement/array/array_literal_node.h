@@ -15,6 +15,7 @@ public:
     }
 
     NodeType get_node_type() const override { return ARRAY_LITERAL_NODE; }
+    static NodeType get_node_type_static() { return ARRAY_LITERAL_NODE; }
 
     std::vector<ASTNode *> *get_values() { return &values; }
 

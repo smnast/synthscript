@@ -14,6 +14,7 @@ public:
     }
 
     NodeType get_node_type() const override { return WHILE_STATEMENT_NODE; }
+    static NodeType get_node_type_static() { return WHILE_STATEMENT_NODE; }
 
     ASTNode *get_condition() { return condition; }
     ASTNode *get_body() { return body; }

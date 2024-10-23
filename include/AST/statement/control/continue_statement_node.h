@@ -10,6 +10,7 @@ public:
     ~ContinueStatementNode() override = default;
 
     NodeType get_node_type() const override { return CONTINUE_STATEMENT_NODE; }
+    static NodeType get_node_type_static() { return CONTINUE_STATEMENT_NODE; }
 
     DECLARE_VISITOR_FUNCTIONS;
 };

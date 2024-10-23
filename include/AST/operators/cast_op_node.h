@@ -12,6 +12,7 @@ public:
     ~CastOpNode() override { delete operand; }
 
     NodeType get_node_type() const override { return CAST_OP_NODE; }
+    static NodeType get_node_type_static() { return CAST_OP_NODE; }
 
     Type get_type() const { return type; }
     ASTNode *get_operand() const { return operand; }

@@ -13,6 +13,7 @@ public:
     ~FunctionDeclarationNode() override { delete body; }
 
     NodeType get_node_type() const override { return FUNCTION_DECLARATION_NODE; }
+    static NodeType get_node_type_static() { return FUNCTION_DECLARATION_NODE; }
 
     std::vector<std::string> *get_parameters() { return &parameters; }
     ASTNode *get_body() { return body; }

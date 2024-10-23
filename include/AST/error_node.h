@@ -10,6 +10,7 @@ public:
     ~ErrorNode() override = default;
 
     NodeType get_node_type() const override { return ERROR_NODE; }
+    static NodeType get_node_type_static() { return ERROR_NODE; }
 
     DECLARE_VISITOR_FUNCTIONS
 };

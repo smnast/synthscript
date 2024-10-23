@@ -3,6 +3,7 @@ set (TEST_SOURCES
     test_error_manager.cpp
     test_reader.cpp
     test_lexer.cpp
+    test_parser.cpp
     utils/cout_redirect.cpp
     utils/test_cout_redirect.cpp
     utils/temp_file.cpp

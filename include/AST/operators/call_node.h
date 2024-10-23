@@ -17,6 +17,7 @@ public:
     }
 
     NodeType get_node_type() const override { return CALL_NODE; }
+    static NodeType get_node_type_static() { return CALL_NODE; }
 
     std::string get_identifier() const { return identifier; }
     std::vector<ASTNode *> *get_arguments() { return &arguments; }

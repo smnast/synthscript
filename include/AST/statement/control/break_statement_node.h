@@ -10,6 +10,7 @@ public:
     ~BreakStatementNode() override = default;
 
     NodeType get_node_type() const override { return BREAK_STATEMENT_NODE; }
+    static NodeType get_node_type_static() { return BREAK_STATEMENT_NODE; }
 
     DECLARE_VISITOR_FUNCTIONS
 };

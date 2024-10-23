@@ -11,6 +11,7 @@ public:
     ~LiteralNode() override = default;
 
     NodeType get_node_type() const override { return LITERAL_NODE; }
+    static NodeType get_node_type_static() { return LITERAL_NODE; }
 
     Type get_type() { return type; }
     std::string get_value() { return value; }
