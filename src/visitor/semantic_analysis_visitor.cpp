@@ -78,20 +78,25 @@ void SemanticAnalysisVisitor::visit(AssignmentNode *node, SymbolTable *table) {
 
 void SemanticAnalysisVisitor::visit(BreakStatementNode *node, SymbolTable *table) {
     if (!table->is_loop()) {
-        semantic_error("Break statement outside of loop", node->get_line(), node->get_column());
+        semantic_error(token_values[BREAK_KEYWORD] + " statement outside of loop",
+                       node->get_line(),
+                       node->get_column());
     }
 }
 
 void SemanticAnalysisVisitor::visit(ContinueStatementNode *node, SymbolTable *table) {
     if (!table->is_loop()) {
-        semantic_error("Continue statement outside of loop", node->get_line(), node->get_column());
+        semantic_error(token_values[CONTINUE_KEYWORD] + " statement outside of loop",
+                       node->get_line(),
+                       node->get_column());
     }
 }
 
 void SemanticAnalysisVisitor::visit(ReturnStatementNode *node, SymbolTable *table) {
     if (!table->is_function()) {
-        semantic_error(
-            "Return statement outside of function", node->get_line(), node->get_column());
+        semantic_error(token_values[RETURN_KEYWORD] + " statement outside of function",
+                       node->get_line(),
+                       node->get_column());
     }
 
     if (node->has_value()) {
@@ -112,7 +117,7 @@ void SemanticAnalysisVisitor::visit(ForStatementNode *node, SymbolTable *table) 
 
 void SemanticAnalysisVisitor::visit(IfStatementNode *node, SymbolTable *table) {
     // New scope for the if statement (includes anything in the condition as well)
-    auto *if_statement_table = new SymbolTable(table, true, table->is_function());
+    auto *if_statement_table = new SymbolTable(table, table->is_loop(), table->is_function());
 
     node->get_condition()->analyze(this, if_statement_table);
     node->get_if_body()->analyze(this, if_statement_table);

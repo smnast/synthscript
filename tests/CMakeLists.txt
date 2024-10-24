@@ -4,6 +4,7 @@ set (TEST_SOURCES
     test_reader.cpp
     test_lexer.cpp
     test_parser.cpp
+    visitor/test_semantic_analysis_visitor.cpp
     utils/cout_redirect.cpp
     utils/test_cout_redirect.cpp
     utils/temp_file.cpp
@@ -12,7 +13,7 @@ set (TEST_SOURCES
 
 add_executable(tests ${TEST_SOURCES})
 
-include_directories(${CMAKE_SOURCE_DIR}/include)
+include_directories(${CMAKE_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/tests)
 
 target_link_libraries(tests PRIVATE SynthScriptLib doctest)
 

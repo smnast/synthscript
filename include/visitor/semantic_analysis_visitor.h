@@ -9,8 +9,9 @@
 class SemanticAnalysisVisitor : public Visitor<void, SymbolTable *> {
 public:
     /**
-     * @brief Construct a new InterpreterVisitor object
-     * @param error_manager The error manager to use for error handling
+     * @brief Construct a new InterpreterVisitor object.
+     * @param program_node The root node of the program to visit.
+     * @param error_manager The error manager to use for error handling.
      *
      * @note
      * The visitor does not take ownership of the program node or error manager.
