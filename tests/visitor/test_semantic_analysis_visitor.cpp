@@ -506,3 +506,36 @@ TEST_CASE("Semantic Analysis control statement contexts with nested control stat
 
     delete root;
 }
+
+TEST_CASE("Semantic Analysis scopes") {
+    CoutRedirect cout_redirect;
+    ErrorManager error_manager;
+
+    ProgramNode *root = parse_program(&error_manager,
+                                      "test.txt",
+                                      "a <- 1\n"
+                                      "{a}\n"
+                                      "{b <- 2}\n"
+                                      "if true {a}\n"
+                                      "if true {b <- 2}\n"
+                                      "if b <- 2 {b}\n"
+                                      "while true {a}\n"
+                                      "while true {b <- 2}\n"
+                                      "while b <- 2 {b}\n"
+                                      "for i in 1..10 {a}\n"
+                                      "for i in 1..10 {b <- 2}\n"
+                                      "for i in 1..10 {i}\n"
+                                      "repeat 10 {a}\n"
+                                      "repeat 10 {b <- 2}\n"
+                                      "b");
+
+    SemanticAnalysisVisitor visitor(root, &error_manager);
+
+    // Analyzes code with declared identifiers in different scopes
+    cout_redirect.run([&]() { visitor.analyze(); });
+    CHECK(error_manager.check_error());
+    CHECK_EQ(error_manager.get_error_count(), 1);
+    CHECK_EQ(cout_redirect.get_string(), "Error: Undeclared identifier 'b' (line 15, column 1)\n");
+
+    delete root;
+}
