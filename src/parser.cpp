@@ -43,6 +43,8 @@ ASTNode *Parser::parse_statement() {
         node = parse_continue_statement();
     } else if (check(RETURN_KEYWORD)) {
         node = parse_return_statement();
+    } else if (check(LBRACE)) {
+        node = parse_compound_statement();
     } else if (!check(END_OF_FILE) && !check(RBRACE)) {
         node = parse_primary_expression();
     } else {

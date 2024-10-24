@@ -559,6 +559,48 @@ TEST_CASE("Parser repeat statement") {
     CHECK_FALSE(error_manager.check_error());
 }
 
+TEST_CASE("Parser compound statement") {
+    ErrorManager error_manager;
+    std::vector<Token> tokens = lex_tokens(&error_manager, "test_parser", "{\n    a <- 2\n    b <- 3\n}\n{a}");
+    Parser parser(tokens, &error_manager);
+
+    ProgramNode *program = parser.parse_program();
+    REQUIRE_NE(program, nullptr);
+    REQUIRE_EQ(program->get_statements_size(), 2);
+
+    auto *compound_statement = try_cast<CompoundStatementNode>(program->get_statement(0));
+    REQUIRE_EQ(compound_statement->get_statements_size(), 2);
+
+    auto *compound_statement_assignment0 =
+        try_cast<AssignmentNode>(compound_statement->get_statement(0));
+    auto *compound_statement_assignment0_identifier =
+        try_cast<IdentifierNode>(compound_statement_assignment0->get_identifier());
+    CHECK_EQ(compound_statement_assignment0_identifier->get_name(), "a");
+    auto *compound_statement_assignment0_value =
+        try_cast<LiteralNode>(compound_statement_assignment0->get_value());
+    CHECK_EQ(compound_statement_assignment0_value->get_type(), Type::TYPE_INT);
+    CHECK_EQ(compound_statement_assignment0_value->get_value(), "2");
+
+    auto *compound_statement_assignment1 =
+        try_cast<AssignmentNode>(compound_statement->get_statement(1));
+    auto *compound_statement_assignment1_identifier =
+        try_cast<IdentifierNode>(compound_statement_assignment1->get_identifier());
+    CHECK_EQ(compound_statement_assignment1_identifier->get_name(), "b");
+    auto *compound_statement_assignment1_value =
+        try_cast<LiteralNode>(compound_statement_assignment1->get_value());
+    CHECK_EQ(compound_statement_assignment1_value->get_type(), Type::TYPE_INT);
+    CHECK_EQ(compound_statement_assignment1_value->get_value(), "3");
+
+    auto *compound_statement2 = try_cast<CompoundStatementNode>(program->get_statement(1));
+    REQUIRE_EQ(compound_statement2->get_statements_size(), 1);
+
+    auto *compound_statement2_identifier =
+        try_cast<IdentifierNode>(compound_statement2->get_statement(0));
+    CHECK_EQ(compound_statement2_identifier->get_name(), "a");
+
+    CHECK_FALSE(error_manager.check_error());
+}
+
 TEST_CASE("Parser function declaration") {
     ErrorManager error_manager;
     std::vector<Token> tokens =
