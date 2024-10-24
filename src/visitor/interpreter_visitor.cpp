@@ -359,7 +359,7 @@ std::shared_ptr<Object> InterpreterVisitor::visit(FunctionDeclarationNode *node,
     return function_object;
 }
 
-std::shared_ptr<Object> InterpreterVisitor::visit(CallNode *node, SymbolTable *table) {
+std::shared_ptr<Object> InterpreterVisitor::visit(CallOpNode *node, SymbolTable *table) {
     // Get the function object from the symbol table
     std::string name = node->get_identifier();
     Symbol *function_symbol = table->get(name, false);
@@ -369,10 +369,10 @@ std::shared_ptr<Object> InterpreterVisitor::visit(CallNode *node, SymbolTable *t
     // If the symbol is a function
     if (function_symbol->get_type() == TYPE_FUNCTION) {
         // Check if the number of arguments is correct
-        if (function_object->get_parameters()->size() != node->get_arguments()->size()) {
+        if (function_object->get_parameters_size() != node->get_arguments_size()) {
             runtime_error("Incorrect number of arguments to function '" + name + "' (expected " +
-                              std::to_string(function_object->get_parameters()->size()) +
-                              ", given " + std::to_string(node->get_arguments()->size()) + ")",
+                              std::to_string(function_object->get_parameters_size()) +
+                              ", given " + std::to_string(node->get_arguments_size()) + ")",
                           node->get_line(),
                           node->get_column());
         }
@@ -397,7 +397,7 @@ std::shared_ptr<Object> InterpreterVisitor::visit(CallNode *node, SymbolTable *t
 
     // Create a new scope for the function with the arguments
     auto *function_table = new SymbolTable(table->get_global_scope(), false, true);
-    for (size_t i = 0; i < node->get_arguments()->size(); i++) {
+    for (size_t i = 0; i < node->get_arguments_size(); i++) {
         std::string arg_name = function_object->get_parameters()->at(i);
         std::shared_ptr<Object> arg_value = node->get_arguments()->at(i)->evaluate(this, table);
         function_table->insert(Symbol(arg_name, arg_value));

@@ -152,7 +152,7 @@ void SemanticAnalysisVisitor::visit(FunctionDeclarationNode *node, SymbolTable *
     node->get_body()->analyze(this, function_table);
 }
 
-void SemanticAnalysisVisitor::visit(CallNode *node, SymbolTable *table) {
+void SemanticAnalysisVisitor::visit(CallOpNode *node, SymbolTable *table) {
     std::string name = node->get_identifier();
 
     // The function must be declared before it is called

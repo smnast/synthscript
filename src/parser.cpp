@@ -389,7 +389,7 @@ ASTNode *Parser::parse_call() {
 
     expect(RPAREN);
 
-    return new CallNode(identifier, arguments, line, col);
+    return new CallOpNode(identifier, arguments, line, col);
 }
 
 ASTNode *Parser::parse_primary_expression() {

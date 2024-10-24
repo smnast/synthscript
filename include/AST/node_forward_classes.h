@@ -16,7 +16,7 @@ class RepeatStatementNode;
 class ReturnStatementNode;
 class WhileStatementNode;
 class FunctionDeclarationNode;
-class CallNode;
+class CallOpNode;
 class CompoundStatementNode;
 class IdentifierNode;
 class LiteralNode;

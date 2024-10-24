@@ -37,6 +37,10 @@ public:
     std::shared_ptr<Object> call(InterpreterVisitor *visitor, SymbolTable *table) override;
 
     std::vector<std::string> *get_parameters() { return &parameters; }
+    size_t get_parameters_size() { return parameters.size(); }
+    std::string get_parameter(size_t index) { return parameters[index]; }
+
+    ASTNode *get_body() { return body; }
     bool is_built_in() const { return built_in; }
 
 private:

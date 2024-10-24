@@ -18,6 +18,8 @@ public:
     static NodeType get_node_type_static() { return ARRAY_LITERAL_NODE; }
 
     std::vector<ASTNode *> *get_values() { return &values; }
+    size_t get_values_size() const { return values.size(); }
+    ASTNode *get_value(size_t index) const { return values[index]; }
 
     DECLARE_VISITOR_FUNCTIONS
 

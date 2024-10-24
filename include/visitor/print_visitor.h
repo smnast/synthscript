@@ -35,7 +35,7 @@ public:
     void visit(RepeatStatementNode *node, int indentation) override;
     void visit(WhileStatementNode *node, int indentation) override;
     void visit(FunctionDeclarationNode *node, int indentation) override;
-    void visit(CallNode *node, int indentation) override;
+    void visit(CallOpNode *node, int indentation) override;
     void visit(CompoundStatementNode *node, int indentation) override;
     void visit(IdentifierNode *node, int indentation) override;
     void visit(LiteralNode *node, int indentation) override;

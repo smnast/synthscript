@@ -210,9 +210,6 @@ TEST_CASE("Lexer identifiers") {
     Lexer lexer("name name_2 NAME3 4name ifname name\nmore if if2", &error_manager);
 
     std::vector<Token> tokens = lexer.parse_tokens();
-    for (const auto &token : tokens) {
-        std::cout << token.value << std::endl;
-    }
 
     // Handles identifiers correctly with literals and keywords
     REQUIRE_EQ(tokens.size(), 12);

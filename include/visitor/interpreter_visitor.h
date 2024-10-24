@@ -39,7 +39,7 @@ public:
     std::shared_ptr<Object> visit(RepeatStatementNode *node, SymbolTable *table) override;
     std::shared_ptr<Object> visit(WhileStatementNode *node, SymbolTable *table) override;
     std::shared_ptr<Object> visit(FunctionDeclarationNode *node, SymbolTable *table) override;
-    std::shared_ptr<Object> visit(CallNode *node, SymbolTable *table) override;
+    std::shared_ptr<Object> visit(CallOpNode *node, SymbolTable *table) override;
     std::shared_ptr<Object> visit(CompoundStatementNode *node, SymbolTable *table) override;
     std::shared_ptr<Object> visit(IdentifierNode *node, SymbolTable *table) override;
     std::shared_ptr<Object> visit(LiteralNode *node, SymbolTable *table) override;
