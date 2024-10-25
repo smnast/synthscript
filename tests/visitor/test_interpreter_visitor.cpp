@@ -778,3 +778,43 @@ TEST_CASE("Interpreter function argument count error") {
              "Runtime Error: Incorrect number of arguments to function 'a' (expected 1, given 2) "
              "(line 2, column 1)\n");
 }
+
+TEST_CASE("Interpreter stop statement") {
+    StreamRedirect stream_redirect;
+    ErrorManager error_manager;
+
+    ProgramNode *root = parse_program(&error_manager,
+                                      "test.txt",
+                                      "for i in 1..5 {if i = 3 {stop} output(i)}\n"
+                                      "while true {stop\noutput(42)}\n"
+                                      "repeat 5 {stop\noutput(42)}");
+    InterpreterVisitor visitor(root, &error_manager);
+
+    // Interprets control statements
+    stream_redirect.run([&]() { visitor.interpret(); });
+    CHECK_FALSE(error_manager.check_error());
+    CHECK_EQ(stream_redirect.get_string(), "1\n2\n");
+
+    delete root;
+}
+
+TEST_CASE("Interpreter next statement") {
+    StreamRedirect stream_redirect;
+    ErrorManager error_manager;
+
+    ProgramNode *root =
+        parse_program(&error_manager,
+                      "test.txt",
+                      "for i in 1..5 {if i = 3 {next} output(i)}\n"
+                      "i <- 0"
+                      "while true {i <- i + 1\nif i = 5 {stop}\nnext\noutput(42)}\n"
+                      "repeat 5 {next\noutput(42)}");
+    InterpreterVisitor visitor(root, &error_manager);
+
+    // Interprets control statements
+    stream_redirect.run([&]() { visitor.interpret(); });
+    CHECK_FALSE(error_manager.check_error());
+    CHECK_EQ(stream_redirect.get_string(), "1\n2\n4\n5\n");
+
+    delete root;
+}
