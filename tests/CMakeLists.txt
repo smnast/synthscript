@@ -5,10 +5,12 @@ set (TEST_SOURCES
     test_lexer.cpp
     test_parser.cpp
     visitor/test_semantic_analysis_visitor.cpp
-    utils/cout_redirect.cpp
-    utils/test_cout_redirect.cpp
+    visitor/test_interpreter_visitor.cpp
+    utils/stream_redirect.cpp
+    utils/test_stream_redirect.cpp
     utils/temp_file.cpp
     utils/test_temp_file.cpp
+    utils/shortcuts.cpp
 )
 
 add_executable(tests ${TEST_SOURCES})

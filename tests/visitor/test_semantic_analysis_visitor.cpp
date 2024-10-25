@@ -2,28 +2,11 @@
 #include "lexer.h"
 #include "parser.h"
 #include "reader.h"
-#include "utils/cout_redirect.h"
+#include "utils/shortcuts.h"
+#include "utils/stream_redirect.h"
 #include "utils/temp_file.h"
 #include "visitor/semantic_analysis_visitor.h"
 #include <doctest/doctest.h>
-
-/**
- * @brief Parse the program and return the root node of the AST.
- * @param error_manager The error manager to use for error handling.
- * @param file_path The path to the file to parse.
- * @param code The code to parse.
- * @return A pointer to the root node of the AST.
- *
- * @note
- * The caller is responsible for deleting the returned node.
- */
-ProgramNode *parse_program(ErrorManager *error_manager, std::string file_path, std::string code) {
-    TempFile temp_file(file_path, code);
-    Reader reader(file_path, error_manager);
-    Lexer lexer(reader.read_file(), error_manager);
-    Parser parser(lexer.parse_tokens(), error_manager);
-    return parser.parse_program();
-}
 
 TEST_CASE("Semantic Analysis empty program") {
     ErrorManager error_manager;
@@ -65,23 +48,23 @@ TEST_CASE("Semantic Analysis declared identifier") {
 }
 
 TEST_CASE("Semantic Analysis undeclared identifier") {
-    CoutRedirect cout_redirect;
+    StreamRedirect stream_redirect;
     ErrorManager error_manager;
 
     ProgramNode *root = parse_program(&error_manager, "test.txt", "b <- 17 + a");
     SemanticAnalysisVisitor visitor(root, &error_manager);
 
     // Analyzes code with undeclared identifier and reports error
-    cout_redirect.run([&]() { visitor.analyze(); });
+    stream_redirect.run([&]() { visitor.analyze(); });
     CHECK(error_manager.check_error());
     CHECK_EQ(error_manager.get_error_count(), 1);
-    CHECK_EQ(cout_redirect.get_string(), "Error: Undeclared identifier 'a' (line 1, column 11)\n");
+    CHECK_EQ(stream_redirect.get_string(), "Error: Undeclared identifier 'a' (line 1, column 11)\n");
 
     delete root;
 }
 
 TEST_CASE("Semantic Analysis declared identifier in control statements") {
-    CoutRedirect cout_redirect;
+    StreamRedirect stream_redirect;
     ErrorManager error_manager;
 
     ProgramNode *root = parse_program(&error_manager,
@@ -98,7 +81,7 @@ TEST_CASE("Semantic Analysis declared identifier in control statements") {
 }
 
 TEST_CASE("Semantic Analysis undeclared identifier in control statements") {
-    CoutRedirect cout_redirect;
+    StreamRedirect stream_redirect;
     ErrorManager error_manager;
 
     ProgramNode *root = parse_program(
@@ -108,10 +91,10 @@ TEST_CASE("Semantic Analysis undeclared identifier in control statements") {
     SemanticAnalysisVisitor visitor(root, &error_manager);
 
     // Analyzes code with undeclared identifier in conditions and reports error
-    cout_redirect.run([&]() { visitor.analyze(); });
+    stream_redirect.run([&]() { visitor.analyze(); });
     CHECK(error_manager.check_error());
     CHECK_EQ(error_manager.get_error_count(), 5);
-    CHECK_EQ(cout_redirect.get_string(),
+    CHECK_EQ(stream_redirect.get_string(),
              "Error: Undeclared identifier 'a' (line 1, column 4)\n"
              "Error: Undeclared identifier 'a' (line 1, column 22)\n"
              "Error: Undeclared identifier 'a' (line 2, column 7)\n"
@@ -122,7 +105,7 @@ TEST_CASE("Semantic Analysis undeclared identifier in control statements") {
 }
 
 TEST_CASE("Semantic Analysis declared identifier in function call") {
-    CoutRedirect cout_redirect;
+    StreamRedirect stream_redirect;
     ErrorManager error_manager;
 
     ProgramNode *root = parse_program(
@@ -139,17 +122,17 @@ TEST_CASE("Semantic Analysis declared identifier in function call") {
 }
 
 TEST_CASE("Semantic Analysis undeclared identifier in function call") {
-    CoutRedirect cout_redirect;
+    StreamRedirect stream_redirect;
     ErrorManager error_manager;
 
     ProgramNode *root = parse_program(&error_manager, "test.txt", "do_stuff(a, b, c)");
     SemanticAnalysisVisitor visitor(root, &error_manager);
 
     // Analyzes code with undeclared identifier in function call and reports error
-    cout_redirect.run([&]() { visitor.analyze(); });
+    stream_redirect.run([&]() { visitor.analyze(); });
     CHECK(error_manager.check_error());
     CHECK_EQ(error_manager.get_error_count(), 4);
-    CHECK_EQ(cout_redirect.get_string(),
+    CHECK_EQ(stream_redirect.get_string(),
              "Error: Undeclared identifier 'do_stuff' (line 1, column 8)\n"
              "Error: Undeclared identifier 'a' (line 1, column 10)\n"
              "Error: Undeclared identifier 'b' (line 1, column 13)\n"
@@ -159,7 +142,7 @@ TEST_CASE("Semantic Analysis undeclared identifier in function call") {
 }
 
 TEST_CASE("Semantic Analysis declared identifier in array subscript") {
-    CoutRedirect cout_redirect;
+    StreamRedirect stream_redirect;
     ErrorManager error_manager;
 
     ProgramNode *root = parse_program(&error_manager, "test.txt", "a <- [1, 2, 3]\nb <- 2\na[b]");
@@ -173,17 +156,17 @@ TEST_CASE("Semantic Analysis declared identifier in array subscript") {
 }
 
 TEST_CASE("Semantic Analysis undeclared identifier in array subscript") {
-    CoutRedirect cout_redirect;
+    StreamRedirect stream_redirect;
     ErrorManager error_manager;
 
     ProgramNode *root = parse_program(&error_manager, "test.txt", "a[b]");
     SemanticAnalysisVisitor visitor(root, &error_manager);
 
     // Analyzes code with undeclared identifier in array subscript and reports error
-    cout_redirect.run([&]() { visitor.analyze(); });
+    stream_redirect.run([&]() { visitor.analyze(); });
     CHECK(error_manager.check_error());
     CHECK_EQ(error_manager.get_error_count(), 2);
-    CHECK_EQ(cout_redirect.get_string(),
+    CHECK_EQ(stream_redirect.get_string(),
              "Error: Undeclared identifier 'a' (line 1, column 1)\n"
              "Error: Undeclared identifier 'b' (line 1, column 3)\n");
 
@@ -191,7 +174,7 @@ TEST_CASE("Semantic Analysis undeclared identifier in array subscript") {
 }
 
 TEST_CASE("Semantic Analysis declared identifier in operations") {
-    CoutRedirect cout_redirect;
+    StreamRedirect stream_redirect;
     ErrorManager error_manager;
 
     ProgramNode *root = parse_program(&error_manager, "test.txt", "a <- 2\nb <- 5\n -a + b");
@@ -205,17 +188,17 @@ TEST_CASE("Semantic Analysis declared identifier in operations") {
 }
 
 TEST_CASE("Semantic Analysis undeclared identifier in operations") {
-    CoutRedirect cout_redirect;
+    StreamRedirect stream_redirect;
     ErrorManager error_manager;
 
     ProgramNode *root = parse_program(&error_manager, "test.txt", "-a + b");
     SemanticAnalysisVisitor visitor(root, &error_manager);
 
     // Analyzes code with undeclared identifier in operations and reports error
-    cout_redirect.run([&]() { visitor.analyze(); });
+    stream_redirect.run([&]() { visitor.analyze(); });
     CHECK(error_manager.check_error());
     CHECK_EQ(error_manager.get_error_count(), 2);
-    CHECK_EQ(cout_redirect.get_string(),
+    CHECK_EQ(stream_redirect.get_string(),
              "Error: Undeclared identifier 'a' (line 1, column 2)\n"
              "Error: Undeclared identifier 'b' (line 1, column 6)\n");
 
@@ -223,7 +206,7 @@ TEST_CASE("Semantic Analysis undeclared identifier in operations") {
 }
 
 TEST_CASE("Semantic Analysis declared identifier in range literal") {
-    CoutRedirect cout_redirect;
+    StreamRedirect stream_redirect;
     ErrorManager error_manager;
 
     ProgramNode *root = parse_program(&error_manager, "test.txt", "a <- 1\nb <- 10\na..b");
@@ -237,17 +220,17 @@ TEST_CASE("Semantic Analysis declared identifier in range literal") {
 }
 
 TEST_CASE("Semantic Analysis undeclared identifier in range literal") {
-    CoutRedirect cout_redirect;
+    StreamRedirect stream_redirect;
     ErrorManager error_manager;
 
     ProgramNode *root = parse_program(&error_manager, "test.txt", "a..b");
     SemanticAnalysisVisitor visitor(root, &error_manager);
 
     // Analyzes code with undeclared identifier in range literal and reports error
-    cout_redirect.run([&]() { visitor.analyze(); });
+    stream_redirect.run([&]() { visitor.analyze(); });
     CHECK(error_manager.check_error());
     CHECK_EQ(error_manager.get_error_count(), 2);
-    CHECK_EQ(cout_redirect.get_string(),
+    CHECK_EQ(stream_redirect.get_string(),
              "Error: Undeclared identifier 'a' (line 1, column 1)\n"
              "Error: Undeclared identifier 'b' (line 1, column 4)\n");
 
@@ -255,7 +238,7 @@ TEST_CASE("Semantic Analysis undeclared identifier in range literal") {
 }
 
 TEST_CASE("Semantic Analysis declared identifier in array literal") {
-    CoutRedirect cout_redirect;
+    StreamRedirect stream_redirect;
     ErrorManager error_manager;
 
     ProgramNode *root = parse_program(&error_manager, "test.txt", "a <- 1\nb <- 2\n[a, b]");
@@ -269,17 +252,17 @@ TEST_CASE("Semantic Analysis declared identifier in array literal") {
 }
 
 TEST_CASE("Semantic Analysis undeclared identifier in array literal") {
-    CoutRedirect cout_redirect;
+    StreamRedirect stream_redirect;
     ErrorManager error_manager;
 
     ProgramNode *root = parse_program(&error_manager, "test.txt", "[a, b]");
     SemanticAnalysisVisitor visitor(root, &error_manager);
 
     // Analyzes code with undeclared identifier in array literal and reports error
-    cout_redirect.run([&]() { visitor.analyze(); });
+    stream_redirect.run([&]() { visitor.analyze(); });
     CHECK(error_manager.check_error());
     CHECK_EQ(error_manager.get_error_count(), 2);
-    CHECK_EQ(cout_redirect.get_string(),
+    CHECK_EQ(stream_redirect.get_string(),
              "Error: Undeclared identifier 'a' (line 1, column 2)\n"
              "Error: Undeclared identifier 'b' (line 1, column 5)\n");
 
@@ -287,7 +270,7 @@ TEST_CASE("Semantic Analysis undeclared identifier in array literal") {
 }
 
 TEST_CASE("Semantic Analysis declared identifier in cast") {
-    CoutRedirect cout_redirect;
+    StreamRedirect stream_redirect;
     ErrorManager error_manager;
 
     ProgramNode *root = parse_program(&error_manager, "test.txt", "a <- 3.14159\nint(a)");
@@ -301,23 +284,23 @@ TEST_CASE("Semantic Analysis declared identifier in cast") {
 }
 
 TEST_CASE("Semantic Analysis undeclared identifier in cast") {
-    CoutRedirect cout_redirect;
+    StreamRedirect stream_redirect;
     ErrorManager error_manager;
 
     ProgramNode *root = parse_program(&error_manager, "test.txt", "int(a)");
     SemanticAnalysisVisitor visitor(root, &error_manager);
 
     // Analyzes code with undeclared identifier in cast and reports error
-    cout_redirect.run([&]() { visitor.analyze(); });
+    stream_redirect.run([&]() { visitor.analyze(); });
     CHECK(error_manager.check_error());
     CHECK_EQ(error_manager.get_error_count(), 1);
-    CHECK_EQ(cout_redirect.get_string(), "Error: Undeclared identifier 'a' (line 1, column 5)\n");
+    CHECK_EQ(stream_redirect.get_string(), "Error: Undeclared identifier 'a' (line 1, column 5)\n");
 
     delete root;
 }
 
 TEST_CASE("Semantic Analysis declared identifier in control bodies") {
-    CoutRedirect cout_redirect;
+    StreamRedirect stream_redirect;
     ErrorManager error_manager;
 
     ProgramNode *root = parse_program(
@@ -334,7 +317,7 @@ TEST_CASE("Semantic Analysis declared identifier in control bodies") {
 }
 
 TEST_CASE("Semantic Analysis undeclared identifier in control bodies") {
-    CoutRedirect cout_redirect;
+    StreamRedirect stream_redirect;
     ErrorManager error_manager;
 
     ProgramNode *root =
@@ -344,10 +327,10 @@ TEST_CASE("Semantic Analysis undeclared identifier in control bodies") {
     SemanticAnalysisVisitor visitor(root, &error_manager);
 
     // Analyzes code with undeclared identifier in control bodies and reports error
-    cout_redirect.run([&]() { visitor.analyze(); });
+    stream_redirect.run([&]() { visitor.analyze(); });
     CHECK(error_manager.check_error());
     CHECK_EQ(error_manager.get_error_count(), 4);
-    CHECK_EQ(cout_redirect.get_string(),
+    CHECK_EQ(stream_redirect.get_string(),
              "Error: Undeclared identifier 'a' (line 1, column 10)\n"
              "Error: Undeclared identifier 'a' (line 2, column 13)\n"
              "Error: Undeclared identifier 'a' (line 3, column 17)\n"
@@ -357,7 +340,7 @@ TEST_CASE("Semantic Analysis undeclared identifier in control bodies") {
 }
 
 TEST_CASE("Semantic Analysis declared identifier in function declaration") {
-    CoutRedirect cout_redirect;
+    StreamRedirect stream_redirect;
     ErrorManager error_manager;
 
     ProgramNode *root =
@@ -372,23 +355,23 @@ TEST_CASE("Semantic Analysis declared identifier in function declaration") {
 }
 
 TEST_CASE("Semantic Analysis undeclared identifier in function declaration") {
-    CoutRedirect cout_redirect;
+    StreamRedirect stream_redirect;
     ErrorManager error_manager;
 
     ProgramNode *root = parse_program(&error_manager, "test.txt", "do_stuff <- function(a, b) {c}");
     SemanticAnalysisVisitor visitor(root, &error_manager);
 
     // Analyzes code with undeclared identifier in function declaration and reports error
-    cout_redirect.run([&]() { visitor.analyze(); });
+    stream_redirect.run([&]() { visitor.analyze(); });
     CHECK(error_manager.check_error());
     CHECK_EQ(error_manager.get_error_count(), 1);
-    CHECK_EQ(cout_redirect.get_string(), "Error: Undeclared identifier 'c' (line 1, column 29)\n");
+    CHECK_EQ(stream_redirect.get_string(), "Error: Undeclared identifier 'c' (line 1, column 29)\n");
 
     delete root;
 }
 
 TEST_CASE("Semantic Analysis declared identifier in return statement") {
-    CoutRedirect cout_redirect;
+    StreamRedirect stream_redirect;
     ErrorManager error_manager;
 
     ProgramNode *root =
@@ -403,7 +386,7 @@ TEST_CASE("Semantic Analysis declared identifier in return statement") {
 }
 
 TEST_CASE("Semantic Analysis undeclared identifier in return statement") {
-    CoutRedirect cout_redirect;
+    StreamRedirect stream_redirect;
     ErrorManager error_manager;
 
     ProgramNode *root =
@@ -411,16 +394,16 @@ TEST_CASE("Semantic Analysis undeclared identifier in return statement") {
     SemanticAnalysisVisitor visitor(root, &error_manager);
 
     // Analyzes code with undeclared identifier in return statement and reports error
-    cout_redirect.run([&]() { visitor.analyze(); });
+    stream_redirect.run([&]() { visitor.analyze(); });
     CHECK(error_manager.check_error());
     CHECK_EQ(error_manager.get_error_count(), 1);
-    CHECK_EQ(cout_redirect.get_string(), "Error: Undeclared identifier 'c' (line 1, column 36)\n");
+    CHECK_EQ(stream_redirect.get_string(), "Error: Undeclared identifier 'c' (line 1, column 36)\n");
 
     delete root;
 }
 
 TEST_CASE("Semantic Analysis control statement contexts") {
-    CoutRedirect cout_redirect;
+    StreamRedirect stream_redirect;
     ErrorManager error_manager;
 
     ProgramNode *root = parse_program(&error_manager,
@@ -447,10 +430,10 @@ TEST_CASE("Semantic Analysis control statement contexts") {
     SemanticAnalysisVisitor visitor(root, &error_manager);
 
     // Analyzes code with control statements in different contexts
-    cout_redirect.run([&]() { visitor.analyze(); });
+    stream_redirect.run([&]() { visitor.analyze(); });
     CHECK(error_manager.check_error());
     CHECK_EQ(error_manager.get_error_count(), 11);
-    CHECK_EQ(cout_redirect.get_string(),
+    CHECK_EQ(stream_redirect.get_string(),
              "Error: 'next' statement outside of loop (line 1, column 4)\n"
              "Error: 'stop' statement outside of loop (line 2, column 4)\n"
              "Error: 'return' statement outside of function (line 3, column 6)\n"
@@ -467,7 +450,7 @@ TEST_CASE("Semantic Analysis control statement contexts") {
 }
 
 TEST_CASE("Semantic Analysis control statement contexts with nested control statements") {
-    CoutRedirect cout_redirect;
+    StreamRedirect stream_redirect;
     ErrorManager error_manager;
 
     ProgramNode *root = parse_program(&error_manager,
@@ -491,10 +474,10 @@ TEST_CASE("Semantic Analysis control statement contexts with nested control stat
     SemanticAnalysisVisitor visitor(root, &error_manager);
 
     // Analyzes code with nested control statements in different contexts
-    cout_redirect.run([&]() { visitor.analyze(); });
+    stream_redirect.run([&]() { visitor.analyze(); });
     CHECK(error_manager.check_error());
     CHECK_EQ(error_manager.get_error_count(), 8);
-    CHECK_EQ(cout_redirect.get_string(),
+    CHECK_EQ(stream_redirect.get_string(),
              "Error: 'next' statement outside of loop (line 1, column 22)\n"
              "Error: 'stop' statement outside of loop (line 2, column 22)\n"
              "Error: 'return' statement outside of function (line 3, column 24)\n"
@@ -508,7 +491,7 @@ TEST_CASE("Semantic Analysis control statement contexts with nested control stat
 }
 
 TEST_CASE("Semantic Analysis scopes") {
-    CoutRedirect cout_redirect;
+    StreamRedirect stream_redirect;
     ErrorManager error_manager;
 
     ProgramNode *root = parse_program(&error_manager,
@@ -532,10 +515,10 @@ TEST_CASE("Semantic Analysis scopes") {
     SemanticAnalysisVisitor visitor(root, &error_manager);
 
     // Analyzes code with declared identifiers in different scopes
-    cout_redirect.run([&]() { visitor.analyze(); });
+    stream_redirect.run([&]() { visitor.analyze(); });
     CHECK(error_manager.check_error());
     CHECK_EQ(error_manager.get_error_count(), 1);
-    CHECK_EQ(cout_redirect.get_string(), "Error: Undeclared identifier 'b' (line 15, column 1)\n");
+    CHECK_EQ(stream_redirect.get_string(), "Error: Undeclared identifier 'b' (line 15, column 1)\n");
 
     delete root;
 }

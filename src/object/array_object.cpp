@@ -1,6 +1,7 @@
 #include "object/array_object.h"
 #include "object/bool_object.h"
 #include "object/int_object.h"
+#include "object/string_object.h"
 
 std::shared_ptr<Object> ArrayObject::add(std::shared_ptr<Object> other) {
     if (other->get_type() == TYPE_ARRAY) {
@@ -140,6 +141,17 @@ std::shared_ptr<Object> ArrayObject::logical_not() {
 std::shared_ptr<Object> ArrayObject::cast(Type type) {
     if (type == TYPE_ARRAY) {
         return std::make_shared<ArrayObject>(value);
+    } else if (type == TYPE_STRING) {
+        std::string result = "[";
+        for (size_t i = 0; i < value.size(); i++) {
+            result +=
+                std::static_pointer_cast<StringObject>(value[i]->cast(TYPE_STRING))->get_value();
+            if (i != value.size() - 1) {
+                result += ", ";
+            }
+        }
+        result += "]";
+        return std::make_shared<StringObject>(result);
     } else {
         return nullptr;
     }

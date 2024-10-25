@@ -1,6 +1,6 @@
 #include "lexer.h"
 #include "tokens.h"
-#include "utils/cout_redirect.h"
+#include "utils/stream_redirect.h"
 #include <doctest/doctest.h>
 
 TEST_CASE("Lexer simple arithmetic") {
@@ -60,11 +60,11 @@ TEST_CASE("Lexer with whitespace") {
 
 TEST_CASE("Lexer with invalid tokens") {
     ErrorManager error_manager;
-    CoutRedirect cout_redirect;
+    StreamRedirect stream_redirect;
     Lexer lexer("42 + @", &error_manager);
 
     std::vector<Token> tokens;
-    cout_redirect.run([&]() { tokens = lexer.parse_tokens(); });
+    stream_redirect.run([&]() { tokens = lexer.parse_tokens(); });
 
     REQUIRE_EQ(tokens.size(), 4);
     CHECK_EQ(tokens[0], Token(TokenType::INT_LITERAL, "42", 1, 2));
@@ -75,7 +75,7 @@ TEST_CASE("Lexer with invalid tokens") {
     // Error should be reported for '@'
     CHECK(error_manager.check_error());
     CHECK_EQ(error_manager.get_error_count(), 1);
-    CHECK_EQ(cout_redirect.get_string(), "Error: Undefined token: '@' (line 1, column 6)\n");
+    CHECK_EQ(stream_redirect.get_string(), "Error: Undefined token: '@' (line 1, column 6)\n");
 }
 
 TEST_CASE("Lexer with literals") {

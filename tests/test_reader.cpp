@@ -1,6 +1,6 @@
 #include "error_manager.h"
 #include "reader.h"
-#include "utils/cout_redirect.h"
+#include "utils/stream_redirect.h"
 #include "utils/temp_file.h"
 #include <doctest/doctest.h>
 #include <fstream>
@@ -9,17 +9,17 @@ TEST_CASE("Reader invalid file") {
     ErrorManager error_manager;
     std::string filename = "non_existent_file.txt";
     Reader reader(filename, &error_manager);
-    CoutRedirect redirect;
+    StreamRedirect stream_redirect;
 
     // Error when loading non-existent file
-    redirect.run([&]() { reader.read_file(); });
+    stream_redirect.run([&]() { reader.read_file(); });
     CHECK(error_manager.check_error());
-    CHECK_EQ(redirect.get_string(), "Error: File '" + filename + "' does not exist\n");
+    CHECK_EQ(stream_redirect.get_string(), "Error: File '" + filename + "' does not exist\n");
 }
 
 TEST_CASE("Reader comments") {
     ErrorManager error_manager;
-    CoutRedirect redirect;
+    StreamRedirect stream_redirect;
 
     std::string comments =
         "# This is commented\n"
@@ -67,7 +67,7 @@ TEST_CASE("Reader comments") {
     // Load file without error
     Reader reader(filepath, &error_manager);
     std::string contents;
-    redirect.run([&]() { contents = reader.read_file(); });
+    stream_redirect.run([&]() { contents = reader.read_file(); });
     CHECK_FALSE(error_manager.check_error());
 
     // Check that the contents are as expected
@@ -76,7 +76,7 @@ TEST_CASE("Reader comments") {
 
 TEST_CASE("Reader file lines") {
     ErrorManager error_manager;
-    CoutRedirect redirect;
+    StreamRedirect stream_redirect;
 
     std::string file_contents = "line 1\n"
                                 "line 2\n"
@@ -100,7 +100,7 @@ TEST_CASE("Reader file lines") {
     // Load file into lines
     Reader reader(filepath, &error_manager);
     std::vector<std::string> lines;
-    redirect.run([&]() {
+    stream_redirect.run([&]() {
         reader.read_file();
         lines = reader.get_lines();
     });

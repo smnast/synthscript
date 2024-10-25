@@ -1,24 +1,9 @@
 #include "lexer.h"
 #include "parser.h"
 #include "reader.h"
+#include "utils/shortcuts.h"
 #include "utils/temp_file.h"
 #include <doctest/doctest.h>
-
-/**
- * @brief Lex the tokens of the code.
- * @param error_manager The error manager to use for error handling.
- * @param file_path The path of the file.
- * @param code The code to be lexed.
- * @return std::vector<Token> The lexed tokens.
- */
-std::vector<Token>
-lex_tokens(ErrorManager *error_manager, std::string file_path, std::string code) {
-    TempFile temp_file(file_path, code);
-    Reader reader(file_path, error_manager);
-    Lexer lexer(reader.read_file(), error_manager);
-    std::vector<Token> tokens = lexer.parse_tokens();
-    return tokens;
-}
 
 /**
  * @brief Try to cast an ASTNode to a specific type.
@@ -561,7 +546,8 @@ TEST_CASE("Parser repeat statement") {
 
 TEST_CASE("Parser compound statement") {
     ErrorManager error_manager;
-    std::vector<Token> tokens = lex_tokens(&error_manager, "test_parser", "{\n    a <- 2\n    b <- 3\n}\n{a}");
+    std::vector<Token> tokens =
+        lex_tokens(&error_manager, "test_parser", "{\n    a <- 2\n    b <- 3\n}\n{a}");
     Parser parser(tokens, &error_manager);
 
     ProgramNode *program = parser.parse_program();

@@ -37,7 +37,7 @@ BinaryOp get_binary_op_function(TokenType op) {
 
 UnaryOp get_unary_op_function(TokenType op) {
     auto it = unary_ops.find(op);
-    if (it == unary_ops.end()) {
+    if (it != unary_ops.end()) {
         return it->second;
     } else {
         return nullptr;

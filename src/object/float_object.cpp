@@ -2,6 +2,7 @@
 #include "object/bool_object.h"
 #include "object/int_object.h"
 #include "object/string_object.h"
+#include <sstream>
 
 std::shared_ptr<Object> FloatObject::add(std::shared_ptr<Object> other) {
     if (other->get_type() == TYPE_INT) {
@@ -171,7 +172,9 @@ std::shared_ptr<Object> FloatObject::cast(Type type) {
     } else if (type == TYPE_BOOL) {
         return std::make_shared<BoolObject>(value != 0.0f);
     } else if (type == TYPE_STRING) {
-        return std::make_shared<StringObject>(std::to_string(value));
+        std::ostringstream oss;
+        oss << value;
+        return std::make_shared<StringObject>(oss.str());
     } else {
         return nullptr;
     }
