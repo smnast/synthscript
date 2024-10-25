@@ -100,3 +100,37 @@ TEST_CASE("ErrorManager error at pos") {
     CHECK_EQ(stream_redirect.get_string(),
              "Error: Error message 3 (line 3, column 4)\nline 3\n   ^\n");
 }
+
+TEST_CASE("ErrorManager error at pos (no file lines)") {
+    StreamRedirect stream_redirect;
+    ErrorManager error_manager;
+
+    // Add an error message at a position.
+    stream_redirect.run([&]() { error_manager.error_at_pos("Error message", 1, 2, false); });
+    CHECK(error_manager.check_error());
+    CHECK_EQ(error_manager.get_error_count(), 1);
+    CHECK_EQ(error_manager.get_status(), ErrorManager::BuildStatus::FAILURE);
+    CHECK_EQ(stream_redirect.get_string(), "Error: Error message (line 1, column 2)\n");
+}
+
+TEST_CASE("ErrorManager runtime error") {
+    StreamRedirect stream_redirect;
+    ErrorManager error_manager;
+
+    // Set file lines
+    std::vector<std::string> lines = {"line 1\n", "line 2\n", "line 3\n"};
+    error_manager.set_file_lines(lines);
+
+    // Add a runtime error message.
+    stream_redirect.run([&]() {
+        try {
+            error_manager.runtime_error("Runtime error message", 1, 2);
+        } catch (std::runtime_error &e) {
+        }
+    });
+    CHECK(error_manager.check_error());
+    CHECK_EQ(error_manager.get_error_count(), 1);
+    CHECK_EQ(error_manager.get_status(), ErrorManager::BuildStatus::FAILURE);
+    CHECK_EQ(stream_redirect.get_string(),
+             "Runtime Error: Runtime error message (line 1, column 2)\nline 1\n ^\n");
+}

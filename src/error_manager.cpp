@@ -28,9 +28,13 @@ void ErrorManager::error_at_pos(const std::string &message, int line, int col, b
 }
 
 void ErrorManager::runtime_error(const std::string &message, int line, int col) {
-    std::cout << "Runtime Error: " << message << std::endl;
+    std::string message_with_pos =
+        message + " (line " + std::to_string(line) + ", column " + std::to_string(col) + ")";
+    std::cout << "Runtime Error: " << message_with_pos << std::endl;
+    unhandled_error = true;
+    error_count++;
     show_position(line, col);
-    exit(1);
+    throw std::runtime_error("Runtime error");
 }
 
 void ErrorManager::show_position(int line, int col) {

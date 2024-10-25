@@ -6,20 +6,20 @@
 #include "visitor/print_visitor.h"
 #include <iostream>
 
-void build_and_run(const std::string &path);
-void run(ProgramNode *program);
+int build_and_run(const std::string &path);
 void print_usage();
 
 int main(int argc, char *argv[]) {
     if (argc == 2) {
         char *file_path = argv[1];
-        build_and_run(file_path);
+        return build_and_run(file_path);
     } else {
         print_usage();
+        return 127;
     }
 }
 
-void build_and_run(const std::string &path) {
+int build_and_run(const std::string &path) {
     std::cout << "Building program..." << std::endl;
 
     ErrorManager error_manager;
@@ -52,19 +52,26 @@ void build_and_run(const std::string &path) {
     std::cout << "Build status:\t" << build_status << std::endl;
     std::cout << "Error count:\t" << error_manager.get_error_count() << std::endl;
 
+    int exit_code = EXIT_SUCCESS;
     if (error_manager.get_status() == ErrorManager::BuildStatus::FAILURE) {
         delete program;
-        exit(1);
+        exit_code = EXIT_FAILURE;
     } else {
         // Execution
         std::cout << "Running program..." << std::endl;
 
-        // Interpret the AST nodes
-        InterpreterVisitor interpreter_visitor(program, &error_manager);
-        interpreter_visitor.interpret();
+        try {
+            // Interpret the AST nodes
+            InterpreterVisitor interpreter_visitor(program, &error_manager);
+            interpreter_visitor.interpret();
+        } catch (const std::runtime_error &e) {
+            exit_code = EXIT_FAILURE;
+        }
 
         delete program;
     }
+
+    return exit_code;
 }
 
 void print_usage() {
